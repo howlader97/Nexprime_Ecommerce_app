@@ -1,0 +1,48 @@
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:nexprime/services/repository/auth_repository.dart';
+import 'package:nexprime/services/storage/storage_services.dart';
+import 'package:nexprime/utils/app_log.dart';
+import 'package:nexprime/utils/app_snack_bar.dart';
+
+final otpVerifyProvider = StateNotifierProvider<OtpVerifyProvider, bool>((ref) {
+  return OtpVerifyProvider();
+});
+
+class OtpVerifyProvider extends StateNotifier<bool> {
+  OtpVerifyProvider() : super(false);
+
+  Future<bool> verifyOtp(String code) async {
+    try {
+      state = true;
+      String email = await StorageServices.instance.getEmail();
+      final response = await AuthRepository.instance.authOtpVerify(
+        email: email,
+        otp: code,
+      );
+
+      state = false;
+      return response;
+    } catch (e) {
+      errorLog("verifyOtp", e);
+      state = false;
+      return false;
+    }
+  }
+
+  Future<void> resendOtp() async {
+    try {
+      state = true;
+      String email = await StorageServices.instance.getEmail();
+      bool success = await AuthRepository.instance.authResendOTP(email: email);
+      state = false;
+      if (success) {
+        AppSnackBar.instance.success("OTP has been resent successfully");
+      } else {
+        AppSnackBar.instance.error("Failed to resend OTP. Please try again.");
+      }
+    } catch (e) {
+      errorLog("resendOtp", e);
+      state = false;
+    }
+  }
+}

@@ -1,0 +1,112 @@
+name: nexprime
+description: "A new Flutter project."
+
+publish_to: 'none' 
+
+version: 1.0.0+4
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # main state management use 
+  flutter_riverpod: ^3.0.3
+  # route related 
+  go_router: ^17.0.0
+
+  # storage
+  shared_preferences: ^2.5.4
+
+  # api services
+  dio: ^5.9.0
+  http_parser: ^4.1.2
+  mime: ^2.0.0
+  pretty_dio_logger: ^1.4.0
+  socket_io_client: ^3.1.2
+  connectivity_plus: ^7.0.0
+
+  # time zone related 
+  flutter_timezone: ^4.1.1
+  timezone: ^0.10.1
+
+  # translator
+  translator: ^1.0.4+1
+  html: ^0.15.6
+
+  # image related 
+  cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
+  image_picker: ^1.2.1
+
+  # ui related
+  permission_handler: ^12.0.1
+  readmore: ^3.0.0
+  skeletonizer: ^2.1.0+1
+  flutter_widget_from_html_core: ^0.17.0
+  cupertino_icons: ^1.0.8
+
+  # notification related
+  flutter_local_notifications: ^19.5.0
+  firebase_messaging: ^16.0.4
+  firebase_core: ^4.2.1
+  device_info_plus: ^12.1.0
+  fl_chart: ^1.1.1
+  dropdown_button2: ^2.3.9
+  flutter_rating_bar: ^4.0.1
+  web_socket_channel: ^3.0.3
+  intl: ^0.20.2
+  emoji_picker_flutter: ^4.4.0
+  livekit_client: ^2.1.0
+  flutter_stripe: ^12.6.0
+  url_launcher: ^6.3.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^6.0.0
+  change_app_package_name: ^1.5.0
+
+
+
+flutter:
+
+  uses-material-design: true
+
+# local all assets
+  assets:
+    - assets/fonts/
+    - assets/images/
+    - assets/icons/
+    - assets/logo/
+    - assets/dev_image/
+
+# local all font 
+  fonts:
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/OpenSans_Condensed-Bold.ttf
+        - asset: assets/fonts/OpenSans_Condensed-Light.ttf
+        - asset: assets/fonts/OpenSans_Condensed-Medium.ttf
+        - asset: assets/fonts/OpenSans_Condensed-Regular.ttf
+        - asset: assets/fonts/OpenSans_SemiCondensed-Light.ttf
+        - asset: assets/fonts/OpenSans_SemiCondensed-Medium.ttf
+        - asset: assets/fonts/OpenSans_SemiCondensed-Regular.ttf
+        - asset: assets/fonts/OpenSans-Bold.ttf
+        - asset: assets/fonts/OpenSans-Light.ttf
+        - asset: assets/fonts/OpenSans-Medium.ttf
+        - asset: assets/fonts/OpenSans-Regular.ttf
+  
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Black.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+        - asset: assets/fonts/Montserrat-Light.ttf
+        - asset: assets/fonts/Montserrat-Medium.ttf
+        - asset: assets/fonts/Montserrat-Regular.ttf
+   

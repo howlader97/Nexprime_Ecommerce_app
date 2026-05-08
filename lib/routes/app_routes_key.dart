@@ -1,0 +1,58 @@
+class AppRoutesKey {
+  ////////////// constructor
+  AppRoutesKey._privateConstructor();
+  static final AppRoutesKey _instance = AppRoutesKey._privateConstructor();
+  static AppRoutesKey get instance => _instance;
+  final String initial = "/";
+  final String splash = "splash";
+  final String onBoardScreen = "onboardScreen";
+  final String notFoundScreen = "notFoundScreen";
+  final String errorScreen = "errorScreen";
+  final String noInternetScreen = "noInternetScreen";
+  final String signInScreen = "signInScreen";
+  final String signUpScreen = "signUpScreen";
+  final String signUpVerifyScreen = "signUpVerifyScreen";
+  final String forgotScreen = "forgotScreen";
+  final String appNavigationScreen = "appNavigationScreen";
+  final String customerHomeScreen = "customerHomeScreen";
+  final String aboutUsScreen = "about-us-screen";
+  final String privacyPolicyScreen = "privacyPolicyScreen";
+  final String termsAndConditionScreen = "terms-and-condition-screen";
+  final String faqScreen = "f-a-q-screen";
+  final String customerGroceriesHomeCategories =
+      "customerGroceriesHomeCategories";
+  final String customerClothScreen = "customerClothScreen";
+  final String customerCartScreen = "customerCartScreen";
+  final String customerClothDetailsScreen = "customerClothDetailsScreen";
+  final String customerClothCheckoutScreen = "customerClothCheckoutScreen";
+  final String customerDeliveryInfo = "customerDeliveryInfo";
+  final String customerPaymentCard = "customerPaymentCard";
+  final String customerPaymentCardDetails = "customerPaymentCardDetails";
+  final String customerOrderScreen = "customerOrderScreen";
+  final String customerOrderSuccessfulScreen = "customerOrderSuccessfulScreen";
+  final String customerFoodDetailsScreen = "customerFoodDetailsScreen";
+  final String customerOrderTrackList = "customerOrderTrackList";
+  final String customerReviewScreen = "customerReviewScreen";
+  final String customerReviewListScreen = "customerReviewListScreen";
+  final String customerFollowShopList = "customerFollowShopList";
+  final String customerMyProductScreen = "customerMyProductScreen";
+  final String customerNewProductList = "customerNewProductList";
+  final String customerMarketplaceScreen = "customerMarketplaceScreen";
+  final String customerMessageScreen = "customerMessageScreen";
+  final String customerChatScreen = "customerChatScreen";
+  final String customerReportScreen = "customerReportScreen";
+  final String customerPrivacyPolicy = "customerPrivacyPolicy";
+  final String customerTermsConditions = "customerTermsConditions";
+  final String customerEditProfileScreen = "customerEditProfileScreen";
+  final String customerFaqScreen = "customerFaqScreen";
+  final String customerShopScreen = "customerShopScreen";
+  final String customerNotificationScreen = "customerNotificationScreen";
+  final String customerSearchScreen = "customerSearchScreen";
+  final String kycVerificationScreen = "kycVerificationScreen";
+  final String verificationInProgressScreen = "verificationInProgressScreen";
+  final String vendorLiveScreen = "vendorLiveScreen";
+  final String vendorHomeScreen = "vendorHomeScreen";
+  final String vendorEditProfileScreen = "vendorEditProfileScreen";
+  final String customerMarketplaceProductDetails = "customerMarketplaceProductDetails";
+  final String changeLanguageScreen = "changeLanguageScreen";
+}
