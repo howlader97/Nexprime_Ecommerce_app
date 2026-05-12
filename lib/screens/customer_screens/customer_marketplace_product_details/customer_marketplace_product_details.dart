@@ -69,8 +69,8 @@ class _CustomerMarketplaceProductDetailsState
             final images = (product.images != null && product.images!.isNotEmpty)
                 ? product.images!
                 : [
-                    'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=60'
-                  ];
+              'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=60'
+            ];
 
             return Stack(
               children: [
@@ -163,7 +163,7 @@ class _CustomerMarketplaceProductDetailsState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
                             images.length,
-                            (index) => Container(
+                                (index) => Container(
                               margin: const EdgeInsets.symmetric(horizontal: 4),
                               width: 8,
                               height: 8,
@@ -275,7 +275,7 @@ class _CustomerMarketplaceProductDetailsState
                           padding: const EdgeInsets.all(20),
                           child: AppButton(
                             height: AppSize.size.height * 0.065,
-                            title: product.creatorId == currentUser?.id ?"Owner Product": "Message Seller",
+                            title: product.creatorId == currentUser?.id ?"Own Product": "Message Seller",
                             onTap: () {
                               if(product.creatorId == currentUser?.id){
                                 return ;
@@ -297,26 +297,61 @@ class _CustomerMarketplaceProductDetailsState
                     ),
                   ),
                 ),
-                // Back Button
+
                 Positioned(
                   top: 16,
                   left: 16,
-                  child: GestureDetector(
-                    onTap: () => AppRoutes.instance.pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.instance.green,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 20,
+                  child: SafeArea(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () async {
+                          FocusScope.of(context).unfocus();
+
+                          await Future.delayed(Duration.zero);
+
+                          if (mounted) {
+                            //  Navigator.of(context).maybePop();
+                            AppRoutes.instance.pop();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.instance.green,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // Back Button
+                // Positioned(
+                //   top: 16,
+                //   left: 16,
+                //   child: GestureDetector(
+                //     onTap: () => AppRoutes.instance.pop(),
+                //     child: Container(
+                //       padding: const EdgeInsets.all(8),
+                //       decoration: BoxDecoration(
+                //         color: AppColors.instance.green,
+                //         borderRadius: BorderRadius.circular(4),
+                //       ),
+                //       child: const Icon(
+                //         Icons.arrow_back,
+                //         color: Colors.white,
+                //         size: 20,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             );
           },
