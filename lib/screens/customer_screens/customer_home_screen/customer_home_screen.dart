@@ -9,6 +9,7 @@ import 'package:nexprime/screens/customer_screens/customer_home_screen/widgets/c
 import 'package:nexprime/screens/customer_screens/customer_home_screen/widgets/customer_home_country_card.dart';
 import 'package:nexprime/screens/customer_screens/customer_home_screen/widgets/customer_home_marketplace_widget.dart';
 import 'package:nexprime/screens/customer_screens/customer_home_screen/widgets/customer_home_search_bar.dart';
+import 'package:nexprime/screens/customer_screens/customer_profile_screen/provider/customer_profile_provider.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
 
@@ -33,6 +34,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = ref.watch(customerProfileProvider);
     final banners = ref.watch(bannerProvider);
     final imageList = banners.map((e) => e.imageUrl).toList();
     final groceriesCountries =
@@ -71,7 +73,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                         //   ),
                         // ),
                         AppText(text: "Deliver to", fontWeight: FontWeight.w400,color: AppColors.instance.black400,fontSize: 14,),
-                        AppText(text: "Tokyo, japan", fontWeight: FontWeight.bold,color: AppColors.instance.primary,fontSize: 16,),
+                        AppText(text: profile?.locaion ?? 'location', fontWeight: FontWeight.bold,color: AppColors.instance.primary,fontSize: 16,),
                       ],
                     ),
                   ),

@@ -11,6 +11,7 @@ class CustomerProfileModel {
   final String residentcardFrontside;
   final String residentcardBackside;
   final DateTime createdAt;
+  final String? locaion;
 
   CustomerProfileModel({
     required this.id,
@@ -25,6 +26,7 @@ class CustomerProfileModel {
     required this.residentcardFrontside,
     required this.residentcardBackside,
     required this.createdAt,
+    this.locaion
   });
 
   factory CustomerProfileModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class CustomerProfileModel {
       residentcardFrontside: json['residentcard_frontside'],
       residentcardBackside: json['residentcard_backside'],
       createdAt: DateTime.parse(json['createdAt']),
+      locaion: json['location'],
     );
   }
 
@@ -58,6 +61,7 @@ class CustomerProfileModel {
       'residentcard_frontside': residentcardFrontside,
       'residentcard_backside': residentcardBackside,
       'createdAt': createdAt.toIso8601String(),
+      'location' : locaion,
     };
   }
 }

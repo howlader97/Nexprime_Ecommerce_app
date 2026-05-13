@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=C:\Users\remon\fvm\versions\3.38.9"
-export "FLUTTER_APPLICATION_PATH=C:\Flutter\sammar1821_App-motion"
+export "FLUTTER_APPLICATION_PATH=C:\Users\remon\StudioProjects\Nexprime_Ecommerce_app.git"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

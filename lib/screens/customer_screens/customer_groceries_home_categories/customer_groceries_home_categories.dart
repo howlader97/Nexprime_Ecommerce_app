@@ -6,6 +6,7 @@ import 'package:nexprime/screens/customer_screens/customer_groceries_home_catego
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/customer_groceries_home_categories_widgets.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/product_cart_widgets.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/shop_section_widget.dart';
+import 'package:nexprime/screens/customer_screens/customer_profile_screen/provider/customer_profile_provider.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/utils/app_snack_bar.dart';
 import 'package:nexprime/widgets/buttons/custom_app_bar.dart';
@@ -31,6 +32,7 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile=ref.watch(customerProfileProvider);
     final subcategories = ref.watch(groceriesProvider("Grocery"));
     final productState = ref.watch(productProvider(countryId));
     final cart=ref.watch(addToCartProvider);
@@ -48,7 +50,7 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: CustomLocationWidget(location: 'Tokyo, japan'),
+              child: CustomLocationWidget(location: profile?.locaion ?? 'location'),
             ),
             // SliverToBoxAdapter(
             //   child: Padding(

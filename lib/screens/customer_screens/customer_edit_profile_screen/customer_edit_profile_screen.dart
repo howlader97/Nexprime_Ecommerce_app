@@ -27,6 +27,8 @@ class _CustomerEditProfileScreenState
   late TextEditingController nameTEController;
   late TextEditingController passwordTEController;
   late TextEditingController phoneTEController;
+  late TextEditingController location;
+
   String? profileImagePath;
   String? coverImagePath;
 
@@ -35,6 +37,8 @@ class _CustomerEditProfileScreenState
     nameTEController = TextEditingController();
     passwordTEController = TextEditingController();
     phoneTEController = TextEditingController();
+    location = TextEditingController();
+
 
     // Populate initial data after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -43,6 +47,8 @@ class _CustomerEditProfileScreenState
         setState(() {
           nameTEController.text = profileData.fullname;
           phoneTEController.text = profileData.phonenumber;
+          location.text = profileData.locaion ?? '';
+
         });
       }
     });
@@ -54,6 +60,8 @@ class _CustomerEditProfileScreenState
     nameTEController.dispose();
     passwordTEController.dispose();
     phoneTEController.dispose();
+    location.dispose();
+
     super.dispose();
   }
 
@@ -68,21 +76,21 @@ class _CustomerEditProfileScreenState
           slivers: [
             SliverAppBar(
               automaticallyImplyLeading: false,
-              expandedHeight: AppSize.size.height * 0.35,
+              expandedHeight: AppSize.size.height * 0.27,
               flexibleSpace: Stack(
                 children: [
                   coverImagePath != null
                       ? AppImage(
-                          filePath: coverImagePath,
-                          width: AppSize.size.width,
-                          isZomBle: true,
-                        )
+                    filePath: coverImagePath,
+                    width: AppSize.size.width,
+                    isZomBle: true,
+                  )
                       : AppImage(
-                          width: AppSize.size.width,
-                          isZomBle: true,
-                          url: profileData?.coverImageUrl ?? "",
-                          fit: BoxFit.cover,
-                        ),
+                    width: AppSize.size.width,
+                    isZomBle: true,
+                    url: profileData?.coverImageUrl ?? "",
+                    fit: BoxFit.cover,
+                  ),
                   Positioned(
                     top: AppSize.size.height * 0.05,
                     left: 16,
@@ -98,11 +106,13 @@ class _CustomerEditProfileScreenState
                     right: 16,
                     child: GestureDetector(
                       onTap: () {
-                        appImageUserTake(callBack: (v) {
-                          setState(() {
-                            coverImagePath = v;
-                          });
-                        });
+                        appImageUserTake(
+                          callBack: (v) {
+                            setState(() {
+                              coverImagePath = v;
+                            });
+                          },
+                        );
                       },
                       child: IconButtonWidget(icon: Icons.image_rounded),
                     ),
@@ -110,7 +120,7 @@ class _CustomerEditProfileScreenState
                 ],
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(AppSize.size.width * 0.3),
+                preferredSize: Size.fromHeight(AppSize.size.width * 0.25),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -139,25 +149,27 @@ class _CustomerEditProfileScreenState
                       ),
                       child: profileImagePath != null
                           ? AppImageCircular(
-                              filePath: profileImagePath,
-                              width: AppSize.size.width * 0.3,
-                              height: AppSize.size.width * 0.30,
-                            )
+                        filePath: profileImagePath,
+                        width: AppSize.size.width * 0.28,
+                        height: AppSize.size.width * 0.28,
+                      )
                           : AppImageCircular(
-                              width: AppSize.size.width * 0.3,
-                              height: AppSize.size.width * 0.30,
-                              url: profileData?.profileImageUrl ?? "",
-                            ),
+                        width: AppSize.size.width * 0.27,
+                        height: AppSize.size.width * 0.27,
+                        url: profileData?.profileImageUrl ?? "",
+                      ),
                     ),
                     Positioned(
                       child: Center(
                         child: IconButton(
                           onPressed: () {
-                            appImageUserTake(callBack: (v) {
-                              setState(() {
-                                profileImagePath = v;
-                              });
-                            });
+                            appImageUserTake(
+                              callBack: (v) {
+                                setState(() {
+                                  profileImagePath = v;
+                                });
+                              },
+                            );
                           },
                           icon: Icon(
                             Icons.camera_alt_outlined,
@@ -177,69 +189,100 @@ class _CustomerEditProfileScreenState
                 child: Column(
                   children: [
                     AppInputWidgetTwo(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                       titleFontWeight: FontWeight.bold,
                       title: "Full Name",
                       hintText: "Enter your Name",
                       controller: nameTEController,
                     ),
                     AppInputWidgetTwo(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                       titleFontWeight: FontWeight.bold,
                       title: "password",
                       hintText: "Enter your password",
                       controller: passwordTEController,
                     ),
                     AppInputWidgetTwo(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                       titleFontWeight: FontWeight.bold,
                       controller: phoneTEController,
                       title: "Phone Number ",
                       hintText: "Enter your number",
                     ),
+                    AppInputWidgetTwo(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
+                      titleFontWeight: FontWeight.bold,
+                      controller: location,
+                      title: "Location ",
+                      hintText: "Enter name Country,City",
+                    ),
+
                     Padding(
                       padding: EdgeInsets.all(AppSize.size.width * 0.04),
                       child: AppButton(
-                        height: AppSize.size.width * 0.14,
+                        height: AppSize.size.width * 0.132,
                         backgroundColor: AppColors.instance.green,
                         borderColor: AppColors.instance.green,
-                        title:
-                            profile.isLoading ? "Updating..." : "Save Changes",
+                        title: profile.isLoading
+                            ? "Updating..."
+                            : "Save Changes",
                         onTap: profile.isLoading
                             ? null
                             : () async {
-                                final body = {
-                                  "fullname": nameTEController.text,
-                                  "phonenumber": phoneTEController.text,
-                                };
-                                if (passwordTEController.text.isNotEmpty) {
-                                  body["password"] = passwordTEController.text;
-                                }
-                                await ref
-                                    .read(editProfileProvider.notifier)
-                                    .updateProfile(
-                                      body: body,
-                                      profileImagePath: profileImagePath,
-                                      coverImagePath: coverImagePath,
-                                    );
-                                final result = ref.read(editProfileProvider);
+                          final body = {
+                            "fullname": nameTEController.text,
+                            "phonenumber": phoneTEController.text,
+                            "location": location.text,
+                          };
+                          if (passwordTEController.text.isNotEmpty) {
+                            body["password"] = passwordTEController.text;
+                          }
+                          await ref
+                              .read(editProfileProvider.notifier)
+                              .updateProfile(
+                            body: body,
+                            profileImagePath: profileImagePath,
+                            coverImagePath: coverImagePath,
+                          );
+                          final result = ref.read(editProfileProvider);
 
-                                result.when(
-                                  data: (success) {
-                                    if (success) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: AppText( text: "Profile Updated")),
-                                      );
-                                      AppRoutes.instance.pop();
-                                    }
-                                  },
-                                  loading: () {},
-                                  error: (e, _) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: AppText( text:  e.toString())),
-                                    );
-                                  },
+                          result.when(
+                            data: (success) {
+                              if (success) {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
+                                  const SnackBar(
+                                    content: AppText(
+                                      text: "Profile Updated",
+                                    ),
+                                  ),
                                 );
-                              },
+                                AppRoutes.instance.pop();
+                              }
+                            },
+                            loading: () {},
+                            error: (e, _) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: AppText(text: e.toString()),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],

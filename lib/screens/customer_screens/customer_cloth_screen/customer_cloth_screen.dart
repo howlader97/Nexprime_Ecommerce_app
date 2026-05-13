@@ -17,6 +17,8 @@ import '../customer_groceries_home_categories/widgets/shop_section_widget.dart';
 import 'package:nexprime/screens/customer_screens/customer_home_screen/provider/groceries_country_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/provider/product_provider.dart';
 
+import '../customer_profile_screen/provider/customer_profile_provider.dart';
+
 class CustomerClothScreen extends ConsumerStatefulWidget {
   final int countryId;
   final String categoryName;
@@ -37,7 +39,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    final profile=ref.watch(customerProfileProvider);
     final selectedSizeIndex = ref.watch(selectedSizeProvider);
     final subcategories = ref.watch(groceriesProvider("Wardrobe"));
     final productState = ref.watch(productProvider(widget.countryId));
@@ -55,7 +57,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: CustomLocationWidget(location: "Tokyo, japan"),
+              child: CustomLocationWidget(location: profile?.locaion ?? 'location'),
             ),
             // SliverToBoxAdapter(
             //   child: Padding(
