@@ -163,7 +163,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                 child: AppText( text: 
                   "Clothing",
                   style: TextStyle(
-                    fontSize: AppSize.size.width * 0.056,
+                    fontSize: AppSize.size.width * 0.055,
                     fontWeight: FontWeight.bold,
                     color: AppColors.instance.black06,
                   ),
