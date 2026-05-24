@@ -88,8 +88,8 @@ class AppApiUrl {
 }
 
 String _getDomain() {
-  const String liveServer = "https://www.nexprime.mtscorporate.com";
-  const String localServer = "https://www.nexprime.mtscorporate.com";
+  const String liveServer = "https://api.nexprimeapp.com";
+  const String localServer = "https://api.nexprimeapp.com";
 
   try {
     if (kDebugMode) {
