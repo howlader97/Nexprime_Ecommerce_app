@@ -1,6 +1,7 @@
 import 'package:nexprime/constant/app_api_url.dart';
 import 'package:nexprime/models/banner_model.dart';
 import 'package:nexprime/models/groceries_country_model.dart';
+import 'package:nexprime/models/product_model.dart';
 import 'package:nexprime/models/store_model.dart';
 import 'package:nexprime/services/api/api_services.dart';
 import 'package:nexprime/utils/app_log.dart';
@@ -15,6 +16,28 @@ class HomeRepository {
 
   final ApiServices _apiServices = ApiServices.instance;
   final AppApiUrl _api = AppApiUrl.instance;
+
+
+  Future<ProductModel?> discountProduct() async {
+    try {
+      var response = await _apiServices.getServices(
+        _api.discountProduct,
+      );
+
+      if (response != null && response is Map<String, dynamic>) {
+        if(response.isNotEmpty){
+          return ProductModel.fromJson(response);
+        }
+
+      }
+
+
+    } catch (e) {
+      errorLog("discount product data", e);
+
+    }
+    return null;
+  }
 
   Future<List<BannerModel>> bannerData() async {
     try {

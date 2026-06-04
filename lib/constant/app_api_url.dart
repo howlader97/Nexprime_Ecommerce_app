@@ -34,6 +34,7 @@ class AppApiUrl {
   String authForgotPassword = "/auth/forgot-password";
   String authVerifyEmail = "/auth/verify-forgot-password";
   String authResetPassword = "/auth/reset-password";
+  String discountProduct = "/products/highest-discount";
   String stores = "/stores";
   String deliveryInfo = "/orders/delivery-address";
   String createOrder = "/orders";

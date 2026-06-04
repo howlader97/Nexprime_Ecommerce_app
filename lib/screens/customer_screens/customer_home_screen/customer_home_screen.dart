@@ -24,23 +24,28 @@ class CustomerHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  late TextEditingController _searchController;
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
 
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
+    _searchController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(customerProfileProvider);
+    final profile=ref.watch(customerProfileProvider);
     final banners = ref.watch(bannerProvider);
-    final imageList = banners.map((e) => e.imageUrl).toList();
+    final imageList = banners?.map((e) => e.imageUrl).toList() ?? [];
     final groceriesCountries =
-        ref.watch(groceriesProvider("Grocery Country")) ?? [];
+    ref.watch(groceriesProvider("Grocery Country"));
     final wardrobeCountries =
-        ref.watch(groceriesProvider("Wardrobe Country")) ?? [];
+    ref.watch(groceriesProvider("Wardrobe Country"));
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -56,29 +61,13 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(
-                        //   "Deliver to",
-                        //   style: TextStyle(
-                        //     fontSize: AppSize.size.width * 0.035,
-                        //     color: AppColors.instance.black400,
-                        //     fontWeight: FontWeight.w400,
-                        //   ),
-                        // ),
-                        // Text(
-                        //   "Tokyo, japan",
-                        //   style: TextStyle(
-                        //     fontSize: AppSize.size.width * 0.04,
-                        //     color: AppColors.instance.primary,
-                        //     fontWeight: FontWeight.bold,
-                        //   ),
-                        // ),
                         AppText(text: "Deliver to", fontWeight: FontWeight.w400,color: AppColors.instance.black400,fontSize: 14,),
-                        AppText(text: profile?.locaion ?? 'location', fontWeight: FontWeight.bold,color: AppColors.instance.primary,fontSize: 16,),
+                        AppText(text:  'japan', maxLines: 1, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold,color: AppColors.instance.primary,fontSize: 16,),
                       ],
                     ),
                   ),
                   IconButtonWidget(
-                     padding: AppSize.size.width * 0.018,
+                    padding: AppSize.size.width * 0.018,
                     onTap: () {
                       AppRoutes.instance.pushNamed(
                         AppRoutesKey.instance.customerNotificationScreen,
@@ -117,12 +106,19 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 2),
-                child: banners.isEmpty
-                    ?  SizedBox(
-                        height: AppSize.size.height * 0.185,
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    : CustomerHomeBanner(images: imageList,height: AppSize.size.height * 0.185,),
+                child:
+
+                banners == null
+                    ? SizedBox(
+                  height: AppSize.size.height * 0.185,
+                  child: const Center(child: CircularProgressIndicator()),
+                )
+                    : banners.isEmpty
+                    ? SizedBox(
+                  height: AppSize.size.height * 0.185,
+                  child: const Center(child: AppText(text: 'No banners found')),
+                )
+                    : CustomerHomeBanner(images: imageList, height: AppSize.size.height * 0.185,),
               ),
             ),
 
@@ -142,7 +138,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 10,
+                    vertical: 7,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.instance.grayEE,
@@ -161,31 +157,33 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                       const SizedBox(height: 11),
                       SizedBox(
                         height: AppSize.height(value: 100),
-                        child: groceriesCountries.isEmpty
+                        child: groceriesCountries == null
                             ? const Center(child: CircularProgressIndicator())
+                            : groceriesCountries.isEmpty
+                            ? const Center(child: AppText(text: 'No groceries countries found'))
                             : ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: groceriesCountries.length,
-                                itemBuilder: (context, index) {
-                                  final country = groceriesCountries[index];
-                                  return CustomerHomeCountryCard(
-                                    onTap: () {
-                                      AppRoutes.instance.pushNamed(
-                                        AppRoutesKey
-                                            .instance
-                                            .customerGroceriesHomeCategories,
-                                        pathParameters: {
-                                          'id': country.id.toString(),
-                                          'name': country.name,
-                                        },
-                                      );
-                                    },
-                                    image: country.image,
-                                    title: country.name,
-                                  );
-                                },
-                              ),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: groceriesCountries.length,
+                          itemBuilder: (context, index) {
+                            final country = groceriesCountries[index];
+                            return CustomerHomeCountryCard(
+                              onTap: () {
+                                AppRoutes.instance.pushNamed(
+                                  AppRoutesKey
+                                      .instance
+                                      .customerGroceriesHomeCategories,
+                                  pathParameters: {
+                                    'id': country.id.toString(),
+                                    'name': country.name,
+                                  },
+                                );
+                              },
+                              image: country.image,
+                              title: country.name,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -199,7 +197,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 10,
+                    vertical:7,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.instance.grayEE,
@@ -209,7 +207,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText(
-                       text: 'Wardrobe by Country',
+                        text: 'Wardrobe by Country',
                         style: TextStyle(
                           fontSize: AppSize.size.width * 0.054,
                           fontWeight: FontWeight.bold,
@@ -219,31 +217,33 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                       const SizedBox(height: 11),
                       SizedBox(
                         height: AppSize.height(value: 100),
-                        child: wardrobeCountries.isEmpty
+                        child: wardrobeCountries == null
                             ? const Center(child: CircularProgressIndicator())
+                            : wardrobeCountries.isEmpty
+                            ? const Center(child: AppText(text: 'No wardrobe countries found'))
                             : ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: wardrobeCountries.length,
-                                itemBuilder: (context, index) {
-                                  final country = wardrobeCountries[index];
-                                  return CustomerHomeCountryCard(
-                                    onTap: () {
-                                      AppRoutes.instance.pushNamed(
-                                        AppRoutesKey
-                                            .instance
-                                            .customerClothScreen,
-                                        pathParameters: {
-                                          'id': country.id.toString(),
-                                          'name': country.name,
-                                        },
-                                      );
-                                    },
-                                    image: country.image,
-                                    title: country.name,
-                                  );
-                                },
-                              ),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: wardrobeCountries.length,
+                          itemBuilder: (context, index) {
+                            final country = wardrobeCountries[index];
+                            return CustomerHomeCountryCard(
+                              onTap: () {
+                                AppRoutes.instance.pushNamed(
+                                  AppRoutesKey
+                                      .instance
+                                      .customerClothScreen,
+                                  pathParameters: {
+                                    'id': country.id.toString(),
+                                    'name': country.name,
+                                  },
+                                );
+                              },
+                              image: country.image,
+                              title: country.name,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
