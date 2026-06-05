@@ -89,7 +89,7 @@ final vendorLiveProvider =
 
 class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
   final Ref _ref;
-  final String liveKitUrl = "wss://summernexprime-zddy18we.livekit.cloud";
+  final String liveKitUrl = "wss://nexprime-4arisltx.livekit.cloud";
 
   VendorLiveNotifier(this._ref) : super(VendorLiveState());
 
