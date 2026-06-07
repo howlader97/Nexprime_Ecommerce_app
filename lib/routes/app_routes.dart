@@ -299,12 +299,18 @@ class AppRoutes {
       GoRoute(
         path: "/${AppRoutesKey.instance.customerOrderTrackList}",
         name: AppRoutesKey.instance.customerOrderTrackList,
-        builder: (context, state) => CustomerOrderTrackList(),
+        builder: (context, state) {
+          final trackingUrl = state.extra as String? ?? '';
+          return CustomerOrderTrackList(trackingUrl: trackingUrl);
+        },
       ),
       GoRoute(
-        path: "/${AppRoutesKey.instance.customerReviewScreen}",
-        name: AppRoutesKey.instance.customerReviewScreen,
-        builder: (context, state) => CustomerReviewScreen(),
+          path: "/${AppRoutesKey.instance.customerReviewScreen}",
+          name: AppRoutesKey.instance.customerReviewScreen,
+          builder: (context, state) {
+            final orderId = state.extra as int? ?? 0;
+            return CustomerReviewScreen(orderId: orderId);
+          }
       ),
       GoRoute(
         path: "/${AppRoutesKey.instance.customerFollowShopList}",

@@ -68,6 +68,8 @@ class AppApiUrl {
   String cartQuantity(int itemId) => "/cart/$itemId";
   String storeFollowerCount(int storeId) => "/stores/$storeId/follower-count";
   String searchProducts(String query) => "/products/search?q=$query";
+  String myOrder ="/orders/me";
+  String orderRatings(int id) => "/orders/$id/ratings";
 
   //vendor
   String vendorDashboard = "/vendor/dashboard/stats";

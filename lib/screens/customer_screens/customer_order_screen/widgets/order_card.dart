@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexprime/routes/app_routes.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
-
 import '../../../../constant/app_colors.dart';
 import '../../../../utils/app_size.dart';
 import '../../../../utils/gap.dart';
@@ -15,8 +14,10 @@ class OrderCard extends StatelessWidget {
   final String orderId;
   final String status;
   final String productName;
+  final bool isTrackOrderOpen;
+  final bool isReviewSectionOpen;
   final String productImageUrl;
-  final bool isDelivered;
+  final String? trackingUrl;
   final VoidCallback? onTap;
   final VoidCallback? onPressed;
 
@@ -27,13 +28,17 @@ class OrderCard extends StatelessWidget {
     required this.status,
     required this.productName,
     required this.productImageUrl,
-    this.isDelivered = false,
     this.onTap,
     this.onPressed,
+    required this.isTrackOrderOpen,
+    required this.isReviewSectionOpen,
+    this.trackingUrl,
   });
 
   @override
   Widget build(BuildContext context) {
+  //  print("isReviewSectionOpen: $isReviewSectionOpen");
+   // print("isTrackOrderOpen $isTrackOrderOpen");
     return CustomDecoratedBox(
       child: Padding(
         padding: EdgeInsets.all(AppSize.size.width * 0.04),
@@ -61,11 +66,11 @@ class OrderCard extends StatelessWidget {
                 ),
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    color: isDelivered
+                    color: (status.toLowerCase() == 'shipped' || status.toLowerCase() == 'delivered')
                         ? AppColors.instance.green
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(6),
-                    border: isDelivered
+                    border: (status.toLowerCase() == 'shipped' || status.toLowerCase() == 'delivered')
                         ? null
                         : Border.all(color: Colors.grey.shade400),
                   ),
@@ -73,7 +78,9 @@ class OrderCard extends StatelessWidget {
                     padding: EdgeInsets.all(AppSize.size.width * 0.03),
                     child: AppText(
                       text: status,
-                      color: isDelivered ? Colors.white : Colors.grey.shade700,
+                      color: (status.toLowerCase() == 'shipped' || status.toLowerCase() == 'delivered')
+                          ? Colors.white
+                          : Colors.grey.shade700,
                       fontSize: AppSize.size.width * 0.033,
                       fontWeight: FontWeight.w600,
                     ),
@@ -105,37 +112,32 @@ class OrderCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         maxLines: 1,
                       ),
-                      Gap(height: 2.8),
-                      GestureDetector(
-                        onTap: () {
-                          AppRoutes.instance.pushNamed(
-                            AppRoutesKey.instance.customerOrderTrackList,
-                          );
-                        },
-                        child: AppText(
-                          text: isDelivered ? "Track Orders" : "Track Order",
-                          fontSize: AppSize.size.width * 0.042,
-                          color: AppColors.instance.green,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.instance.green,
+                      if (isTrackOrderOpen) ...[
+                        Gap(height: 2.8),
+                        GestureDetector(
+                          onTap: () {
+                            AppRoutes.instance.pushNamed(
+                              AppRoutesKey.instance.customerOrderTrackList,
+                              extra: trackingUrl ?? '',
+                            );
+                          },
+                          child: AppText(
+                            text: "Track Order",
+                            fontSize: AppSize.size.width * 0.042,
+                            color: AppColors.instance.green,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.instance.green,
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
               ],
             ),
-            if (isDelivered) ...[
+            if (isReviewSectionOpen) ...[
               Gap(height: 16),
-              AppButton(
-                title: "Order Again",
-                backgroundColor: AppColors.instance.green,
-                borderColor: AppColors.instance.green,
-                onTap:onTap,
-                height: AppSize.size.height * 0.051,
-              ),
-              Gap(height: AppSize.size.height * 0.02),
               AppButton(
                 title: "Give Feedback",
                 backgroundColor: Colors.transparent,

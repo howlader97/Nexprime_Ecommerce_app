@@ -62,6 +62,7 @@ dependencies:
   livekit_client: ^2.1.0
   flutter_stripe: ^12.6.0
   url_launcher: ^6.3.2
+  webview_flutter: ^4.10.0
 
 
 dev_dependencies:
