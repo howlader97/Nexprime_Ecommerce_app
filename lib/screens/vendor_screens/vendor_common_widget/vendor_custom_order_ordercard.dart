@@ -61,8 +61,8 @@ class VendorCustomOrderOrdercard extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     StatusChip(
-                      order.isComplete ? "Paid" : "Unpaid",
-                      color: order.isComplete ? Colors.green : Colors.red,
+                      order.order?.isPaid == true ? "Paid" : "Unpaid",
+                      color:order.order?.isPaid == true ? Colors.green : Colors.red,
                     ),
                   ],
                 ),
@@ -98,32 +98,12 @@ class _OrderPopupMenu extends ConsumerWidget {
           case "Unarchive":
             notifier.archiveSubOrder(order.id, false);
             break;
-          case "Mark as Paid":
-            notifier.completeSubOrder(order.id, true);
-            break;
-          case "Mark as Unpaid":
-            notifier.completeSubOrder(order.id, false);
-            break;
-          case "Mark as Fulfilled":
-            notifier.fulfillSubOrder(order.id, true);
-            break;
-          case "Mark as Unfulfilled":
-            notifier.fulfillSubOrder(order.id, false);
-            break;
         }
       },
       itemBuilder: (context) => [
         PopupMenuItem(
           value: order.isArchive ? "Unarchive" : "Archive",
-          child: AppText( text: order.isArchive ? "Unarchive" : "Archive"),
-        ),
-        PopupMenuItem(
-          value: order.isComplete ? "Mark as Unpaid" : "Mark as Paid",
-          child: AppText( text: order.isComplete ? "Mark as Unpaid" : "Mark as Paid"),
-        ),
-        PopupMenuItem(
-          value: order.isFulfield ? "Mark as Unfulfilled" : "Mark as Fulfilled",
-          child: AppText( text: order.isFulfield ? "Mark as Unfulfilled" : "Mark as Fulfilled"),
+          child: AppText(text: order.isArchive ? "Unarchive" : "Archive"),
         ),
       ],
     );
@@ -143,8 +123,8 @@ class StatusChip extends StatelessWidget {
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: AppText( text: 
-        text,
+      child: AppText( text:
+      text,
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.w500,

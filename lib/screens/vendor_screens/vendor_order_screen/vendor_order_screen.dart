@@ -34,41 +34,41 @@ class VendorOrderScreen extends ConsumerWidget {
                         SliverToBoxAdapter(child: _HeaderSection()),
                         orders.isEmpty
                             ? const SliverFillRemaining(
-                                hasScrollBody: false,
-                                child: Center(
-                                  child: AppText(
-                                    text: "No active orders found",
-                                    fontSize: 18,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              )
+                          hasScrollBody: false,
+                          child: Center(
+                            child: AppText(
+                              text: "No active orders found",
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
                             : SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    final order = orders[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const VendorCustomerInfo(),
-                                          ),
-                                        );
-                                      },
-                                      child: VendorCustomOrderOrdercard(order: order),
-                                    );
-                                  },
-                                  childCount: orders.length,
-                                ),
-                              ),
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              final order = orders[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>  VendorCustomerInfo(orderId: order.id),
+                                    ),
+                                  );
+                                },
+                                child: VendorCustomOrderOrdercard(order: order),
+                              );
+                            },
+                            childCount: orders.length,
+                          ),
+                        ),
                       ],
                     );
                   },
                 ),
               ),
             ),
-            
+
             /// FIXED BOTTOM BUTTON
             Container(
               padding: const EdgeInsets.all(20),
@@ -100,8 +100,8 @@ class VendorOrderScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const AppText( text: 
-                    "View archive",
+                  child: const AppText( text:
+                  "View archive",
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,

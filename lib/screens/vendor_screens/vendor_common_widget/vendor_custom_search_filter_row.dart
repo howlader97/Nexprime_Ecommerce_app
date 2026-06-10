@@ -25,12 +25,12 @@ class VendorCustomSearchFilterRow extends ConsumerWidget {
               hintText: "Search by name or ID",
               hintStyle: TextStyle(color: Colors.black, fontSize: 13),
               prefixIcon: Icon(Icons.search, color: Colors.grey),
-             border: OutlineInputBorder(
-               borderRadius: BorderRadius.circular(8),
-               borderSide: BorderSide(
-                 color: Colors.black,
-               )
-             ),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: Colors.black,
+                  )
+              ),
               isDense: true,
 
 

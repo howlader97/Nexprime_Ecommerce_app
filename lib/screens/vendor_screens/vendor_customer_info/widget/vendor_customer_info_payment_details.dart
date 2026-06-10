@@ -1,13 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:nexprime/screens/vendor_screens/vendor_customer_info/widget/vendor_customer_info_text_row.dart';
-import '../../../../constant/app_colors.dart';
-import '../../../../utils/app_size.dart';
-import '../../../../utils/gap.dart';
-import '../../../../widgets/texts/app_text.dart';
-import 'vendor_customer_order_action_button.dart';
 
-class VendorCustomerInfoPayementDetails extends StatelessWidget {
-  const VendorCustomerInfoPayementDetails({super.key});
+import 'package:flutter/material.dart';
+import 'package:nexprime/constant/app_colors.dart';
+import 'package:nexprime/models/vendor_order_model.dart';
+import 'package:nexprime/screens/vendor_screens/vendor_customer_info/widget/Vendor_Customer_order_action_button.dart';
+import 'package:nexprime/screens/vendor_screens/vendor_customer_info/widget/vendor_customer_info_text_row.dart';
+import 'package:nexprime/utils/app_size.dart';
+import 'package:nexprime/utils/gap.dart';
+import 'package:nexprime/widgets/texts/app_text.dart';
+
+class VendorCustomerInfoPaymentDetails extends StatelessWidget {
+  final VendorOrderModel orderModel;
+  const VendorCustomerInfoPaymentDetails({super.key, required this.orderModel});
 
   @override
   Widget build(BuildContext context) {
@@ -25,37 +28,37 @@ class VendorCustomerInfoPayementDetails extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              AppText(
+            children: [
+              const AppText(
                 text: "Order summary",
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 height: 1.5,
               ),
 
-              Gap(height: 16),
+              const Gap(height: 16),
 
-              VendorCustomerInfoTextRow(title: "Quantity", subTitle: '1x'),
+              //VendorCustomerInfoTextRow(title: "Quantity: ", subTitle: '${orderModel.order.}'),
               VendorCustomerInfoTextRow(
-                title: "Subtotal",
-                subTitle: '\$377.99',
+                title: "Subtotal: ",
+                subTitle: '\$${orderModel.subTotal}',
               ),
-              VendorCustomerInfoTextRow(title: "Shipping", subTitle: 'Free'),
-              VendorCustomerInfoTextRow(
-                title: "Service charge",
-                subTitle: '37.799 (10%)',
-              ),
-              VendorCustomerInfoTextRow(title: "Tax (5%)", subTitle: '18.8995'),
+              // VendorCustomerInfoTextRow(title: "Shipping", subTitle: '${orderModel.order.}'),
+              //  const VendorCustomerInfoTextRow(
+              //    title: "Service charge",
+              //    subTitle: '37.799 (10%)',
+              //  ),
+              //  const VendorCustomerInfoTextRow(title: "Tax (5%)", subTitle: '18.8995'),
 
-              Gap(height: 8),
-              Divider(),
-              Gap(height: 8),
+              const Gap(height: 8),
+              const Divider(),
+              const Gap(height: 8),
 
-              VendorCustomerInfoTextRow(title: "Total", subTitle: '396.8895'),
+              VendorCustomerInfoTextRow(title: "Total: ", subTitle: '${orderModel.subTotal}'),
 
-              Gap(height: 20),
+              const Gap(height: 20),
 
-              VendorCustomerOrderActionButton(),
+              VendorCustomerOrderActionButton(orderModel: orderModel),
             ],
           ),
         ),

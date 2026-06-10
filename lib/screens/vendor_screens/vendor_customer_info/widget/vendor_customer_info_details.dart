@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nexprime/models/vendor_order_model.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_customer_info/widget/vendor_customer_info_text_row.dart';
 
 class VendorCustomerInfoDetails extends StatelessWidget {
+  final VendorOrderModel orderModel;
   const VendorCustomerInfoDetails({
-    super.key,
+    super.key, required this.orderModel,
   });
 
   @override
@@ -13,21 +15,21 @@ class VendorCustomerInfoDetails extends StatelessWidget {
         children: [
           VendorCustomerInfoTextRow(
             title: 'Name: ',
-            subTitle: 'Alexa Schmidt',
+            subTitle: '${orderModel.order?.user?.fullname}',
             titleBold: true,
           ),
-          VendorCustomerInfoTextRow(title: 'Postcode: ', subTitle: '10117'),
+          VendorCustomerInfoTextRow(title: 'Postcode: ', subTitle: '${orderModel.order?.deliveryAddress?.postcode}'),
           VendorCustomerInfoTextRow(
             title: 'Full Address: ',
-            subTitle: 'Friedrichstraße 100, Berlin',
+            subTitle: '${orderModel.order?.deliveryAddress?.fullAddress}',
           ),
           VendorCustomerInfoTextRow(
             title: 'Building name/Room number: ',
-            subTitle: 'Apartment 4B',
+            subTitle: '${orderModel.order?.deliveryAddress?.buildingNameRoomNumber}',
           ),
           VendorCustomerInfoTextRow(
             title: 'Phone number: ',
-            subTitle: '+49 30 12345678',
+            subTitle: '${orderModel.order?.deliveryAddress?.phoneNumber}',
           ),
         ],
       ),

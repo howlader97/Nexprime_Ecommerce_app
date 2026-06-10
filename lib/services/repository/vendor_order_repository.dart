@@ -6,7 +6,7 @@ import 'package:nexprime/utils/app_log.dart';
 class VendorOrderRepository {
   VendorOrderRepository._privateConstructor();
   static final VendorOrderRepository _instance =
-      VendorOrderRepository._privateConstructor();
+  VendorOrderRepository._privateConstructor();
   static VendorOrderRepository get instance => _instance;
 
   final ApiServices _apiServices = ApiServices.instance;
@@ -49,10 +49,25 @@ class VendorOrderRepository {
     }
   }
 
-  Future<bool> fulfillSubOrder(int id, bool isFulfill) async {
+  Future<bool> fulfillSubOrder(
+      int id,
+      bool isFulfill, {
+        String? trackingNumber,
+        String? courierName,
+      }) async {
     try {
+      final body = isFulfill
+          ? {
+        "trackingNumber": trackingNumber ?? "",
+        "courierName": courierName ?? "Japan Post",
+      }
+          : null;
+
       var response = await _apiServices.patchServices(
-        url: "${_api.fulfillSubOrder(id)}?is_fulfield=$isFulfill",
+        url: isFulfill
+            ? _api.fulfillSubOrder(id)
+            : "${_api.fulfillSubOrder(id)}?is_fulfield=false",
+        body: body,
       );
       return response != null;
     } catch (e) {
@@ -60,4 +75,5 @@ class VendorOrderRepository {
       return false;
     }
   }
+
 }

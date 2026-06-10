@@ -5,6 +5,9 @@ import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/provider/v
 import 'package:nexprime/services/repository/auth_repository.dart';
 import 'package:nexprime/utils/app_log.dart';
 
+import '../../../vendor_screens/vendor_home_screen/provider/vendor_home_screen_provider.dart';
+import '../../../vendor_screens/vendor_order_screen/provider/vendor_order_provider.dart';
+
 final signInProvider=StateNotifierProvider<_SignInProvider,bool>((ref){
   return _SignInProvider(ref);
 
@@ -22,6 +25,8 @@ final signInProvider=StateNotifierProvider<_SignInProvider,bool>((ref){
            email: email, password: password);
        _ref.invalidate(customerProfileProvider);
        _ref.invalidate(vendorStoreProvider);
+       _ref.invalidate(vendorOrderNotifierProvider);
+       _ref.invalidate(vendorDashboard);
        state=false;
        return response;
      }catch(e){
