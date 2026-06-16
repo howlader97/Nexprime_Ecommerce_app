@@ -10,7 +10,7 @@ Future<void> main() async {
   //////////////  flutter binding initialize
   WidgetsFlutterBinding.ensureInitialized();
 
-  Stripe.publishableKey = "pk_test_51RgLjfE4yVlYZpDluCLdrakWUY9yVWrW5pLR2DqB7AXPoHL9fYpWZ6IlIYyAprbl4ESPBxOAKsox3MrGqbzGZYr700yhfV7CP0";
+  Stripe.publishableKey = "pk_test_51TioGt721aYTGBGeF7WMRV6PhrXvZpLcZ8mQ2jXqEShwJU11eOUlHjAsrBsHJKW4woD1V0R5fEoBlRR5nLSXTfLU00Rn2TNYcP";
 
   await Stripe.instance.applySettings();
 
