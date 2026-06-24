@@ -47,17 +47,17 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
                 background: vendorStoreAsync.when(
                   data: (vendorStore) => vendorStore?.coverImgUrl != null
                       ? AppImage(
-                          height: AppSize.size.width * 0.6,
-                          width: AppSize.size.width,
-                          url: vendorStore!.coverImgUrl!,
-                        )
+                    height: AppSize.size.width * 0.6,
+                    width: AppSize.size.width,
+                    url: vendorStore!.coverImgUrl!,
+                  )
                       : AppImage(
-                          height: AppSize.size.width * 0.6,
-                          width: AppSize.size.width,
-                          path: "assets/dev_image/vendor_profile_image.png",
-                        ),
+                    height: AppSize.size.width * 0.6,
+                    width: AppSize.size.width,
+                    path: "assets/dev_image/vendor_profile_image.png",
+                  ),
                   loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  const Center(child: CircularProgressIndicator()),
                   error: (e, st) => AppImage(
                     height: AppSize.size.width * 0.6,
                     width: AppSize.size.width,
@@ -97,20 +97,20 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
                                 width: AppSize.size.width * 0.25,
                                 height: AppSize.size.width * 0.25,
                                 url:
-                                    vendorStore?.photo ??
+                                vendorStore?.photo ??
                                     "assets/dev_image/vendor_profile_image.png",
                               ),
                               loading: () => AppImageCircular(
                                 width: AppSize.size.width * 0.25,
                                 height: AppSize.size.width * 0.25,
                                 path:
-                                    "assets/dev_image/vendor_profile_image.png",
+                                "assets/dev_image/vendor_profile_image.png",
                               ),
                               error: (e, st) => AppImageCircular(
                                 width: AppSize.size.width * 0.25,
                                 height: AppSize.size.width * 0.25,
                                 path:
-                                    "assets/dev_image/vendor_profile_image.png",
+                                "assets/dev_image/vendor_profile_image.png",
                               ),
                             ),
                           ),
@@ -165,7 +165,7 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
                       );
                     },
                     loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    const Center(child: CircularProgressIndicator()),
                     error: (e, st) => Center(child: Text(e.toString())),
                   ),
                 ),
@@ -201,58 +201,59 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
             if (isClicked)
               products.isEmpty
                   ? SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Center(
-                          child: AppText( text: 
-                            "No products found",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.instance.black06,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : SliverPadding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSize.size.width * 0.04,
-                      ),
-                      sliver: SliverGrid(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final product = products[index];
-                          return VendorProductProductCard(
-                            title: product.name,
-                            price:
-                                "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
-                            oldPrice: product.isDiscountSale
-                                ? "\$${product.basePrice}"
-                                : "",
-                            stock: "Stock:${product.stockUnits}",
-                            image: product.images.isNotEmpty
-                                ? product.images.first
-                                : "assets/dev_image/product_pizza.png",
-                            delete: () => _onDeleteProduct(product.id),
-                            edit: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      VendorEditProductScreen(product: product),
-                                ),
-                              );
-                            },
-                          );
-                        }, childCount: products.length),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.55,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                            ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                    child: AppText( text:
+                    "No products found",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: AppColors.instance.black06,
                       ),
                     ),
+                  ),
+                ),
+              )
+                  : SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSize.size.width * 0.04,
+                ),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = products[index];
+                    return VendorProductProductCard(
+                      title: product.name,
+                      description: product.description,
+                      price:
+                      "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
+                      oldPrice: product.isDiscountSale
+                          ? "\$${product.basePrice}"
+                          : "",
+                      stock: "Stock:${product.stockUnits}",
+                      image: product.images.isNotEmpty
+                          ? product.images.first
+                          : "assets/dev_image/product_pizza.png",
+                      delete: () => _onDeleteProduct(product.id),
+                      edit: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                VendorEditProductScreen(product: product),
+                          ),
+                        );
+                      },
+                    );
+                  }, childCount: products.length),
+                  gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.85,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -265,12 +266,12 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
     final confirm = await showAdaptiveDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const AppText( text: 
-          "Delete Product",
+        title: const AppText( text:
+        "Delete Product",
           style: TextStyle(color: Colors.black),
         ),
-        content: const AppText( text: 
-          "Are you sure you want to delete this product?",
+        content: const AppText( text:
+        "Are you sure you want to delete this product?",
           style: TextStyle(color: Colors.black),
         ),
         actions: [

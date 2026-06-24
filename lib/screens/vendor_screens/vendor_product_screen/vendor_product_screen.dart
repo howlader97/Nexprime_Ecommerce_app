@@ -126,63 +126,64 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                   headerTitle: "Categories",
                   categories: grocery,
                   selectedCategoryIdProvider:
-                      vendorSelectedGroceryCategoryProvider,
+                  vendorSelectedGroceryCategoryProvider,
                 ),
               ),
 
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 630, // same as your item height
+                  height:firstListProducts.isEmpty?50: 440, // same as your item height
                   child: isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : firstListProducts.isEmpty
                       ? Center(
-                          child: AppText(
-                            text: "No products found",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.instance.black06,
-                            ),
-                          ),
-                        )
+                    child: AppText(
+                      text: "No products found",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: AppColors.instance.black06,
+                      ),
+                    ),
+                  )
                       : GridView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: firstListProducts.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, // 2 rows
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                mainAxisExtent: 195, // width of each item
-                              ),
-                          itemBuilder: (context, index) {
-                            final product = firstListProducts[index];
-                            return VendorProductProductCard(
-                              title: product.name,
-                              price:
-                                  "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
-                              oldPrice: product.isDiscountSale
-                                  ? "\$${product.basePrice}"
-                                  : "",
-                              stock: "Stock:${product.stockUnits}",
-                              image: product.images.isNotEmpty
-                                  ? product.images.first
-                                  : "assets/dev_image/product_pizza.png",
-                              edit: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        VendorEditProductScreen(
-                                          product: product,
-                                        ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: firstListProducts.length,
+                    gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 rows
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      mainAxisExtent: 195, // width of each item
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = firstListProducts[index];
+                      return VendorProductProductCard(
+                        title: product.name,
+                        description: product.description,
+                        price:
+                        "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
+                        oldPrice: product.isDiscountSale
+                            ? "\$${product.basePrice}"
+                            : "",
+                        stock: "Stock:${product.stockUnits}",
+                        image: product.images.isNotEmpty
+                            ? product.images.first
+                            : "assets/dev_image/product_pizza.png",
+                        edit: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VendorEditProductScreen(
+                                    product: product,
                                   ),
-                                );
-                              },
-                              delete: () => _onDeleteProduct(product.id),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
+                        delete: () => _onDeleteProduct(product.id),
+                      );
+                    },
+                  ),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 10)),
@@ -198,7 +199,7 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                       fontSize: AppSize.width(value: 24),
                       fontWeight: FontWeight.w600,
                     ),
-                    const Gap(height: 20),
+                    const Gap(height: 8),
                   ],
                 ),
               ),
@@ -208,63 +209,64 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                   headerTitle: "Categories",
                   categories: wardrobe,
                   selectedCategoryIdProvider:
-                      vendorSelectedWardrobeCategoryProvider,
+                  vendorSelectedWardrobeCategoryProvider,
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 10)),
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 630, // same as your item height
+                  height:firstListProducts.isEmpty?50: 440, // same as your item height
                   child: isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : clothingProducts.isEmpty
                       ? Center(
-                          child: AppText(
-                            text: "No clothing products found",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.instance.black06,
-                            ),
-                          ),
-                        )
+                    child: AppText(
+                      text: "No clothing products found",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: AppColors.instance.black06,
+                      ),
+                    ),
+                  )
                       : GridView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: clothingProducts.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, // 2 rows
-                                mainAxisSpacing: 12,
-                                crossAxisSpacing: 12,
-                                mainAxisExtent: 195, // width of each item
-                              ),
-                          itemBuilder: (context, index) {
-                            final product = clothingProducts[index];
-                            return VendorProductProductCard(
-                              title: product.name,
-                              price:
-                                  "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
-                              oldPrice: product.isDiscountSale
-                                  ? "\$${product.basePrice}"
-                                  : "",
-                              stock: "Stock:${product.stockUnits}",
-                              image: product.images.isNotEmpty
-                                  ? product.images.first
-                                  : "assets/dev_image/product_pizza.png",
-                              edit: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        VendorEditProductScreen(
-                                          product: product,
-                                        ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: clothingProducts.length,
+                    gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 rows
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      mainAxisExtent: 195, // width of each item
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = clothingProducts[index];
+                      return VendorProductProductCard(
+                        title: product.name,
+                        description: product.description,
+                        price:
+                        "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
+                        oldPrice: product.isDiscountSale
+                            ? "\$${product.basePrice}"
+                            : "",
+                        stock: "Stock:${product.stockUnits}",
+                        image: product.images.isNotEmpty
+                            ? product.images.first
+                            : "assets/dev_image/product_pizza.png",
+                        edit: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VendorEditProductScreen(
+                                    product: product,
                                   ),
-                                );
-                              },
-                              delete: () => _onDeleteProduct(product.id),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
+                        delete: () => _onDeleteProduct(product.id),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

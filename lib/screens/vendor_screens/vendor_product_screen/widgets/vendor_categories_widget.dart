@@ -13,36 +13,24 @@ class VendorCategoriesWidget extends ConsumerWidget {
   final List<GroceriesCountryModel>? categories;
   final StateProvider<int?> selectedCategoryIdProvider;
 
-  const VendorCategoriesWidget({
-    super.key,
-    required this.headerTitle,
-    required this.categories,
-    required this.selectedCategoryIdProvider,
-  });
+  const VendorCategoriesWidget({super.key, required this.headerTitle, required this.categories, required this.selectedCategoryIdProvider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
 
     return Container(
-      margin: const EdgeInsets.symmetric( vertical: 20),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F7F5),
-        borderRadius: BorderRadius.circular(28),
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+      decoration: BoxDecoration(color: const Color(0xFFF5F7F5), borderRadius: BorderRadius.circular(28)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText( text: 
-            headerTitle,
-            style: TextStyle(
-              fontSize: AppSize.size.width * 0.055,
-              fontWeight: FontWeight.bold,
-              color: AppColors.instance.black06,
-            ),
+          AppText(
+            text: headerTitle,
+            style: TextStyle(fontSize: AppSize.size.width * 0.055, fontWeight: FontWeight.bold, color: AppColors.instance.black06),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           if (categories == null)
             SizedBox(
               height: AppSize.size.width * 0.3,
@@ -52,12 +40,15 @@ class VendorCategoriesWidget extends ConsumerWidget {
             SizedBox(
               height: AppSize.size.width * 0.3,
               child: Center(
-                  child: AppText( text: "No categories found",
-                      style: TextStyle(color: AppColors.instance.black06))),
+                child: AppText(
+                  text: "No categories found",
+                  style: TextStyle(color: AppColors.instance.black06),
+                ),
+              ),
             )
           else
             SizedBox(
-              height: AppSize.size.width * 0.3,
+              height: AppSize.size.width * 0.23,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories!.length,
@@ -73,11 +64,9 @@ class VendorCategoriesWidget extends ConsumerWidget {
                     },
                     child: Container(
                       margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? Colors.black.withOpacity(0.08)
-                            : Colors.transparent,
+                        color: isSelected ? Colors.black.withValues(alpha: 0.08) : Colors.transparent,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Column(
@@ -85,11 +74,7 @@ class VendorCategoriesWidget extends ConsumerWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: AppImage(
-                              width: AppSize.size.width * 0.18,
-                              height: AppSize.size.width * 0.2,
-                              url: category.image,
-                            ),
+                            child: AppImage(width: AppSize.size.width * 0.17, height: AppSize.size.width * 0.16, url: category.image),
                           ),
                           Gap(height: AppSize.size.width * 0.01),
                           AppText(

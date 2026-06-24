@@ -38,7 +38,7 @@ class VendorHomeScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(
-                vertical: AppSize.size.height * 0.02,
+                vertical: AppSize.size.height * 0.01,
                 horizontal: AppSize.size.width * 0.03,
               ),
               child: Column(
@@ -83,18 +83,18 @@ class VendorHomeScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: AppSize.size.height * 0.03),
+                  SizedBox(height: AppSize.size.height * 0.02),
                   GridView.builder(
                     itemCount: 4,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 14,
-                          mainAxisSpacing: 14,
-                          childAspectRatio: 0.99,
-                        ),
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 2,
+                      childAspectRatio: 1.1,
+                    ),
                     itemBuilder: (BuildContext context, int index) {
                       final earning = dashBoard.value?.totalEarnings ?? 0;
                       final pendingOrders =
@@ -109,12 +109,12 @@ class VendorHomeScreen extends ConsumerWidget {
                       ];
                       return _buildContainer(
                         title[index],
-                         value[index],
-                       // comment[index],
+                        value[index],
+                        // comment[index],
                       );
                     },
                   ),
-                  SizedBox(height: AppSize.size.height * 0.03),
+                  SizedBox(height: AppSize.size.height * 0.01),
                   const AppText(
                     text: "Last sales trend",
                     fontSize: 24,
@@ -146,8 +146,8 @@ class VendorHomeScreen extends ConsumerWidget {
                           return Expanded(
                             child: Column(
                               children: [
-                                AppText( text: 
-                                  "\$${item.earnings} k",
+                                AppText( text:
+                                "\$${item.earnings} k",
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
@@ -181,10 +181,10 @@ class VendorHomeScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                AppText( text: 
-                                  item.day.length >= 3
-                                      ? item.day.substring(0, 3)
-                                      : item.day,
+                                AppText( text:
+                                item.day.length >= 3
+                                    ? item.day.substring(0, 3)
+                                    : item.day,
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
@@ -207,10 +207,10 @@ class VendorHomeScreen extends ConsumerWidget {
   }
 
   Container _buildContainer(
-    final String title,
-    final num value,
-   // final String comment,
-  ) {
+      final String title,
+      final num value,
+      // final String comment,
+      ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppSize.size.height * 0.010),
       decoration: BoxDecoration(
@@ -224,7 +224,7 @@ class VendorHomeScreen extends ConsumerWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-         // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             AppText(
               text: title,
@@ -233,11 +233,15 @@ class VendorHomeScreen extends ConsumerWidget {
               height: 1.5,
             ),
             const Gap(height: 12,),
-            Center(
+            SizedBox(
+              width: double.infinity,
               child: AppText(
                 text: value.toString(),
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
                 height: 1.5,
                 color: Colors.green,
               ),
