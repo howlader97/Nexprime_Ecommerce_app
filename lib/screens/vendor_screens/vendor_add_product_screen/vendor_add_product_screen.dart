@@ -19,6 +19,7 @@ import '../../customer_screens/customer_new_product_list/widgets/custom_dropdown
 import 'package:nexprime/models/product_model.dart';
 
 import '../vendor_common_widget/vendor_custom_text_title16.dart';
+import '../vendor_profile_screen/provider/vendor_profile_provider.dart';
 
 class VendorAddProductScreen extends ConsumerStatefulWidget {
   final ProductModel? product;
@@ -117,7 +118,17 @@ class _VendorAddProductScreenState
 
     if (success) {
       AppSnackBar.instance.success("Product published successfully");
-      Navigator.pop(context);
+      nameController.clear();
+      descriptionController.clear();
+      basePriceController.clear();
+      stockUnitsController.clear();
+      sizeController.clear();
+      colorsController.clear();
+      salePriceController.clear();
+      shippingChargeController.clear();
+      ref.read(vendorAddProductScreenProvider.notifier).resetState();
+      ref.read(vendorStoreProvider.notifier).fetchVendorStoreData();
+      AppRoutes.instance.pop();
     } else {
       AppSnackBar.instance.error("Failed to publish product");
     }

@@ -12,12 +12,14 @@ class CustomerGroceriesHomeCategoriesWidgets extends ConsumerStatefulWidget {
   final String headerTitle;
   final List<GroceriesCountryModel>? categories;
   final int? countryId;
+  final Function(int? categoryId)? onTapCategory;
 
   const CustomerGroceriesHomeCategoriesWidgets({
     super.key,
     required this.headerTitle,
     required this.categories,
     this.countryId,
+    this.onTapCategory,
   });
 
   @override
@@ -30,6 +32,20 @@ class _CustomerGroceriesHomeCategoriesWidgetsState
   int? selectedCategoryId;
 
   void selectCategory(int id) {
+    if (widget.onTapCategory != null) {
+      if (selectedCategoryId == id) {
+        setState(() {
+          selectedCategoryId = null;
+        });
+        widget.onTapCategory!(null);
+      } else {
+        setState(() {
+          selectedCategoryId = id;
+        });
+        widget.onTapCategory!(id);
+      }
+      return;
+    }
     if (widget.countryId == null) return;
     if (selectedCategoryId == id) {
       setState(() {
@@ -60,8 +76,8 @@ class _CustomerGroceriesHomeCategoriesWidgetsState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText( text: 
-            widget.headerTitle,
+          AppText( text:
+          widget.headerTitle,
             style: TextStyle(
               fontSize: AppSize.size.width * 0.055,
               fontWeight: FontWeight.bold,
@@ -78,8 +94,8 @@ class _CustomerGroceriesHomeCategoriesWidgetsState
             SizedBox(
               height: AppSize.size.width * 0.3,
               child: Center(
-                child: AppText( text: 
-                  "No categories found",
+                child: AppText( text:
+                "No categories found",
                   style: TextStyle(color: AppColors.instance.black06),
                 ),
               ),

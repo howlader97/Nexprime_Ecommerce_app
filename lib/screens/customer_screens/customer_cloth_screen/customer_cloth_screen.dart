@@ -57,7 +57,9 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: CustomLocationWidget(location: profile?.locaion ?? 'location'),
+              child: CustomLocationWidget(location: (profile?.locaion?.trim().isNotEmpty ?? false)
+                  ? profile!.locaion!
+                  : 'Japan',),
             ),
             // SliverToBoxAdapter(
             //   child: Padding(
@@ -90,7 +92,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppText( text:
-                            "Size",
+                          "Size",
                             style: TextStyle(
                               fontSize: AppSize.size.width * 0.048,
                               fontWeight: FontWeight.w600,
@@ -113,7 +115,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                                           .state = -1; // Deselect
                                       ref
                                           .read(productProvider(widget.countryId)
-                                              .notifier)
+                                          .notifier)
                                           .getProduct(clearSize: true);
                                     } else {
                                       ref
@@ -121,7 +123,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                                           .state = index;
                                       ref
                                           .read(productProvider(widget.countryId)
-                                              .notifier)
+                                          .notifier)
                                           .getProduct(size: sizes[index]);
                                     }
                                   },
@@ -160,10 +162,10 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(left: 16),
-                child: AppText( text: 
-                  "Clothing",
+                child: AppText( text:
+                "Clothing",
                   style: TextStyle(
-                    fontSize: AppSize.size.width * 0.055,
+                    fontSize: AppSize.size.width * 0.056,
                     fontWeight: FontWeight.bold,
                     color: AppColors.instance.black06,
                   ),
@@ -177,8 +179,8 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                     child: Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 50),
-                        child: AppText( text: 
-                          "No products available",
+                        child: AppText( text:
+                        "No products available",
                           style: TextStyle(
                             fontSize: 18,
                             color: AppColors.instance.black06,
@@ -193,7 +195,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: SizedBox(
-                      height: AppSize.size.width * 0.552,
+                      height: AppSize.size.height * 0.188,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: products.length,
@@ -203,7 +205,7 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                           return GestureDetector(
                             onTap: () {
                               AppRoutes.instance.pushNamed(
-                                AppRoutesKey.instance.customerClothDetailsScreen,extra: product
+                                  AppRoutesKey.instance.customerClothDetailsScreen,extra: product
                               );
                             },
                             child: ProductCartWidget(

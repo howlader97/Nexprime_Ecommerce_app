@@ -56,14 +56,16 @@ class AppApiUrl {
       url += "&shop_id=$shopId";
     }
     if (categoryId != null) {
-      url += "&category_id=$categoryId";
+      url += "&subcategory_ids=$categoryId";
     }
     if (size != null && size.isNotEmpty) {
       url += "&size=$size";
     }
     return url;
   }
-
+  String filterProductsByShopAndSubcategory({required int shopId, required int subcategoryIds}) {
+    return "/products/filter?shop_id=$shopId&subcategory_ids=$subcategoryIds";
+  }
   String addToCart = "/cart";
   String cartQuantity(int itemId) => "/cart/$itemId";
   String storeFollowerCount(int storeId) => "/stores/$storeId/follower-count";

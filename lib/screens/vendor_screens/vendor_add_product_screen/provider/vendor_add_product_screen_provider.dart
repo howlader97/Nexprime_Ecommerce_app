@@ -66,4 +66,8 @@ class _VendorAddProductScreenProvider
     setLoading(false);
     return success;
   }
+
+  void resetState() {
+    state = VendorAddProductScreenProviderState();
+  }
 }

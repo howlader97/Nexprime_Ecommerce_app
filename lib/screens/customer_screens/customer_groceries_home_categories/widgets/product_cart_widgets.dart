@@ -45,7 +45,7 @@ class ProductCartWidget extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: SizedBox(
-                    height: AppSize.size.width * 0.26,
+                    height: AppSize.size.width * 0.19,
                     width: AppSize.size.width,
                     child: Image.network(
                       image,
@@ -53,57 +53,68 @@ class ProductCartWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                Gap(height: AppSize.size.width * 0.02),
+                Gap(height: AppSize.size.height * 0.0018),
                 AppText(
-                 text: itemTitle,
+                  text: itemTitle,
                   maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: AppSize.size.width * 0.04,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.instance.black06,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: AppSize.size.width * 0.044,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.instance.black06,
                 ),
                 if (!isFeatures) ...[
-                  AppText(
-                  text:  price,
-                      fontSize: AppSize.size.width * 0.045,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.instance.black06,
-                  ),
-                  SizedBox(height: AppSize.size.width * 0.012),
-                if(discountPrice != null)  AppText(
-                   text:  discountPrice ?? '',
-                      fontSize: AppSize.size.width * 0.032,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.instance.redF7,
-                  ),
-
-                  Gap(height: AppSize.size.width * 0.012),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppText(
+                          text: "\$$price",
+                          fontSize: AppSize.size.width * 0.044,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.instance.black06,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Gap(width:3),
+                      if(discountPrice != null)  Expanded(
+                        child: AppText(
+                          text: "\$${discountPrice ?? ''}",
+                          fontSize: AppSize.size.width * 0.032,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.instance.redF7,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],),
+                  // Gap(height: AppSize.size.height * 0.005),
                   AppButton(
                     onTap: onTap,
                     backgroundColor: AppColors.instance.green,
                     borderColor: AppColors.instance.green,
                     title: "Add To Cart",
-                    fontSize: AppSize.size.width * 0.045,
+                    fontSize: 16,
+                    height: 28,
+                    fontWeight: FontWeight.w500,
                   ),
                 ] else ...[
                   Row(
                     children: [
-
                       Expanded(
                         child: AppText(
-                        text:   price,
+                          text:   price,
                           maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: AppSize.size.width * 0.045,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.instance.black06,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: AppSize.size.width * 0.045,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.instance.black06,
                         ),
                       ),
-                     // Gap(width: AppSize.size.width * 0.12),
+                      // Gap(width: AppSize.size.width * 0.12),
 
                       IconButtonWidget(
                         onTap: onPressed,
-                        padding: AppSize.size.width * 0.016,
+                        padding: AppSize.size.width * 0.010,
                         icon: Icons.add,
                       ),
                     ],

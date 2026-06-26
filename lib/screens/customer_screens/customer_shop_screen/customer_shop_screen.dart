@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/customer_groceries_home_categories_widgets.dart';
 import 'package:nexprime/screens/customer_screens/customer_shop_screen/provider/customer_shop_provider.dart';
+import 'package:nexprime/screens/customer_screens/customer_shop_screen/provider/shop_product_filter_provider.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/utils/gap.dart';
 import 'package:nexprime/widgets/app_image/app_image.dart';
@@ -29,6 +30,8 @@ class CustomerShopScreen extends ConsumerWidget {
     final groceryCategories = ref.watch(groceriesProvider("grocery"));
     final wardrobeCategories = ref.watch(groceriesProvider("wardrobe"));
     final cart = ref.watch(addToCartProvider);
+    final groceryFilterState = ref.watch(groceryFilterProvider(int.parse(storeId)));
+    final wardrobeFilterState = ref.watch(wardrobeFilterProvider(int.parse(storeId)));
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -141,10 +144,10 @@ class CustomerShopScreen extends ConsumerWidget {
                               onTap: () {
                                 ref
                                     .read(
-                                      customerShopProvider(
-                                        int.parse(storeId),
-                                      ).notifier,
-                                    )
+                                  customerShopProvider(
+                                    int.parse(storeId),
+                                  ).notifier,
+                                )
                                     .toggleFollow();
                               },
                               padding: EdgeInsets.all(
@@ -179,10 +182,10 @@ class CustomerShopScreen extends ConsumerWidget {
             shopData.when(
               data: (shop) {
                 final storeGroceryCategoryNames = shop?.products
-                        .where((p) => p.size.isEmpty || p.colors.isEmpty)
-                        .expand((p) => p.categories)
-                        .map((c) => c.name.toLowerCase().trim())
-                        .toSet() ??
+                    .where((p) => p.size.isEmpty || p.colors.isEmpty)
+                    .expand((p) => p.categories)
+                    .map((c) => c.name.toLowerCase().trim())
+                    .toSet() ??
                     {};
 
                 final filteredGroceryCategories = groceryCategories
@@ -193,6 +196,11 @@ class CustomerShopScreen extends ConsumerWidget {
                   child: CustomerGroceriesHomeCategoriesWidgets(
                     headerTitle: "Categories",
                     categories: filteredGroceryCategories,
+                    onTapCategory: (categoryId) {
+                      ref
+                          .read(groceryFilterProvider(int.parse(storeId)).notifier)
+                          .filterProducts(categoryId);
+                    },
                   ),
                 );
               },
@@ -203,7 +211,7 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
               error: (e, _) =>
-                  const SliverToBoxAdapter(child: SizedBox.shrink()),
+              const SliverToBoxAdapter(child: SizedBox.shrink()),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -216,108 +224,119 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            shopData.when(
-              data: (shop) {
-                final filteredProducts = shop?.products.where((product) {
-                  final sizes = product.size;
-                  final colors = product.colors;
-                  return (sizes.isEmpty) || (colors.isEmpty);
-                }).toList();
-                if (filteredProducts == null || filteredProducts.isEmpty) {
-                  return SliverToBoxAdapter(
-                    child: Center(
+            groceryFilterState.when(
+              data: (filteredList) {
+                return shopData.when(
+                  data: (shop) {
+                    final productsToDisplay = filteredList ?? shop?.products.where((product) {
+                      final sizes = product.size;
+                      final colors = product.colors;
+                      return (sizes.isEmpty) || (colors.isEmpty);
+                    }).toList();
+
+                    if (productsToDisplay == null || productsToDisplay.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40),
+                            child: AppText( text:
+                            'No Data Available',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.instance.black06,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: AppText( text: 
-                          'No Data Available',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.instance.black06,
-                            fontWeight: FontWeight.bold,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        child: SizedBox(
+                          height: AppSize.size.height * 0.188,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: productsToDisplay.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              final shopProduct = productsToDisplay[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  AppRoutes.instance.pushReplacement(
+                                    AppRoutesKey.instance.customerFoodDetailsScreen,
+                                    extra: shopProduct,
+                                  );
+                                },
+                                child: ProductCartWidget(
+                                  isFeatures: true,
+                                  image: (shopProduct.images.isNotEmpty)
+                                      ? shopProduct.images.first
+                                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
+                                  itemTitle: shopProduct.name,
+                                  price: '\$${shopProduct.salePrice}',
+                                  onPressed: cart.isLoading
+                                      ? null
+                                      : () async {
+                                    try {
+                                      await ref
+                                          .read(addToCartProvider.notifier)
+                                          .addCartData(
+                                        productId: shopProduct.id,
+                                        quantity: 1,
+                                      );
+
+                                      if (context.mounted) {
+                                        AppSnackBar.instance.success(
+                                          "Data successfully added to cart",
+                                        );
+                                      }
+                                      await ref
+                                          .read(cartProvider.notifier)
+                                          .getCartData();
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        AppSnackBar.instance.error(
+                                          "Data add failed: $e",
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                    child: SizedBox(
-                      height: AppSize.size.width * 0.552,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: filteredProducts.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          final shopProduct = filteredProducts[index];
-                          return GestureDetector(
-                            onTap: () {
-                              AppRoutes.instance.pushReplacement(
-                                AppRoutesKey.instance.customerFoodDetailsScreen,
-                                extra: shopProduct,
-                              );
-                            },
-                            child: ProductCartWidget(
-                              isFeatures: true,
-                              image: (shopProduct.images.isNotEmpty)
-                                  ? shopProduct.images.first
-                                  : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
-                              itemTitle: shopProduct.name,
-                              price: '\$${shopProduct.salePrice}',
-                              onPressed: cart.isLoading
-                                  ? null
-                                  : () async {
-                                      try {
-                                        await ref
-                                            .read(addToCartProvider.notifier)
-                                            .addCartData(
-                                              // productId: product.id,
-                                              productId: shopProduct.id,
-                                              quantity: 1,
-                                            );
-
-                                        if (context.mounted) {
-                                          AppSnackBar.instance.success(
-                                            "Data successfully added to cart",
-                                          );
-                                        }
-                                        await ref
-                                            .read(cartProvider.notifier)
-                                            .getCartData();
-                                      } catch (e) {
-                                        if (context.mounted) {
-                                          AppSnackBar.instance.error(
-                                            "Data add failed: $e",
-                                          );
-                                        }
-                                      }
-                                    },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    );
+                  },
+                  loading: () => const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  error: (e, _) => SliverToBoxAdapter(
+                    child: Center(child: Text(e.toString())),
                   ),
                 );
               },
               loading: () => const SliverToBoxAdapter(
                 child: Center(child: CircularProgressIndicator()),
               ),
-
-              error: (e, _) =>
-                  SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
+              error: (e, _) => SliverToBoxAdapter(
+                child: Center(child: Text(e.toString())),
+              ),
             ),
             shopData.when(
               data: (shop) {
                 final storeWardrobeCategoryNames = shop?.products
-                        .where((p) => p.size.isNotEmpty || p.colors.isNotEmpty)
-                        .expand((p) => p.categories)
-                        .map((c) => c.name.toLowerCase().trim())
-                        .toSet() ??
+                    .where((p) => p.size.isNotEmpty || p.colors.isNotEmpty)
+                    .expand((p) => p.categories)
+                    .map((c) => c.name.toLowerCase().trim())
+                    .toSet() ??
                     {};
 
                 final filteredWardrobeCategories = wardrobeCategories
@@ -328,6 +347,11 @@ class CustomerShopScreen extends ConsumerWidget {
                   child: CustomerGroceriesHomeCategoriesWidgets(
                     headerTitle: "Categories",
                     categories: filteredWardrobeCategories,
+                    onTapCategory: (categoryId) {
+                      ref
+                          .read(wardrobeFilterProvider(int.parse(storeId)).notifier)
+                          .filterProducts(categoryId);
+                    },
                   ),
                 );
               },
@@ -338,14 +362,14 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
               error: (e, _) =>
-                  const SliverToBoxAdapter(child: SizedBox.shrink()),
+              const SliverToBoxAdapter(child: SizedBox.shrink()),
             ),
 
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(left: AppSize.size.width * 0.04),
-                child: AppText( text: 
-                  "Clothing",
+                child: AppText( text:
+                "Clothing",
                   style: TextStyle(
                     fontSize: AppSize.size.width * 0.057,
                     fontWeight: FontWeight.bold,
@@ -354,96 +378,107 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            shopData.when(
-              data: (shop) {
-                final clothProducts = shop?.products.where((product) {
-                  final sizes = product.size;
-                  final colors = product.colors;
-                  return (sizes.isNotEmpty) || (colors.isNotEmpty);
-                }).toList();
-                if (clothProducts == null || clothProducts.isEmpty) {
-                  return const SliverToBoxAdapter(
-                    child: Center(
+            wardrobeFilterState.when(
+              data: (filteredList) {
+                return shopData.when(
+                  data: (shop) {
+                    final productsToDisplay = filteredList ?? shop?.products.where((product) {
+                      final sizes = product.size;
+                      final colors = product.colors;
+                      return (sizes.isNotEmpty) || (colors.isNotEmpty);
+                    }).toList();
+
+                    if (productsToDisplay == null || productsToDisplay.isEmpty) {
+                      return const SliverToBoxAdapter(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: AppText( text:
+                            'No Data Available',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: AppText( text: 
-                          'No Data Available',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: SizedBox(
+                          height: AppSize.size.height * 0.188,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: productsToDisplay.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              final shopProduct = productsToDisplay[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  AppRoutes.instance.pushReplacement(
+                                    AppRoutesKey.instance.customerClothDetailsScreen,
+                                    extra: shopProduct,
+                                  );
+                                },
+                                child: ProductCartWidget(
+                                  isFeatures: true,
+                                  image: (shopProduct.images.isNotEmpty)
+                                      ? shopProduct.images.first
+                                      : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
+                                  itemTitle: shopProduct.name,
+                                  price: '\$${shopProduct.salePrice}',
+                                  onPressed: cart.isLoading
+                                      ? null
+                                      : () async {
+                                    try {
+                                      await ref
+                                          .read(addToCartProvider.notifier)
+                                          .addCartData(
+                                        productId: shopProduct.id,
+                                        quantity: 1,
+                                      );
+
+                                      if (context.mounted) {
+                                        AppSnackBar.instance.success(
+                                          "Data successfully added to cart",
+                                        );
+                                      }
+                                      await ref
+                                          .read(cartProvider.notifier)
+                                          .getCartData();
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        AppSnackBar.instance.error(
+                                          "Data add failed: $e",
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    child: SizedBox(
-                      height: AppSize.size.width * 0.552,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: clothProducts.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          final shopProduct = clothProducts[index];
-                          return GestureDetector(
-                            onTap: () {
-                              AppRoutes.instance.pushReplacement(
-                                AppRoutesKey.instance.customerClothDetailsScreen,
-                                extra: shopProduct,
-                              );
-                            },
-                            child: ProductCartWidget(
-                              isFeatures: true,
-                              image: (shopProduct.images.isNotEmpty)
-                                  ? shopProduct.images.first
-                                  : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
-                              itemTitle: shopProduct.name,
-                              price: '\$${shopProduct.salePrice}',
-                              onPressed: cart.isLoading
-                                  ? null
-                                  : () async {
-                                      try {
-                                        await ref
-                                            .read(addToCartProvider.notifier)
-                                            .addCartData(
-                                              // productId: product.id,
-                                              productId: shopProduct.id,
-                                              quantity: 1,
-                                            );
-
-                                        if (context.mounted) {
-                                          AppSnackBar.instance.success(
-                                            "Data successfully added to cart",
-                                          );
-                                        }
-                                        await ref
-                                            .read(cartProvider.notifier)
-                                            .getCartData();
-                                      } catch (e) {
-                                        if (context.mounted) {
-                                          AppSnackBar.instance.error(
-                                            "Data add failed: $e",
-                                          );
-                                        }
-                                      }
-                                    },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    );
+                  },
+                  loading: () => const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  error: (e, _) => SliverToBoxAdapter(
+                    child: Center(child: Text(e.toString())),
                   ),
                 );
               },
               loading: () => const SliverToBoxAdapter(
                 child: Center(child: CircularProgressIndicator()),
               ),
-
-              error: (e, _) =>
-                  SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
+              error: (e, _) => SliverToBoxAdapter(
+                child: Center(child: Text(e.toString())),
+              ),
             ),
           ],
         ),

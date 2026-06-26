@@ -6,7 +6,6 @@ import 'package:nexprime/screens/customer_screens/customer_groceries_home_catego
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/customer_groceries_home_categories_widgets.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/product_cart_widgets.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/shop_section_widget.dart';
-import 'package:nexprime/screens/customer_screens/customer_profile_screen/provider/customer_profile_provider.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/utils/app_snack_bar.dart';
 import 'package:nexprime/widgets/buttons/custom_app_bar.dart';
@@ -19,6 +18,7 @@ import 'package:nexprime/screens/customer_screens/customer_home_screen/provider/
 
 import '../customer_cart_screen/provider/cart_provider.dart';
 import '../customer_food_details_screen/provider/add_to_cart_provider.dart';
+import '../customer_profile_screen/provider/customer_profile_provider.dart';
 
 class CustomerGroceriesHomeCategories extends ConsumerWidget {
   final int countryId;
@@ -50,7 +50,9 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: CustomLocationWidget(location: profile?.locaion ?? 'location'),
+              child: CustomLocationWidget(location:(profile?.locaion?.trim().isNotEmpty ?? false)
+                  ? profile!.locaion!
+                  : 'Japan',),
             ),
             // SliverToBoxAdapter(
             //   child: Padding(
@@ -72,8 +74,8 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(left: 16),
-                child: AppText( text: 
-                  "Best Offer",
+                child: AppText( text:
+                "Best Offer",
                   style: TextStyle(
                     fontSize: AppSize.size.width * 0.056,
                     fontWeight: FontWeight.bold,
@@ -91,8 +93,8 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 50),
-                        child: AppText( text: 
-                          "No products available",
+                        child: AppText( text:
+                        "No products available",
                           style: TextStyle(
                             color: AppColors.instance.black06,
                             fontSize: 18,
@@ -107,7 +109,7 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     child: SizedBox(
-                      height: AppSize.size.width * 0.62,
+                      height: AppSize.size.height * 0.21,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: bestOfferProducts.length,
@@ -130,29 +132,29 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                               discountPrice: product.isDiscountSale
                                   ? "${product.discountPercentage}% OFF"
                                   : "",
-                                onTap: cart.isLoading
-                                    ? null
-                                    : () async {
-                                  try {
-                                    await ref.read(addToCartProvider.notifier).addCartData(
-                                      productId: product.id,
-                                      quantity: 1,
-                                    );
+                              onTap: cart.isLoading
+                                  ? null
+                                  : () async {
+                                try {
+                                  await ref.read(addToCartProvider.notifier).addCartData(
+                                    productId: product.id,
+                                    quantity: 1,
+                                  );
 
-                                    if (context.mounted) {
-                                      AppSnackBar.instance.success(
-                                        "Data successfully added to cart",
-                                      );
-                                    }
-                                    await ref.read(cartProvider.notifier).getCartData();
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      AppSnackBar.instance.error(
-                                        "Data add failed: $e",
-                                      );
-                                    }
+                                  if (context.mounted) {
+                                    AppSnackBar.instance.success(
+                                      "Data successfully added to cart",
+                                    );
                                   }
-                                },
+                                  await ref.read(cartProvider.notifier).getCartData();
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    AppSnackBar.instance.error(
+                                      "Data add failed: $e",
+                                    );
+                                  }
+                                }
+                              },
                             ),
                           );
                         },
@@ -188,8 +190,8 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 50),
-                        child: AppText( text: 
-                          "No products available",
+                        child: AppText( text:
+                        "No products available",
                           style: TextStyle(
                             fontSize: 18,
                             color: AppColors.instance.black06,
@@ -204,7 +206,7 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: SizedBox(
-                      height: AppSize.size.width * 0.52,
+                      height: AppSize.size.height * 0.188,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: featuresProducts.length,

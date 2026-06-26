@@ -51,4 +51,5 @@ class VendorAddProductScreenProviderState {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
 }
