@@ -1,5 +1,6 @@
 import 'package:nexprime/constant/app_api_url.dart';
-import 'package:nexprime/models/vendor_dashboard_model.dart';
+import 'package:nexprime/models/vendor_seven_days_dashboard_model.dart';
+import 'package:nexprime/models/vendor_today_dashborad_model.dart';
 import 'package:nexprime/services/api/api_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 
@@ -15,12 +16,32 @@ class VendorDashboardRepository {
   final ApiServices _apiServices = ApiServices.instance;
   final AppApiUrl _api = AppApiUrl.instance;
 
-  Future<VendorDashboardModel?> dashboardData() async {
+  Future<dynamic> dashboardData({String? filterType, String? startDate, String? endDate}) async {
     try {
-      var response = await _apiServices.getServices(_api.vendorDashboard);
+      String url = _api.vendorDashboard;
+      List<String> queryParams = [];
+      if (filterType != null && filterType.isNotEmpty) {
+        queryParams.add("filter_type=$filterType");
+      }
+      if (filterType == 'custom') {
+        if (startDate != null && startDate.isNotEmpty) {
+          queryParams.add("start_date=$startDate");
+        }
+        if (endDate != null && endDate.isNotEmpty) {
+          queryParams.add("end_date=$endDate");
+        }
+      }
+      if (queryParams.isNotEmpty) {
+        url = "$url?${queryParams.join('&')}";
+      }
+      var response = await _apiServices.getServices(url);
 
       if (response != null && response is Map<String, dynamic>) {
-        return VendorDashboardModel.fromJson(response);
+        if (filterType == 'today' || filterType == 'yesterday') {
+          return VendorTodayDashboardModel.fromJson(response);
+        } else {
+          return VendorSevenDaysDashboardModel.fromJson(response);
+        }
       }
 
       return null;

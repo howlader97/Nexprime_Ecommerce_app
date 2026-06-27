@@ -12,6 +12,7 @@ class AppColors {
   final Color yellow = Color(0xFFFFBE00);
   final Color blue = Color(0xFF0051FF);
   final Color transparent = Colors.transparent;
+  final Color white = Color(0xFFFFFFFF);
 
   ////////////////  app gray color
   final Color gray50 = Color(0xff8E98A8);

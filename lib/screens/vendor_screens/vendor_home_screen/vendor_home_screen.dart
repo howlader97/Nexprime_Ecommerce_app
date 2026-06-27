@@ -5,8 +5,14 @@ import 'package:nexprime/screens/vendor_screens/vendor_home_screen/provider/vend
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/utils/gap.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
+import 'package:nexprime/widgets/inputs/app_input_widget.dart';
 
-class VendorHomeScreen extends ConsumerWidget {
+import '../../../models/vendor_seven_days_dashboard_model.dart';
+import '../../../models/vendor_today_dashborad_model.dart';
+import '../../../widgets/buttons/app_dropdown_field.dart';
+import '../../../widgets/custom_date_picker/custom_show_date_picker.dart';
+
+class VendorHomeScreen extends ConsumerStatefulWidget {
   const VendorHomeScreen({super.key});
 
   static const List<String> title = [
@@ -16,21 +22,106 @@ class VendorHomeScreen extends ConsumerWidget {
     "Total followers",
   ];
 
-  // static const List<String> comment = [
-  //   "+12.5%",
-  //   "+2 new",
-  //   "Items",
-  //   "Excellent",
-  // ];
+  @override
+  ConsumerState<VendorHomeScreen> createState() => _VendorHomeScreenState();
+}
+
+class _VendorHomeScreenState extends ConsumerState<VendorHomeScreen> {
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _startDateController.dispose();
+    _endDateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<String?>(vendorHomeDropdownProvider, (previous, next) {
+      if (next != 'custom') {
+        _startDateController.clear();
+        _endDateController.clear();
+        ref.read(vendorHomeStartDateProvider.notifier).state = null;
+        ref.read(vendorHomeEndDateProvider.notifier).state = null;
+      }
+    });
+
     final dashBoard = ref.watch(vendorDashboard);
-    final salesData = dashBoard.value?.last7DaysEarnings ?? [];
-    final double maxAmount = salesData.isNotEmpty
-        ? salesData.map((e) => e.earnings).reduce((a, b) => a > b ? a : b)
+    final selectedRange = ref.watch(vendorHomeDropdownProvider);
+
+    final storeName = dashBoard.value is VendorTodayDashboardModel
+        ? (dashBoard.value as VendorTodayDashboardModel).storeName
+        : (dashBoard.value is VendorSevenDaysDashboardModel
+        ? (dashBoard.value as VendorSevenDaysDashboardModel).storeName
+        : 'N/A');
+
+    // Get raw earnings list based on model type
+    final List<dynamic> rawEarnings;
+    if (dashBoard.value is VendorTodayDashboardModel) {
+      rawEarnings =
+          (dashBoard.value as VendorTodayDashboardModel).earningsOverTime;
+    } else if (dashBoard.value is VendorSevenDaysDashboardModel) {
+      rawEarnings =
+          (dashBoard.value as VendorSevenDaysDashboardModel).earningsOverTime;
+    } else {
+      rawEarnings = [];
+    }
+
+    final List<GroupedChartData> chartData = [];
+    if (selectedRange == 'today' || selectedRange == 'yesterday') {
+      final labels = [
+        "12-3 AM",
+        "4-7 AM",
+        "8-11 AM",
+        "12-3 PM",
+        "4-7 PM",
+        "8-11 PM",
+      ];
+      for (int i = 0; i < 6; i++) {
+        double sum = 0;
+        for (int j = 0; j < 4; j++) {
+          int index = i * 4 + j;
+          if (index < rawEarnings.length) {
+            sum += rawEarnings[index].earnings;
+          }
+        }
+        chartData.add(GroupedChartData(day: labels[i], earnings: sum));
+      }
+    } else if (selectedRange == 'last_30_days' ||
+        selectedRange == 'this_month' ||
+        selectedRange == 'last_1_year' ||
+        (selectedRange == 'custom' && rawEarnings.length > 7)) {
+      final int N = rawEarnings.length;
+      for (int i = 0; i < 6; i++) {
+        double sum = 0;
+        int startIdx = (i * N / 6.0).round();
+        int endIdx = ((i + 1) * N / 6.0).round() - 1;
+        if (startIdx < N) {
+          if (endIdx >= N) {
+            endIdx = N - 1;
+          }
+          for (int j = startIdx; j <= endIdx; j++) {
+            sum += rawEarnings[j].earnings;
+          }
+          final String startLabel = rawEarnings[startIdx].day;
+          final String endLabel = rawEarnings[endIdx].day;
+          final String label = selectedRange == 'last_1_year'
+              ? _getYearRangeLabel(startLabel, endLabel)
+              : _getRangeLabel(startLabel, endLabel);
+          chartData.add(GroupedChartData(day: label, earnings: sum));
+        }
+      }
+    } else {
+      for (var e in rawEarnings) {
+        chartData.add(GroupedChartData(day: e.day, earnings: e.earnings));
+      }
+    }
+
+    final double maxAmount = chartData.isNotEmpty
+        ? chartData.map((e) => e.earnings).reduce((a, b) => a > b ? a : b)
         : 0;
-    final storeName = dashBoard.value?.storeName ?? 'N/A';
 
     return SafeArea(
       child: CustomScrollView(
@@ -96,11 +187,27 @@ class VendorHomeScreen extends ConsumerWidget {
                       childAspectRatio: 1.1,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      final earning = dashBoard.value?.totalEarnings ?? 0;
-                      final pendingOrders =
-                          dashBoard.value?.totalPendingOrders ?? 0;
-                      final catalogSize = dashBoard.value?.totalProducts ?? 0;
-                      final storeRating = dashBoard.value?.totalFollowers ?? 0;
+                      final val = dashBoard.value;
+                      final double earning = val is VendorTodayDashboardModel
+                          ? val.totalEarnings
+                          : (val is VendorSevenDaysDashboardModel
+                          ? val.totalEarnings
+                          : 0.0);
+                      final int pendingOrders = val is VendorTodayDashboardModel
+                          ? val.totalPendingOrders
+                          : (val is VendorSevenDaysDashboardModel
+                          ? val.totalPendingOrders
+                          : 0);
+                      final int catalogSize = val is VendorTodayDashboardModel
+                          ? val.totalProducts
+                          : (val is VendorSevenDaysDashboardModel
+                          ? val.totalProducts
+                          : 0);
+                      final int storeRating = val is VendorTodayDashboardModel
+                          ? val.totalFollowers
+                          : (val is VendorSevenDaysDashboardModel
+                          ? val.totalFollowers
+                          : 0);
                       final List<num> value = [
                         earning,
                         pendingOrders,
@@ -108,19 +215,133 @@ class VendorHomeScreen extends ConsumerWidget {
                         storeRating,
                       ];
                       return _buildContainer(
-                        title[index],
+                        VendorHomeScreen.title[index],
                         value[index],
                         // comment[index],
                       );
                     },
                   ),
                   SizedBox(height: AppSize.size.height * 0.01),
-                  const AppText(
-                    text: "Last sales trend",
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const AppText(
+                        text: "Last sales trend",
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        height: 1.5,
+                      ),
+                      Gap(width: 4),
+                      Expanded(
+                        child: AppDropdownField(
+                          provider: vendorHomeDropdownProvider,
+                          options: const [
+                            'today',
+                            'yesterday',
+                            'last_7_days',
+                            'last_30_days',
+                            'this_month',
+                            'last_1_year',
+                            'custom',
+                          ],
+                          hintText: "Select range",
+                        ),
+                      ),
+                    ],
                   ),
+
+                  if (selectedRange == 'custom') ...[
+                    const Gap(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSize.width(value: 16.0),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: AppInputWidget(
+                              controller: _startDateController,
+                              readOnly: true,
+                              textColor: AppColors.instance.black900,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 16,
+                              ),
+                              hintText: "Start date",
+                              onTap: () {
+                                DateTime initial = DateTime.now();
+                                if (_startDateController.text.isNotEmpty) {
+                                  try {
+                                    initial = DateTime.parse(
+                                      _startDateController.text,
+                                    );
+                                  } catch (_) {}
+                                }
+                                showCustomCalendarView(
+                                  initialDate: initial,
+                                  firstDate: DateTime(2020),
+                                  context: context,
+                                  onDateSelected: (date) {
+                                    final formatted =
+                                        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+                                    _startDateController.text = formatted;
+                                    ref
+                                        .read(
+                                      vendorHomeStartDateProvider
+                                          .notifier,
+                                    )
+                                        .state =
+                                        formatted;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppInputWidget(
+                              controller: _endDateController,
+                              readOnly: true,
+                              textColor: AppColors.instance.black900,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 16,
+                              ),
+                              hintText: "End date",
+                              onTap: () {
+                                DateTime initial = DateTime.now();
+                                if (_endDateController.text.isNotEmpty) {
+                                  try {
+                                    initial = DateTime.parse(
+                                      _endDateController.text,
+                                    );
+                                  } catch (_) {}
+                                }
+                                showCustomCalendarView(
+                                  initialDate: initial,
+                                  firstDate: DateTime(2020),
+                                  context: context,
+                                  onDateSelected: (date) {
+                                    final formatted =
+                                        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+                                    _endDateController.text = formatted;
+                                    ref
+                                        .read(
+                                      vendorHomeEndDateProvider
+                                          .notifier,
+                                    )
+                                        .state =
+                                        formatted;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
                   Container(
                     margin: EdgeInsets.symmetric(
                       vertical: AppSize.size.height * 0.010,
@@ -138,7 +359,7 @@ class VendorHomeScreen extends ConsumerWidget {
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: salesData.map((item) {
+                        children: chartData.map((item) {
                           double heightFactor = maxAmount == 0
                               ? 0
                               : (item.earnings / maxAmount).clamp(0.0, 1.0);
@@ -146,13 +367,13 @@ class VendorHomeScreen extends ConsumerWidget {
                           return Expanded(
                             child: Column(
                               children: [
-                                AppText( text:
-                                "\$${item.earnings} k",
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                AppText(
+                                  text: "\$${item.earnings}",
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  // maxLines: 1,
+                                  // overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w400,
                                 ),
                                 const SizedBox(height: 8),
                                 Expanded(
@@ -181,13 +402,29 @@ class VendorHomeScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                AppText( text:
-                                item.day.length >= 3
-                                    ? item.day.substring(0, 3)
-                                    : item.day,
-                                  style: const TextStyle(
+                                AppText(
+                                  text:
+                                  (selectedRange == 'today' ||
+                                      selectedRange == 'yesterday' ||
+                                      selectedRange == 'last_30_days' ||
+                                      selectedRange == 'this_month' ||
+                                      selectedRange == 'last_1_year' ||
+                                      (selectedRange == 'custom' &&
+                                          rawEarnings.length > 7))
+                                      ? item.day
+                                      : (item.day.length >= 3
+                                      ? item.day.substring(0, 3)
+                                      : item.day),
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 12,
+                                    fontSize:
+                                    (selectedRange == 'last_30_days' ||
+                                        selectedRange == 'this_month' ||
+                                        selectedRange == 'last_1_year' ||
+                                        (selectedRange == 'custom' &&
+                                            rawEarnings.length > 7))
+                                        ? 10
+                                        : 10,
                                   ),
                                 ),
                               ],
@@ -232,7 +469,7 @@ class VendorHomeScreen extends ConsumerWidget {
               fontWeight: FontWeight.w600,
               height: 1.5,
             ),
-            const Gap(height: 12,),
+            const Gap(height: 12),
             SizedBox(
               width: double.infinity,
               child: AppText(
@@ -246,18 +483,55 @@ class VendorHomeScreen extends ConsumerWidget {
                 color: Colors.green,
               ),
             ),
-            const Gap(height: 8,),
-            // Center(
-            //   child: AppText(
-            //     text: comment,
-            //     fontSize: 12,
-            //     fontWeight: FontWeight.w500,
-            //     height: 1.5,
-            //   ),
-            // ),
+            const Gap(height: 8),
           ],
         ),
       ),
     );
   }
+}
+
+class GroupedChartData {
+  final String day;
+  final double earnings;
+
+  GroupedChartData({required this.day, required this.earnings});
+}
+
+String _getRangeLabel(String start, String end) {
+  final startParts = start.trim().split(' ');
+  final endParts = end.trim().split(' ');
+  if (startParts.length == 2 && endParts.length == 2) {
+    final startDay = startParts[0];
+    final startMonth = startParts[1];
+    final endDay = endParts[0];
+    final endMonth = endParts[1];
+    if (startMonth.toLowerCase() == endMonth.toLowerCase()) {
+      return "$startDay-$endDay $startMonth";
+    } else {
+      return "$startDay $startMonth-$endDay $endMonth";
+    }
+  }
+  return "$start-$end";
+}
+
+String _getYearRangeLabel(String start, String end) {
+  final startParts = start.trim().split(' ');
+  final endParts = end.trim().split(' ');
+  if (startParts.length == 2 && endParts.length == 2) {
+    final startMonth = startParts[0];
+    final startYear = startParts[1];
+    final endMonth = endParts[0];
+    final endYear = endParts[1];
+    final shortStartYear = startYear.length >= 4
+        ? startYear.substring(2)
+        : startYear;
+    final shortEndYear = endYear.length >= 4 ? endYear.substring(2) : endYear;
+    if (startYear == endYear) {
+      return "$startMonth-$endMonth '$shortStartYear";
+    } else {
+      return "$startMonth'$shortStartYear-$endMonth'$shortEndYear";
+    }
+  }
+  return "$start-$end";
 }
