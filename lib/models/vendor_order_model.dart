@@ -84,6 +84,8 @@ class OrderItem {
   final double? price;
   final String? productName;
   final int? subOrderId;
+  final String? size;
+  final String? color;
   final Product? product;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -95,6 +97,8 @@ class OrderItem {
     this.price,
     this.productName,
     this.subOrderId,
+    this.size,
+    this.color,
     this.product,
     this.createdAt,
     this.updatedAt,
@@ -107,6 +111,8 @@ class OrderItem {
     price: json['price'] != null ? (json['price'] as num).toDouble() : null,
     productName: json['productName'],
     subOrderId: json['subOrderId'],
+    size: json['size'],
+    color: json['color'],
     product: json['product'] != null ? Product.fromJson(json['product']) : null,
     createdAt: json['createdAt'] != null
         ? DateTime.parse(json['createdAt'])
@@ -123,6 +129,8 @@ class OrderItem {
     'price': price,
     'productName': productName,
     'subOrderId': subOrderId,
+    'size': size,
+    'color': color,
     'product': product?.toJson(),
     'createdAt': createdAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),

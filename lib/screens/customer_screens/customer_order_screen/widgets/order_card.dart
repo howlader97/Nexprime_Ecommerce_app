@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexprime/routes/app_routes.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
+
 import '../../../../constant/app_colors.dart';
 import '../../../../utils/app_size.dart';
 import '../../../../utils/gap.dart';
@@ -20,6 +21,9 @@ class OrderCard extends StatelessWidget {
   final String? trackingUrl;
   final VoidCallback? onTap;
   final VoidCallback? onPressed;
+  final String? size;
+  final String? color;
+  final String? shopName;
 
   const OrderCard({
     super.key,
@@ -33,12 +37,15 @@ class OrderCard extends StatelessWidget {
     required this.isTrackOrderOpen,
     required this.isReviewSectionOpen,
     this.trackingUrl,
+    this.size,
+    this.color,
+    this.shopName,
   });
 
   @override
   Widget build(BuildContext context) {
-  //  print("isReviewSectionOpen: $isReviewSectionOpen");
-   // print("isTrackOrderOpen $isTrackOrderOpen");
+    // print("isReviewSectionOpen: $isReviewSectionOpen");
+    // print("isTrackOrderOpen $isTrackOrderOpen");
     return CustomDecoratedBox(
       child: Padding(
         padding: EdgeInsets.all(AppSize.size.width * 0.04),
@@ -112,8 +119,51 @@ class OrderCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         maxLines: 1,
                       ),
+                      if (size != null || color != null) ...[
+                        const Gap(height: 4),
+                        Row(
+                          children: [
+                            if (size != null) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  "Size: $size",
+                                  style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                                ),
+                              ),
+                              const Gap(width: 8),
+                            ],
+                            if (color != null) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  "Color: $color",
+                                  style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
+                      if (shopName != null) ...[
+                        const Gap(height: 4),
+                        AppText(
+                          text: "Shop: $shopName",
+                          fontSize: 12,
+                          color: AppColors.instance.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
                       if (isTrackOrderOpen) ...[
-                        Gap(height: 2.8),
+                        const Gap(height: 2.8),
                         GestureDetector(
                           onTap: () {
                             AppRoutes.instance.pushNamed(

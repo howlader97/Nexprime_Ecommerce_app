@@ -64,7 +64,7 @@ class _CustomerClothDetailsScreenState
     final cartState = ref.watch(addToCartProvider);
     final colors = ref.watch(parsedColorsProvider(widget.product.colors));
     final reviewDetails=ref.watch(reviewProvider(widget.product.id));
-    
+
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       body: SafeArea(
@@ -157,17 +157,17 @@ class _CustomerClothDetailsScreenState
                           ),
                         ),
                         const Spacer(),
-                        AppText(
-                          text: "Copy link",
-                          fontSize: 14,
-                          color: AppColors.instance.gray400,
-                        ),
-                        Gap(width: AppSize.size.width * 0.022),
-                        Icon(
-                          Icons.copy,
-                          size: 16,
-                          color: AppColors.instance.gray400,
-                        ),
+                        // AppText(
+                        //   text: "Copy link",
+                        //   fontSize: 14,
+                        //   color: AppColors.instance.gray400,
+                        // ),
+                        // Gap(width: AppSize.size.width * 0.022),
+                        // Icon(
+                        //   Icons.copy,
+                        //   size: 16,
+                        //   color: AppColors.instance.gray400,
+                        // ),
                         Gap(width: AppSize.size.width * 0.03),
                       ],
                     ),
@@ -254,30 +254,39 @@ class _CustomerClothDetailsScreenState
                       onTap: cartState.isLoading
                           ? null
                           : () async {
-                              try {
-                                await ref
-                                    .read(addToCartProvider.notifier)
-                                    .addCartData(
-                                      productId: widget.product.id,
-                                      quantity: 1, // Add quantity if required
-                                    );
+                        try {
+                          final selectedSize = sizes.isNotEmpty && sizeIndex >= 0 && sizeIndex < sizes.length
+                              ? sizes[sizeIndex]
+                              : null;
+                          final selectedColor = widget.product.colors.isNotEmpty && colorIndex >= 0 && colorIndex < widget.product.colors.length
+                              ? widget.product.colors[colorIndex]
+                              : null;
 
-                                if (context.mounted) {
-                                  AppSnackBar.instance.success(
-                                    "Successfully added to cart",
-                                  );
-                                }
-                                await ref
-                                    .read(cartProvider.notifier)
-                                    .getCartData();
-                              } catch (e) {
-                                if (context.mounted) {
-                                  AppSnackBar.instance.error(
-                                    "Add to cart failed: $e",
-                                  );
-                                }
-                              }
-                            },
+                          await ref
+                              .read(addToCartProvider.notifier)
+                              .addCartData(
+                            productId: widget.product.id,
+                            quantity: 1, // Add quantity if required
+                            size: selectedSize,
+                            color: selectedColor,
+                          );
+
+                          if (context.mounted) {
+                            AppSnackBar.instance.success(
+                              "Successfully added to cart",
+                            );
+                          }
+                          await ref
+                              .read(cartProvider.notifier)
+                              .getCartData();
+                        } catch (e) {
+                          if (context.mounted) {
+                            AppSnackBar.instance.error(
+                              "Add to cart failed: $e",
+                            );
+                          }
+                        }
+                      },
                       backgroundColor: AppColors.instance.green,
                       borderColor: AppColors.instance.green,
                     ),

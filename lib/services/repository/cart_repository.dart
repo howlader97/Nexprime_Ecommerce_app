@@ -50,11 +50,18 @@ class CartRepository {
     }
   }
 
-  Future<bool> addToCart({required int productId, int quantity = 1}) async {
+  Future<bool> addToCart({
+    required int productId,
+    int quantity = 1,
+    String? size,
+    String? color,
+  }) async {
     try {
       final body = {
         "productId": productId,
         "quantity": quantity,
+        if (size != null) "size": size,
+        if (color != null) "color": color,
       };
 
       final response = await _apiServices.postServices(

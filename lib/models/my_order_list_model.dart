@@ -1,3 +1,5 @@
+import 'store_model.dart';
+
 class MyOrderListModel {
   final int id;
   final double totalAmount;
@@ -123,6 +125,7 @@ class SubOrder {
   final String courierName;
   final String? trackingUrl;
   final List<OrderItem> orderItems;
+  final StoreModel? store;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -140,6 +143,7 @@ class SubOrder {
     required this.courierName,
     this.trackingUrl,
     required this.orderItems,
+    this.store,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -152,15 +156,16 @@ class SubOrder {
       subTotal: double.tryParse("${json['subTotal'] ?? 0}") ?? 0.0,
       commissionAmount: double.tryParse("${json['commissionAmount'] ?? 0}") ?? 0.0,
       vendorEarnings: double.tryParse("${json['vendorEarnings'] ?? 0}") ?? 0.0,
-      isFulfield: json['isFulfield'],
-      isComplete: json['isComplete'],
-      isArchive: json['isArchive'],
+      isFulfield: json['isFulfield'] ?? false,
+      isComplete: json['isComplete'] ?? false,
+      isArchive: json['isArchive'] ?? false,
       trackingNumber: json['trackingNumber'],
-      courierName: json['courierName'],
+      courierName: json['courierName'] ?? '',
       trackingUrl: json['trackingUrl'],
       orderItems: json['orderItems'] is List ? (json['orderItems'] as List)
           .map((e) => OrderItem.fromJson(e))
           .toList(): [],
+      store: json['store'] != null ? StoreModel.fromJson(json['store']) : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
@@ -181,6 +186,7 @@ class SubOrder {
       'courierName': courierName,
       'trackingUrl': trackingUrl,
       'orderItems': orderItems.map((e) => e.toJson()).toList(),
+      'store': store?.toJson(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -193,6 +199,8 @@ class OrderItem {
   final double price;
   final int id;
   final int subOrderId;
+  final String? size;
+  final String? color;
   final Product product;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -203,6 +211,8 @@ class OrderItem {
     required this.price,
     required this.id,
     required this.subOrderId,
+    this.size,
+    this.color,
     required this.product,
     required this.createdAt,
     required this.updatedAt,
@@ -215,6 +225,8 @@ class OrderItem {
       price: double.tryParse("${json['price'] ?? 0}") ?? 0.0,
       id: int.tryParse("${json['id'] ?? 0}") ?? 0,
       subOrderId: int.tryParse("${json['subOrderId'] ?? 0}") ?? 0,
+      size: json['size'],
+      color: json['color'],
       product: Product.fromJson(json['product']),
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
@@ -228,6 +240,8 @@ class OrderItem {
       'price': price,
       'id': id,
       'subOrderId': subOrderId,
+      'size': size,
+      'color': color,
       'product': product.toJson(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),

@@ -12,11 +12,20 @@ class CartProvider extends StateNotifier<AsyncValue<bool>> {
   CartProvider() : super(AsyncData(false));
 
 
-  Future<void> addCartData({required int productId, int quantity = 1}) async {
+  Future<void> addCartData({
+    required int productId,
+    int quantity = 1,
+    String? size,
+    String? color,
+  }) async {
     try {
       state = AsyncLoading();
       final data = await CartRepository.instance.addToCart(
-          productId: productId, quantity: quantity);
+        productId: productId,
+        quantity: quantity,
+        size: size,
+        color: color,
+      );
       state=AsyncData(data);
     }catch(e ,st){
       errorLog("Add to Cart data", e);

@@ -52,9 +52,9 @@ class CustomerCartScreen extends ConsumerWidget {
                             padding: EdgeInsets.all(20.0),
                             child: AppText(
                               text: "Cart is empty",
-                                  color: AppColors.instance.black06,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,),
+                              color: AppColors.instance.black06,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,),
 
                           ),
                         ),
@@ -76,7 +76,7 @@ class CustomerCartScreen extends ConsumerWidget {
                           bottom: AppSize.size.height * 0.02,
                         ),
                         child: CustomDecoratedBox(
-                          height: AppSize.size.height * 0.18,
+                          height: AppSize.size.height * 0.22,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -94,7 +94,7 @@ class CustomerCartScreen extends ConsumerWidget {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       AppText(
                                         text: cartItem.product.name.isNotEmpty
@@ -104,17 +104,62 @@ class CustomerCartScreen extends ConsumerWidget {
                                         color: AppColors.instance.black06,
                                         fontWeight: FontWeight.w600,
                                       ),
+                                      if (cartItem.product.store != null) ...[
+                                        Gap(height: 3),
+                                        AppText(
+                                          text: "Shop: ${cartItem.product.store!.name}",
+                                          fontSize: AppSize.size.width * 0.035,
+                                          color: AppColors.instance.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                      if (cartItem.size != null || cartItem.color != null) ...[
+                                        Gap(height: 3),
+                                        Row(
+                                          children: [
+                                            if (cartItem.size != null) ...[
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.shade200,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: AppText(
+                                                  text: "Size: ${cartItem.size}",
+                                                  fontSize: 11,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                              const Gap(width: 8),
+                                            ],
+                                            if (cartItem.color != null) ...[
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.shade200,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: AppText(
+                                                  text: "Color: ${cartItem.color}",
+                                                  fontSize: 11,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ],
                                       Gap(height: AppSize.size.height * 0.007),
                                       AppText(
                                         text:
-                                            cartItem
-                                                .product
-                                                .description
-                                                .isNotEmpty
+                                        cartItem
+                                            .product
+                                            .description
+                                            .isNotEmpty
                                             ? cartItem.product.description
                                             : "",
-                                        maxLines: 3,
-                                        fontSize: AppSize.size.width * 0.04,
+                                        maxLines: 2,
+                                        fontSize: AppSize.size.width * 0.038,
                                         overflow: TextOverflow.ellipsis,
                                         color: AppColors.instance.black06,
                                         fontWeight: FontWeight.w400,
@@ -124,9 +169,9 @@ class CustomerCartScreen extends ConsumerWidget {
                                         children: [
                                           AppText(
                                             text:
-                                                "\$${(cartItem.product.salePrice > 0 ? cartItem.product.salePrice : cartItem.product.basePrice).toStringAsFixed(2)}",
+                                            "\$${(cartItem.product.salePrice > 0 ? cartItem.product.salePrice : cartItem.product.basePrice).toStringAsFixed(2)}",
                                             fontSize:
-                                                AppSize.size.width * 0.047,
+                                            AppSize.size.width * 0.047,
                                             color: AppColors.instance.black06,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -141,9 +186,9 @@ class CustomerCartScreen extends ConsumerWidget {
                                                 ref
                                                     .read(cartProvider.notifier)
                                                     .updateQuantity(
-                                                      cartItem.id,
-                                                      "decrease",
-                                                    );
+                                                  cartItem.id,
+                                                  "decrease",
+                                                );
                                               } else {
                                                 AppSnackBar.instance.error(
                                                   "minimum quantity",
@@ -170,9 +215,9 @@ class CustomerCartScreen extends ConsumerWidget {
                                                 ref
                                                     .read(cartProvider.notifier)
                                                     .updateQuantity(
-                                                      cartItem.id,
-                                                      "increase",
-                                                    );
+                                                  cartItem.id,
+                                                  "increase",
+                                                );
                                               } else {
                                                 AppSnackBar.instance.error(
                                                   "Insufficient stock quantity",
@@ -210,7 +255,7 @@ class CustomerCartScreen extends ConsumerWidget {
                             WidgetRow(
                               name: "Shipping",
                               value:
-                                  "\$${cart.items.fold(0.0, (sum, item) => sum + item.product.shippingCharge).toStringAsFixed(2)}",
+                              "\$${cart.items.fold(0.0, (sum, item) => sum + item.product.shippingCharge).toStringAsFixed(2)}",
                             ),
                             const Divider(),
                             WidgetRow(

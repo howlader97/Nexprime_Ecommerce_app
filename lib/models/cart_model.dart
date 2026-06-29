@@ -28,6 +28,8 @@ class CartItem {
   final int userId;
   final int productId;
   final int quantity;
+  final String? size;
+  final String? color;
   final Product product;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -37,6 +39,8 @@ class CartItem {
     required this.userId,
     required this.productId,
     required this.quantity,
+    this.size,
+    this.color,
     required this.product,
     required this.createdAt,
     required this.updatedAt,
@@ -47,6 +51,8 @@ class CartItem {
     userId: json['userId'],
     productId: json['productId'],
     quantity: json['quantity'],
+    size: json['size'],
+    color: json['color'],
     product: Product.fromJson(json['product']),
     createdAt: DateTime.parse(json['createdAt']),
     updatedAt: DateTime.parse(json['updatedAt']),
@@ -57,9 +63,31 @@ class CartItem {
     'userId': userId,
     'productId': productId,
     'quantity': quantity,
+    'size': size,
+    'color': color,
     'product': product.toJson(),
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
+  };
+}
+
+class StoreSimple {
+  final int id;
+  final String name;
+  final String photo;
+
+  StoreSimple({required this.id, required this.name, required this.photo});
+
+  factory StoreSimple.fromJson(Map<String, dynamic> json) => StoreSimple(
+    id: json['id'] ?? 0,
+    name: json['name'] ?? '',
+    photo: json['photo'] ?? '',
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'photo': photo,
   };
 }
 
@@ -79,6 +107,7 @@ class Product {
   final double totalPayableAmount;
   final List<String> images;
   final int storeId;
+  final StoreSimple? store;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -98,6 +127,7 @@ class Product {
     required this.totalPayableAmount,
     required this.images,
     required this.storeId,
+    this.store,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -105,19 +135,20 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     id: json['id'],
     name: json['name'],
-    description: json['description'],
+    description: json['description'] ?? '',
     basePrice: (json['basePrice'] as num).toDouble(),
     stockUnits: json['stockUnits'],
-    size: List<String>.from(json['size']),
-    colors: List<String>.from(json['colors']),
-    isDiscountSale: json['isDiscountSale'],
-    salePrice: (json['salePrice'] as num).toDouble(),
-    discountPercentage: (json['discountPercentage'] as num).toDouble(),
-    shippingResponsibility: json['shippingResponsibility'],
-    shippingCharge: (json['shippingCharge'] as num).toDouble(),
-    totalPayableAmount: (json['total_payable_amount'] as num).toDouble(),
-    images: List<String>.from(json['images']),
+    size: List<String>.from(json['size'] ?? []),
+    colors: List<String>.from(json['colors'] ?? []),
+    isDiscountSale: json['isDiscountSale'] ?? false,
+    salePrice: (json['salePrice'] as num?)?.toDouble() ?? 0.0,
+    discountPercentage: (json['discountPercentage'] as num?)?.toDouble() ?? 0.0,
+    shippingResponsibility: json['shippingResponsibility'] ?? 'CUSTOMER',
+    shippingCharge: (json['shippingCharge'] as num?)?.toDouble() ?? 0.0,
+    totalPayableAmount: (json['total_payable_amount'] as num?)?.toDouble() ?? 0.0,
+    images: List<String>.from(json['images'] ?? []),
     storeId: json['storeId'],
+    store: json['store'] != null ? StoreSimple.fromJson(json['store']) : null,
     createdAt: DateTime.parse(json['createdAt']),
     updatedAt: DateTime.parse(json['updatedAt']),
   );
@@ -138,6 +169,7 @@ class Product {
     'total_payable_amount': totalPayableAmount,
     'images': images,
     'storeId': storeId,
+    'store': store?.toJson(),
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
