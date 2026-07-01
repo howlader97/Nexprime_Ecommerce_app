@@ -36,7 +36,9 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.4"
+          channel: stable
+          flutter-version: "3.38.9"
+          architecture: x64
           cache: true
 
       # Restore Android Keystore
