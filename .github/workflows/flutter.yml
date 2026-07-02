@@ -45,7 +45,7 @@ jobs:
       - name: Restore Android Keystore
         shell: bash
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/app/test.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/test.jks
 
       # Create key.properties
       - name: Create key.properties
