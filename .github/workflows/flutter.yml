@@ -65,6 +65,9 @@ jobs:
       # Flutter Doctor
       - name: Flutter Doctor
         run: flutter doctor -v
+      # Accept Android SDK Licenses
+      - name: Accept Android SDK Licenses
+        run: yes | flutter doctor --android-licenses
 
       # Analyze Project
       - name: Analyze Project
