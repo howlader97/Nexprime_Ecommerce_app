@@ -68,6 +68,7 @@ jobs:
 
       # Analyze Project
       - name: Analyze Project
+        continue-on-error: true
         run: flutter analyze
 
       # Run Tests

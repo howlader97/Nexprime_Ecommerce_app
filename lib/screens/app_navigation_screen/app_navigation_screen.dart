@@ -15,7 +15,7 @@ import 'package:nexprime/screens/vendor_screens/vendor_product_screen/vendor_pro
 import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:nexprime/utils/app_size.dart';
-import 'package:nexprime/widgets/dialogs/login_popUP.dart';
+import 'package:nexprime/widgets/dialogs/login_popup.dart';
 
 import '../vendor_screens/vendor_profile_screen/vendor_profile_screen.dart';
 import '../vendor_screens/vendor_streaming_screen/vendor_stemming_screen.dart';

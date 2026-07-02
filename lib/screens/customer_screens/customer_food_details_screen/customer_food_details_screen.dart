@@ -17,7 +17,7 @@ import 'package:nexprime/widgets/buttons/icon_button_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/storage/storage_services.dart';
 import '../../../widgets/buttons/app_button.dart';
-import '../../../widgets/dialogs/login_popUP.dart';
+import '../../../widgets/dialogs/login_popup.dart';
 import '../../../widgets/texts/app_text.dart';
 import 'package:nexprime/models/product_model.dart';
 
