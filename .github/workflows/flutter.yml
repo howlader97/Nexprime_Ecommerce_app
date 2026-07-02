@@ -45,7 +45,7 @@ jobs:
       - name: Restore Android Keystore
         shell: bash
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/test.jks
 
       # Create key.properties
       - name: Create key.properties
@@ -55,8 +55,12 @@ jobs:
           storePassword=${{ secrets.STORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
-          storeFile=app/release.jks
+          storeFile=app/test.jks
           EOF
+      - name: Verify Keystore
+        run: |
+          ls -la android/app
+          cat android/key.properties
 
       # Install Dependencies
       - name: Get Dependencies
