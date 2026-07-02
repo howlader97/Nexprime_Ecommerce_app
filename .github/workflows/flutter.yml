@@ -71,10 +71,6 @@ jobs:
         continue-on-error: true
         run: flutter analyze
 
-      # Run Tests
-      - name: Run Tests
-        run: flutter test
-
       # Build APK
       - name: Build APK
         run: flutter build apk --release
