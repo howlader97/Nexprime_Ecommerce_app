@@ -61,7 +61,14 @@ jobs:
         run: |
           ls -la android
           ls -la android/app
+
+          echo "===== key.properties ====="
           cat android/key.properties
+
+          echo "===== Verify Keystore ====="
+          keytool -list \
+            -keystore android/test.jks \
+            -storepass "${{ secrets.STORE_PASSWORD }}"
 
       # Install Dependencies
       - name: Get Dependencies
@@ -81,7 +88,7 @@ jobs:
 
       # Build APK
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --verbose
 
       # Build AppBundle
       - name: Build AAB
