@@ -49,7 +49,11 @@ android {
         }
     }
 
-
+    println("===================================")
+    println("ROOT DIR: ${rootDir}")
+    println("STORE FILE: ${keystoreProperties["storeFile"]}")
+    println("ABSOLUTE: ${file(keystoreProperties["storeFile"] as String).absolutePath}")
+    println("===================================")
      signingConfigs {
     getByName("debug") {
         storeFile = file(keystoreProperties["storeFile"] as String)
