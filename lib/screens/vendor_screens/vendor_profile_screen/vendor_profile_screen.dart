@@ -4,17 +4,20 @@ import 'package:nexprime/constant/app_colors.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/provider/vendor_profile_provider.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/widget/vendor_profile_custom_body.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/widget/vendor_profile_edit_body.dart';
-import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/widget/vendor_profile_header_actions.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_review_screen/vendor_review_screen.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/widgets/app_image/app_image.dart';
 import 'package:nexprime/widgets/app_image/app_image_circular.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
 
+import '../../../constant/app_asserts_icons_path.dart';
+import '../../../constant/app_asserts_image_path.dart';
 import '../../../routes/app_routes.dart';
 import '../../../routes/app_routes_key.dart';
 import '../../../services/storage/storage_services.dart';
 import '../../../utils/app_snack_bar.dart';
+import '../../../utils/gap.dart';
+import '../../../widgets/buttons/app_button.dart';
 import '../vendor_edit_product_screen/vendor_edit_product_screen.dart';
 import '../vendor_product_screen/widgets/vendor_product_product_card.dart';
 
@@ -39,81 +42,95 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            /// APP BAR
             SliverAppBar(
-              expandedHeight: AppSize.size.width * 0.6,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: vendorStoreAsync.when(
-                  data: (vendorStore) => vendorStore?.coverImgUrl != null
-                      ? AppImage(
-                    height: AppSize.size.width * 0.6,
-                    width: AppSize.size.width,
-                    url: vendorStore!.coverImgUrl!,
-                  )
-                      : AppImage(
-                    height: AppSize.size.width * 0.6,
-                    width: AppSize.size.width,
-                    path: "assets/dev_image/vendor_profile_image.png",
+              backgroundColor: AppColors.instance.white400,
+              automaticallyImplyLeading: false,
+              // expandedHeight: AppSize.size.height * 0.28,
+              expandedHeight: AppSize.size.height * 0.22,
+              leadingWidth: 0,
+              flexibleSpace: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: AppSize.size.width * 0.30),
+                    child: Align(
+                      child: AppImage(
+                        width: AppSize.size.width * 0.7,
+                        height: AppSize.size.height * 0.328,
+                        isZomBle: true,
+                        path: AppAssertsImagePath.instance.appLogo,
+                        fit: BoxFit.scaleDown,
+                      ),
+                    ),
                   ),
-                  loading: () =>
-                  const Center(child: CircularProgressIndicator()),
-                  error: (e, st) => AppImage(
-                    height: AppSize.size.width * 0.6,
-                    width: AppSize.size.width,
-                    path: "assets/dev_image/vendor_profile_image.png",
-                  ),
-                ),
-              ),
-              title: VendorProfileHeaderActions(
-                onPressed: () {
-                  setState(() {
-                    isClicked = false;
-                  });
-                },
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(AppSize.size.width * 0.15),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.instance.white50,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          topLeft: Radius.circular(10),
+
+                  Positioned(
+                    // top: AppSize.size.height * 0.05,
+                    top: 70,
+                    right: 16,
+                    child: GestureDetector(
+                      onTap: () {
+                        AppRoutes.instance.pushNamed(
+                          AppRoutesKey.instance.vendorEditProfileScreen,
+                        );
+                      },
+                      child: AppButton(
+                        backgroundColor: AppColors.instance.green,
+                        borderColor: AppColors.instance.green,
+                        child: Row(
+                          children: [
+                            Image.asset(AppAssertsIconsPath.instance.editIcon, scale: 5),
+                            Gap(width: AppSize.size.width * 0.02),
+                            AppText(text: "Edit Profile", color: AppColors.instance.white50),
+                          ],
                         ),
                       ),
-                      child: Transform.translate(
-                        offset: const Offset(0, -40),
-                        child: Align(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.red, width: 2),
-                            ),
-                            child: vendorStoreAsync.when(
-                              data: (vendorStore) => AppImageCircular(
-                                width: AppSize.size.width * 0.25,
-                                height: AppSize.size.width * 0.25,
-                                url:
-                                vendorStore?.photo ??
-                                    "assets/dev_image/vendor_profile_image.png",
-                              ),
-                              loading: () => AppImageCircular(
-                                width: AppSize.size.width * 0.25,
-                                height: AppSize.size.width * 0.25,
-                                path:
-                                "assets/dev_image/vendor_profile_image.png",
-                              ),
-                              error: (e, st) => AppImageCircular(
-                                width: AppSize.size.width * 0.25,
-                                height: AppSize.size.width * 0.25,
-                                path:
-                                "assets/dev_image/vendor_profile_image.png",
-                              ),
-                            ),
-                          ),
+                    ),
+                  ),
+                ],
+              ),
+              bottom: PreferredSize(
+
+                preferredSize: Size.fromHeight(AppSize.size.width * 0.28),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Gap(width: AppSize.size.width),
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        height: AppSize.size.width * 0.15,
+                        width: AppSize.size.width,
+                        decoration: BoxDecoration(
+                          color: AppColors.instance.white50,
+                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                        ),
+                      ),
+                    ),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.instance.error, width: 2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: vendorStoreAsync.when(
+                        data: (vendorStore) => AppImageCircular(
+                          width: AppSize.size.width * 0.25,
+                          height: AppSize.size.width * 0.25,
+                          url:
+                          vendorStore?.photo ??
+                              "assets/dev_image/vendor_profile_image.png",
+                        ),
+                        loading: () => AppImageCircular(
+                          width: AppSize.size.width * 0.25,
+                          height: AppSize.size.width * 0.25,
+                          path:
+                          "assets/dev_image/vendor_profile_image.png",
+                        ),
+                        error: (e, st) => AppImageCircular(
+                          width: AppSize.size.width * 0.25,
+                          height: AppSize.size.width * 0.25,
+                          path:
+                          "assets/dev_image/vendor_profile_image.png",
                         ),
                       ),
                     ),
@@ -121,9 +138,10 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
                 ),
               ),
             ),
+
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 120),
+                padding: const EdgeInsets.symmetric(horizontal: 120,vertical: 14),
                 child: OutlinedButton(
                   onPressed: () async {
                     await StorageServices.instance.logout();
@@ -188,7 +206,7 @@ class _VendorProfileScreenState extends ConsumerState<VendorProfileScreen> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppSize.size.width * 0.04,
-                    vertical: AppSize.size.height * 0.012,
+                    vertical: AppSize.size.height * 0.004,
                   ),
                   child: const AppText(
                     text: "Popular Product",
