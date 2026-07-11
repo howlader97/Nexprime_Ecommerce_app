@@ -45,7 +45,7 @@ jobs:
       - name: Restore Android Keystore
         shell: bash
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/test.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/test.jks
 
       # Create key.properties
       - name: Create key.properties
@@ -67,7 +67,7 @@ jobs:
 
           echo "===== Verify Keystore ====="
           keytool -list \
-            -keystore android/test.jks \
+            -keystore android/app/test.jks \
             -storepass "${{ secrets.STORE_PASSWORD }}"
 
       # Install Dependencies
@@ -85,6 +85,21 @@ jobs:
       - name: Analyze Project
         continue-on-error: true
         run: flutter analyze
+
+      - name: Check Keystore Exists
+        run: |
+          echo "ANDROID"
+          ls -la android
+
+          echo "APP"
+          ls -la android/app
+
+          if [ -f android/app/test.jks ]; then
+            echo "Keystore Found"
+          else
+            echo "Keystore Missing"
+            exit 1
+          fi  
 
       # Build APK
       - name: Build APK
