@@ -11,13 +11,9 @@ class CartRepository {
   final ApiServices _apiServices = ApiServices.instance;
   final AppApiUrl _api = AppApiUrl.instance;
 
-
-
   Future<CartModel?> getCart() async {
     try {
-      final response = await _apiServices.getServices(
-        _api.addToCart,
-      );
+      final response = await _apiServices.getServices(_api.addToCart);
 
       if (response != null) {
         return CartModel.fromJson(response);
@@ -31,14 +27,9 @@ class CartRepository {
 
   Future<bool> updateCartQuantity({required int cartItemId, required String action}) async {
     try {
-      final body = {
-        "action": action
-      };
+      final body = {"action": action};
 
-      final response = await _apiServices.patchServices(
-        url: _api.cartQuantity(cartItemId),
-        body: body,
-      );
+      final response = await _apiServices.patchServices(url: _api.cartQuantity(cartItemId), body: body);
 
       if (response != null) {
         return true;
@@ -50,24 +41,13 @@ class CartRepository {
     }
   }
 
-  Future<bool> addToCart({
-    required int productId,
-    int quantity = 1,
-    String? size,
-    String? color,
-  }) async {
+  Future<bool> addToCart({required int productId, int quantity = 1, String? size, String? color}) async {
     try {
-      final body = {
-        "productId": productId,
-        "quantity": quantity,
-        if (size != null) "size": size,
-        if (color != null) "color": color,
-      };
+      Map<String, dynamic> body = {"productId": productId, "quantity": quantity};
+      if (size != null) body["size"] = size;
+      if (color != null) body["color"] = color;
 
-      final response = await _apiServices.postServices(
-        url: _api.addToCart,
-        body: body,
-      );
+      final response = await _apiServices.postServices(url: _api.addToCart, body: body);
 
       if (response != null) {
         return true;

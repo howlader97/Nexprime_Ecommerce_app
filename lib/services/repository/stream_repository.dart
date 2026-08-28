@@ -11,8 +11,7 @@ class StreamingRepository {
   ////////////// Contractures
   StreamingRepository._privetContractures();
 
-  static final StreamingRepository _instance =
-      StreamingRepository._privetContractures();
+  static final StreamingRepository _instance = StreamingRepository._privetContractures();
 
   static StreamingRepository get instance => _instance;
 
@@ -42,9 +41,7 @@ class StreamingRepository {
 
   Future<bool> closeStream({required int streamId}) async {
     try {
-      var response = await apiServices.patchServices(
-        url: api.stopStream(streamId),
-      );
+      var response = await apiServices.patchServices(url: api.stopStream(streamId));
       if (response is Map) {
         return true;
       } else {
@@ -56,23 +53,14 @@ class StreamingRepository {
     }
   }
 
-  Future<String?> uploadImage({
-    required File imageFile,
-    String folder = "general",
-  }) async {
+  Future<String?> uploadImage({required File imageFile, String folder = "general"}) async {
     try {
       FormData body = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
-          imageFile.path,
-          filename: imageFile.path.split('/').last,
-        ),
+        "file": await MultipartFile.fromFile(imageFile.path, filename: imageFile.path.split('/').last),
         "folder": folder,
       });
 
-      var response = await apiServices.postServices(
-        url: api.uploadImage,
-        body: body,
-      );
+      var response = await apiServices.postServices(url: api.uploadImage, body: body);
 
       if (response != null && response['url'] != null) {
         return response['url'];
@@ -83,22 +71,12 @@ class StreamingRepository {
     return null;
   }
 
-  Future<Map<String, dynamic>?> startStreaming({
-    required String thumbnail,
-    required String title,
-    required String offer,
-  }) async {
+  Future<Map<String, dynamic>?> startStreaming({String? thumbnail, required String title, required String offer}) async {
     try {
-      Map<String, dynamic> body = {
-        "thumbnail": thumbnail,
-        "title": title,
-        "offer": offer,
-      };
+      Map<String, dynamic> body = {"title": title, "offer": offer};
+      if (thumbnail != null) body["thumbnail"] = thumbnail;
 
-      var response = await apiServices.postServices(
-        url: api.liveStream,
-        body: body,
-      );
+      var response = await apiServices.postServices(url: api.liveStream, body: body);
 
       if (response != null) {
         return response;

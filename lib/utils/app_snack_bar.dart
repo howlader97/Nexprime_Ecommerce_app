@@ -14,7 +14,7 @@ class AppSnackBar {
   BuildContext? get _context => rootNavigatorKey.currentContext;
 
   // -------- Snackbar Methods --------
-  void error(String message, {bool showTop = true}) {
+  void error(String message, {bool showTop = true, int durationInSeconds = 5}) {
     try {
       if (showTop) {
         final overlay = appOverlayKey.currentState;
@@ -30,7 +30,10 @@ class AppSnackBar {
               child: Container(
                 padding: EdgeInsets.all(AppSize.width(value: 14)),
                 decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(12)),
-                child: AppText( text: message, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                child: AppText(
+                  text: message,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
           ),
@@ -38,18 +41,21 @@ class AppSnackBar {
 
         overlay.insert(overlayEntry);
 
-        Future.delayed(const Duration(seconds: 2)).then((_) => overlayEntry.remove());
+        Future.delayed(Duration(seconds: durationInSeconds)).then((_) => overlayEntry.remove());
       } else {
         if (_context == null) return;
 
         ScaffoldMessenger.of(_context!).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
+            duration: Duration(seconds: durationInSeconds),
             behavior: SnackBarBehavior.floating,
             margin: EdgeInsets.symmetric(horizontal: AppSize.width(value: 20), vertical: AppSize.width(value: 20)),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            content: AppText( text: message, style: const TextStyle(color: Colors.white)),
+            content: AppText(
+              text: message,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         );
       }
@@ -58,7 +64,7 @@ class AppSnackBar {
     }
   }
 
-  void success(String message, {Duration? duration, bool showTop = true}) {
+  void success(String message, {Duration? duration, bool showTop = true, int durationInSeconds = 5}) {
     if (showTop) {
       final overlay = appOverlayKey.currentState;
       if (overlay == null) return;
@@ -81,14 +87,14 @@ class AppSnackBar {
 
       overlay.insert(overlayEntry);
 
-      Future.delayed(const Duration(seconds: 2)).then((_) => overlayEntry.remove());
+      Future.delayed(Duration(seconds: durationInSeconds)).then((_) => overlayEntry.remove());
     } else {
       if (_context == null) return;
 
       ScaffoldMessenger.of(_context!).showSnackBar(
         SnackBar(
           backgroundColor: AppColors.instance.success,
-          duration: duration ?? const Duration(seconds: 3),
+          duration: duration ?? Duration(seconds: durationInSeconds),
           behavior: SnackBarBehavior.floating,
           margin: EdgeInsets.symmetric(horizontal: AppSize.width(value: 20), vertical: AppSize.width(value: 20)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.width(value: 5))),
@@ -98,7 +104,7 @@ class AppSnackBar {
     }
   }
 
-  void message(String message, {Color? backgroundColor, Color? textColor, bool showTop = true}) {
+  void message(String message, {Color? backgroundColor, Color? textColor, bool showTop = true, int durationInSeconds = 5}) {
     if (showTop) {
       final overlay = appOverlayKey.currentState;
       if (overlay == null) return;
@@ -121,14 +127,14 @@ class AppSnackBar {
 
       overlay.insert(overlayEntry);
 
-      Future.delayed(const Duration(seconds: 2)).then((_) => overlayEntry.remove());
+      Future.delayed(Duration(seconds: durationInSeconds)).then((_) => overlayEntry.remove());
     } else {
       if (_context == null) return;
 
       ScaffoldMessenger.of(_context!).showSnackBar(
         SnackBar(
           backgroundColor: backgroundColor ?? AppColors.instance.dark300,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: durationInSeconds),
           behavior: SnackBarBehavior.floating,
           margin: EdgeInsets.symmetric(horizontal: AppSize.width(value: 20), vertical: AppSize.width(value: 20)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.width(value: 5))),

@@ -35,6 +35,8 @@ class CustomLocationWidget extends StatelessWidget {
                 ),
                 AppText( text: 
                   location,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: AppSize.size.width * 0.04,
                     color: AppColors.instance.primary,

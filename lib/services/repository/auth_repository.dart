@@ -20,7 +20,7 @@ class AuthRepository {
   AppApiUrl api = AppApiUrl.instance;
   StorageServices storageServices = StorageServices.instance;
   /////////////// function
-  Future<bool> login({
+  Future<Map<String,dynamic>> login({
     required String email,
     required String password,
     //required String fcmToken, required String deviceId
@@ -56,12 +56,26 @@ class AuthRepository {
           }
         }
 
-        return true;
+        return {
+          "success": true,
+          "data": response.data,
+        };
       }
-    } catch (e) {
+    } on DioException catch (e) {
+      return {
+        "success": false,
+        "data": e.response?.data,
+      };
+    }
+    catch (e) {
       errorLog("login function repo", e);
     }
-    return false;
+    return {
+      "success": false,
+      "data": {
+        "detail": "Login failed",
+      },
+    };
   }
 
   Future<bool> accountDelete({required String password}) async {

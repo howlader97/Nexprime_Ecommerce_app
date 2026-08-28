@@ -10,7 +10,7 @@ class VendorCustomTextTitle16 extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppText(
       text: title,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w600,
       height: 1.5,
     );

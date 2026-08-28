@@ -19,22 +19,26 @@ class ProductTitlePriceWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText(
-              text: "Clothing",
-              fontSize: AppSize.size.width * 0.035,
-              color: AppColors.instance.gray400,
-            ),
-            Gap(height: AppSize.size.width * 0.015),
-            AppText(
-              text: productName,
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText(
+                text: "Clothing",
+                fontSize: AppSize.size.width * 0.035,
+                color: AppColors.instance.gray400,
+              ),
+              Gap(height: AppSize.size.width * 0.015),
+              AppText(
+                text: productName,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
         DecoratedBox(
           decoration: BoxDecoration(

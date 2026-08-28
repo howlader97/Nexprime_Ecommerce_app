@@ -178,7 +178,7 @@ class _AppInputWidgetState extends State<AppInputWidget> {
           widget.style ??
           TextStyle(
             height: 2,
-            color: widget.textColor,
+            color: widget.textColor ?? AppColors.instance.black900,
             fontFamily: AppConstant.instance.openSans,
             fontFamilyFallback: [
               AppConstant.instance.montserrat,

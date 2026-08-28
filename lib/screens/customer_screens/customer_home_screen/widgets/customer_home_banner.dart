@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexprime/constant/app_colors.dart';
 
-
 class CustomerHomeBanner extends StatefulWidget {
   final List<String> images;
   final double height;

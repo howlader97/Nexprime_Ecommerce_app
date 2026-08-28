@@ -22,11 +22,11 @@ class ShowDialogWidget extends ConsumerWidget {
     return AlertDialog(
       backgroundColor: Colors.white.withValues(alpha: 0.3),
       //insetPadding: EdgeInsets.all(0),
-      contentPadding: EdgeInsets.all( 10),
+      contentPadding: EdgeInsets.all(10),
       titlePadding: EdgeInsets.symmetric(horizontal: 10).copyWith(top: 10),
       title: Row(
         children: [
-          const AppText( text: "Discount Product",color: Colors.white,),
+          const AppText(text: "Discount Product", color: Colors.white),
           Spacer(),
           GestureDetector(
             onTap: () {
@@ -40,22 +40,13 @@ class ShowDialogWidget extends ConsumerWidget {
         onTap: () {
           Navigator.pop(context);
           if (discountProduct.size.isNotEmpty || discountProduct.colors.isNotEmpty) {
-            AppRoutes.instance.pushNamed(
-              AppRoutesKey.instance.customerClothDetailsScreen,
-              extra: discountProduct,
-            );
+            AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerClothDetailsScreen, extra: discountProduct);
           } else {
-            AppRoutes.instance.pushNamed(
-              AppRoutesKey.instance.customerFoodDetailsScreen,
-              extra: discountProduct,
-            );
+            AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerFoodDetailsScreen, extra: discountProduct);
           }
         },
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.instance.grayEE,
-            borderRadius: BorderRadius.circular(20),
-          ),
+          decoration: BoxDecoration(color: AppColors.instance.grayEE, borderRadius: BorderRadius.circular(20)),
           child: SizedBox(
             width: AppSize.size.width * 0.4,
             child: Padding(
@@ -69,12 +60,7 @@ class ShowDialogWidget extends ConsumerWidget {
                     child: SizedBox(
                       height: AppSize.size.width * 0.22,
                       width: AppSize.size.width,
-                      child: Image.network(
-                        discountProduct.images.isNotEmpty
-                            ? discountProduct.images.first
-                            : '',
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.network(discountProduct.images.isNotEmpty ? discountProduct.images.first : '', fit: BoxFit.cover),
                     ),
                   ),
                   Gap(height: AppSize.size.width * 0.02),
@@ -89,16 +75,14 @@ class ShowDialogWidget extends ConsumerWidget {
                   Row(
                     children: [
                       AppText(
-                        text:
-                        "\$${discountProduct.salePrice.toStringAsFixed(1)}",
+                        text: "¥${discountProduct.salePrice.toStringAsFixed(1)}",
                         fontSize: AppSize.size.width * 0.045,
                         fontWeight: FontWeight.w600,
                         color: AppColors.instance.black06,
                       ),
                       SizedBox(width: AppSize.size.width * 0.014),
                       AppText(
-                        text:
-                        "\$${discountProduct.basePrice.toStringAsFixed(1)}",
+                        text: "¥${discountProduct.basePrice.toStringAsFixed(1)}",
                         fontSize: AppSize.size.width * 0.035,
                         fontWeight: FontWeight.w400,
                         color: AppColors.instance.redF7,

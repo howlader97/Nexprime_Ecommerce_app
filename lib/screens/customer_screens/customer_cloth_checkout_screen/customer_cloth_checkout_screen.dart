@@ -31,12 +31,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                     icon: Icons.arrow_back,
                   ),
                   const SizedBox(width: 6),
-                  AppText(
-                    text: "Checkout",
-                    fontSize: AppSize.size.width * 0.055,
-                    color: AppColors.instance.black06,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  AppText(text: "Checkout", fontSize: AppSize.size.width * 0.055, color: AppColors.instance.black06, fontWeight: FontWeight.w600),
                 ],
               ),
             ),
@@ -51,8 +46,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         child: AppImage(
                           width: AppSize.size.width * 0.43,
-                          url:
-                              "https://www.yellowclothing.net/cdn/shop/files/DSC0004288_16.jpg?v=1771044529",
+                          url: "https://www.yellowclothing.net/cdn/shop/files/DSC0004288_16.jpg?v=1771044529",
                         ),
                       ),
                       Gap(width: AppSize.size.width * 0.028),
@@ -69,8 +63,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                             ),
                             Gap(height: AppSize.size.height * 0.007),
                             AppText(
-                              text:
-                                  "Lightly battered and deep-fried jumbo shrimps served with a warm dipping sauce.",
+                              text: "Lightly battered and deep-fried jumbo shrimps served with a warm dipping sauce.",
                               maxLines: 2,
                               fontSize: AppSize.size.width * 0.04,
                               overflow: TextOverflow.ellipsis,
@@ -81,7 +74,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                             Row(
                               children: [
                                 AppText(
-                                  text: "\$188.87",
+                                  text: "¥188.87",
                                   fontSize: AppSize.size.width * 0.047,
                                   color: AppColors.instance.black06,
                                   fontWeight: FontWeight.w600,
@@ -106,11 +99,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: AppImage(
-                          path: AppAssertsImagePath.instance.homeImage,
-                          height: AppSize.size.height * 0.09,
-                          fit: BoxFit.cover,
-                        ),
+                        child: AppImage(path: AppAssertsImagePath.instance.homeImage, height: AppSize.size.height * 0.09, fit: BoxFit.cover),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,11 +132,7 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: AppImage(
-                          path: AppAssertsImagePath.instance.creditCard,
-                          height: AppSize.size.height * 0.09,
-                          fit: BoxFit.cover,
-                        ),
+                        child: AppImage(path: AppAssertsImagePath.instance.creditCard, height: AppSize.size.height * 0.09, fit: BoxFit.cover),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,15 +194,14 @@ class CustomerClothCheckoutScreen extends StatelessWidget {
                       ),
                       Gap(height: AppSize.size.height * 0.009),
                       WidgetRow(name: "Quantity", value: "1x"),
-                      WidgetRow(name: "Subtotal", value: "\$377.99"),
+                      WidgetRow(name: "Subtotal", value: "¥377.99"),
                       WidgetRow(name: "Shipping", value: "Free"),
                       WidgetRow(name: "Service charge", value: "37.799(10%)"),
                       WidgetRow(name: "Tax(5%)", value: "18.8995"),
                       Divider(),
                       WidgetRow(name: "Total", value: "18.8995"),
                       AppButton(
-                        onTap: () {
-                        },
+                        onTap: () {},
                         borderColor: AppColors.instance.green,
                         height: AppSize.size.height * 0.058,
                         backgroundColor: AppColors.instance.green,

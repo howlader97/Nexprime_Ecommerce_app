@@ -463,68 +463,71 @@ class _VendorLiveScreenState extends ConsumerState<VendorLiveScreen> {
         ),
         const SizedBox(height: 12),
 
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: const BoxDecoration(color: Color(0xFF4C9E57)),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 44,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _commentController,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: const InputDecoration(
-                            hintText: 'Type a message...',
-                            hintStyle: TextStyle(
-                              color: Colors.black45,
-                              fontSize: 14,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration:  BoxDecoration(color: Color(0xFF4C9E57),borderRadius: BorderRadius.circular(14)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 44,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _commentController,
+                            style: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
+                              hintText: 'Type a message...',
+                              hintStyle: TextStyle(
+                                color: Colors.black45,
+                                fontSize: 14,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none
+                              ),
+                              border: InputBorder.none,
+                              isDense: true,
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none
-                            ),
-                            border: InputBorder.none,
-                            isDense: true,
+                            onSubmitted: (_) => _sendComment(),
                           ),
-                          onSubmitted: (_) => _sendComment(),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: _sendComment,
-                        child: const Icon(
-                          Icons.send,
-                          color: Color(0xFF4C9E57),
-                          size: 20,
+                        GestureDetector(
+                          onTap: _sendComment,
+                          child: const Icon(
+                            Icons.send,
+                            color: Color(0xFF4C9E57),
+                            size: 20,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              _buildSmallIconButton(
-                Icons.camera_alt,
-                state.isCameraOn,
-                () => ref.read(vendorLiveProvider.notifier).toggleCamera(),
-              ),
-              const SizedBox(width: 8),
-              _buildSmallIconButton(
-                Icons.mic,
-                state.isMicOn,
-                () => ref.read(vendorLiveProvider.notifier).toggleMic(),
-              ),
-            ],
+                const SizedBox(width: 12),
+                _buildSmallIconButton(
+                  Icons.camera_alt,
+                  state.isCameraOn,
+                  () => ref.read(vendorLiveProvider.notifier).toggleCamera(),
+                ),
+                const SizedBox(width: 8),
+                _buildSmallIconButton(
+                  Icons.mic,
+                  state.isMicOn,
+                  () => ref.read(vendorLiveProvider.notifier).toggleMic(),
+                ),
+              ],
+            ),
           ),
         ),
       ],

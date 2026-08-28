@@ -14,20 +14,20 @@ class AppImage extends StatelessWidget {
     this.color,
     this.fit = BoxFit.cover,
     this.height,
-    this.path,
-    this.url,
+    this.path = "",
+    this.url = "",
     this.width,
-    this.filePath,
+    this.filePath = "",
     this.iconColor,
     this.isZomBle = false,
     this.placeholder,
     this.networkPlaceholderImage,
   });
 
-  final String? path;
+  final String path;
   final String? networkPlaceholderImage;
-  final String? filePath;
-  final String? url;
+  final String filePath;
+  final String url;
   final BoxFit? fit;
   final double? width;
   final double? height;
@@ -39,7 +39,7 @@ class AppImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // File image
-    if (filePath != null) {
+    if (filePath.isNotEmpty) {
       return GestureDetector(
         onTap: isZomBle
             ? () {
@@ -47,7 +47,7 @@ class AppImage extends StatelessWidget {
                   _showFullScreenImage(
                     context,
                     Image.file(
-                      File(filePath!),
+                      File(filePath),
                       width: width,
                       height: height,
                       fit: fit,
@@ -61,7 +61,7 @@ class AppImage extends StatelessWidget {
               }
             : null,
         child: Image.file(
-          File(filePath!),
+          File(filePath),
           width: width,
           height: height,
           fit: fit,
@@ -74,21 +74,21 @@ class AppImage extends StatelessWidget {
     }
 
     // Network image
-    if (url != null && url!.isNotEmpty) {
+    if (url.isNotEmpty) {
       return GestureDetector(
         onTap: isZomBle
             ? () {
                 if (isZomBle) {
-                  _showFullScreenImage(context, NetworkImageWithRetry(key: UniqueKey(), imageUrl: url!, width: width, height: height, fit: fit));
+                  _showFullScreenImage(context, NetworkImageWithRetry(key: UniqueKey(), imageUrl: url, width: width, height: height, fit: fit));
                 }
               }
             : null,
-        child: NetworkImageWithRetry(key: UniqueKey(), imageUrl: url!, width: width, height: height, fit: fit),
+        child: NetworkImageWithRetry(key: UniqueKey(), imageUrl: url, width: width, height: height, fit: fit),
       );
     }
 
     // Asset image
-    if (path != null) {
+    if (path.isNotEmpty) {
       return GestureDetector(
         onTap: isZomBle
             ? () {
@@ -96,7 +96,7 @@ class AppImage extends StatelessWidget {
                   _showFullScreenImage(
                     context,
                     Image.asset(
-                      path!,
+                      path,
                       width: width,
                       height: height,
                       fit: fit,
@@ -111,7 +111,7 @@ class AppImage extends StatelessWidget {
               }
             : null,
         child: Image.asset(
-          path!,
+          path,
           width: width,
           height: height,
           fit: fit,
@@ -208,7 +208,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> with Sing
 
   Matrix4 _revertZoom() => Matrix4.identity();
 
- void appClose() {
+  void appClose() {
     try {
       transformationController.dispose();
       animationController.dispose();

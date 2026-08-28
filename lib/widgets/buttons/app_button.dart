@@ -25,6 +25,7 @@ class AppButton extends StatelessWidget {
     this.fontSize,
     this.borderRadius,
     this.fontWeight,
+    this.isTitleDynamic,
   });
   final double? loadingSize;
   final double? width;
@@ -45,6 +46,7 @@ class AppButton extends StatelessWidget {
   final double? fontSize;
   final BorderRadiusGeometry? borderRadius;
   final FontWeight? fontWeight;
+  final bool? isTitleDynamic;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,7 @@ class AppButton extends StatelessWidget {
             : child ??
                   AppText(
                     text: title ?? "",
+                    isDynamic: isTitleDynamic ?? true,
                     color: titleColor ?? AppColors.instance.white50,
                     fontWeight: fontWeight ?? FontWeight.w700,
                     fontSize: fontSize ?? 20,

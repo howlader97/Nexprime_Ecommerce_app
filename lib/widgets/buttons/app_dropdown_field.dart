@@ -3,22 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:nexprime/constant/app_colors.dart';
 import 'package:nexprime/utils/gap.dart';
+import 'package:nexprime/utils/string_extension.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
 
 import '../../utils/app_size.dart';
 
 class AppDropdownField extends ConsumerStatefulWidget {
-
   final StateProvider<String?> provider;
   final List<String> options;
   final String? hintText;
 
-  const AppDropdownField({super.key,
-
-    required this.provider,
-    required this.options,
-    this.hintText,
-  });
+  const AppDropdownField({super.key, required this.provider, required this.options, this.hintText});
 
   @override
   ConsumerState<AppDropdownField> createState() => _AppDropdownFieldState();
@@ -35,14 +30,8 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    _expandAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _expandAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
   }
 
   @override
@@ -93,10 +82,7 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
           GestureDetector(
             onTap: _closeDropdown,
             behavior: HitTestBehavior.translucent,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-            ),
+            child: SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height),
           ),
           Positioned(
             width: size.width,
@@ -115,9 +101,7 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
                     decoration: BoxDecoration(
                       color: AppColors.instance.white,
                       borderRadius: BorderRadius.circular(AppSize.width(value: 8.0)),
-                      border: Border.all(
-                        color: AppColors.instance.blue.withValues(alpha: 0.3),
-                      ),
+                      border: Border.all(color: AppColors.instance.blue.withValues(alpha: 0.3)),
                     ),
                     child: FadeTransition(
                       opacity: _expandAnimation,
@@ -129,10 +113,7 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
                           physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           itemCount: widget.options.length,
-                          separatorBuilder: (context, index) => Divider(
-                            height: 1,
-                            color: AppColors.instance.gray400.withValues(alpha: 0.1),
-                          ),
+                          separatorBuilder: (context, index) => Divider(height: 1, color: AppColors.instance.gray400.withValues(alpha: 0.1)),
                           itemBuilder: (context, index) {
                             final option = widget.options[index];
                             final isSelected = option == selectedValue;
@@ -152,19 +133,12 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     AppText(
-                                      text: option,
+                                      text: option.toCapitalizedWords(),
                                       fontSize: 16,
                                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                      color: isSelected
-                                          ? AppColors.instance.primary
-                                          : AppColors.instance.black300,
+                                      color: isSelected ? AppColors.instance.primary : AppColors.instance.black300,
                                     ),
-                                    if (isSelected)
-                                      Icon(
-                                        Icons.check_rounded,
-                                        color: AppColors.instance.primary,
-                                        size: 20,
-                                      ),
+                                    if (isSelected) Icon(Icons.check_rounded, color: AppColors.instance.primary, size: 20),
                                   ],
                                 ),
                               ),
@@ -192,7 +166,6 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           const Gap(height: 10),
           CompositedTransformTarget(
             link: _layerLink,
@@ -200,33 +173,24 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
               key: _dropdownKey,
               onTap: _toggleDropdown,
               child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.width(value: 15.0),
-                  vertical: AppSize.height(value: 13),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: AppSize.width(value: 15.0), vertical: AppSize.height(value: 13)),
                 decoration: BoxDecoration(
                   color: AppColors.instance.transparent,
                   borderRadius: BorderRadius.circular(AppSize.width(value: 8.0)),
-                  border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.8),
-                  ),
+                  border: Border.all(color: Colors.black.withValues(alpha: 0.8)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppText(
-                      text: selectedValue ?? widget.hintText ?? '',
+                      text: (selectedValue ?? widget.hintText ?? '').toCapitalizedWords(),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: AppColors.instance.black300,
                     ),
                     RotationTransition(
                       turns: Tween<double>(begin: 0.0, end: 0.5).animate(_expandAnimation),
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: AppColors.instance.black300,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.instance.black300, size: 24),
                     ),
                   ],
                 ),
@@ -238,4 +202,3 @@ class _AppDropdownFieldState extends ConsumerState<AppDropdownField> with Single
     );
   }
 }
-

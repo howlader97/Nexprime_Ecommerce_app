@@ -24,6 +24,8 @@ class AppApiUrl {
   String user = "n";
   String banners = "/banners";
   String customerProfile = "/auth/profile";
+  String myBalance = "/wallet/me";
+  String myBalanceTopUp = "/wallet/top-up";
   String updateProfile = "/customers/me";
   String authDeleteAccount = "/authDeleteAccount";
   String customerSignUp = "/auth/signup";
@@ -34,22 +36,30 @@ class AppApiUrl {
   String authForgotPassword = "/auth/forgot-password";
   String authVerifyEmail = "/auth/verify-forgot-password";
   String authResetPassword = "/auth/reset-password";
-  String discountProduct = "/products/highest-discount";
   String stores = "/stores";
   String deliveryInfo = "/orders/delivery-address";
   String createOrder = "/orders";
-  String createPaymentIntent(int orderId) =>
-      "/orders/$orderId/create-payment-intent";
+  String createPaymentIntent(int orderId) => "/orders/$orderId/create-payment-intent";
   String viewShop(int id) => "/stores/$id";
   String review(int productId) => "/orders/product/$productId/ratings";
   String marketingProducts = "/marketing-products";
+  String marketingProductPaymentIntent = "/marketing-products/create-payment-intent";
+  String marketingProductsFiltered({String? goodsType, String? location}) {
+    String url = "/marketing-products";
+    final List<String> params = [];
+    if (goodsType != null && goodsType.isNotEmpty) params.add("goodsType=$goodsType");
+    if (location != null && location.isNotEmpty) params.add("location=$location");
+    if (params.isNotEmpty) url += "?${params.join('&')}";
+    return url;
+  }
   String marketingProductById(int id) => "/marketing-products/$id";
   String deleteMarketingProduct(int id) => "/marketing-products/$id";
   String updateMarketingProduct(int id) => "/marketing-products/$id";
+  String orderRatings(int id) => "/orders/$id/ratings";
   String myMarketingProducts = "/marketing-products/my";
   String publishingFee = "/admin/marketing-settings";
-  String groceriesCountry(String countryId) =>
-      "/categories/$countryId/subcategories";
+  String discountProduct = "/products/highest-discount";
+  String groceriesCountry(String countryId) => "/categories/$countryId/subcategories";
   String filterProducts(int id, {int? shopId, int? categoryId, String? size}) {
     String url = "/products/filter?subcategory_ids=$id";
     if (shopId != null) {
@@ -63,15 +73,16 @@ class AppApiUrl {
     }
     return url;
   }
+
   String filterProductsByShopAndSubcategory({required int shopId, required int subcategoryIds}) {
     return "/products/filter?shop_id=$shopId&subcategory_ids=$subcategoryIds";
   }
+
   String addToCart = "/cart";
   String cartQuantity(int itemId) => "/cart/$itemId";
   String storeFollowerCount(int storeId) => "/stores/$storeId/follower-count";
   String searchProducts(String query) => "/products/search?q=$query";
-  String myOrder ="/orders/me";
-  String orderRatings(int id) => "/orders/$id/ratings";
+  String myOrder = "/orders/me";
 
   //vendor
   String vendorDashboard = "/vendor/dashboard/stats";

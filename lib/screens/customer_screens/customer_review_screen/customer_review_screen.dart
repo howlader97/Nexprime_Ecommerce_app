@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nexprime/screens/customer_screens/customer_review_screen/provider/customer_review_provider.dart';
 import 'package:nexprime/widgets/buttons/app_button.dart';
 import 'package:nexprime/widgets/buttons/custom_decorated_box.dart';
 import 'package:nexprime/widgets/buttons/icon_button_widget.dart';
@@ -11,14 +9,15 @@ import '../../../utils/app_size.dart';
 import '../../../utils/gap.dart';
 import '../../../widgets/texts/app_text.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'provider/customer_review_provider.dart';
+
 class CustomerReviewScreen extends ConsumerStatefulWidget {
   final int orderId;
-
   const CustomerReviewScreen({super.key, required this.orderId});
 
   @override
-  ConsumerState<CustomerReviewScreen> createState() =>
-      _CustomerReviewScreenState();
+  ConsumerState<CustomerReviewScreen> createState() => _CustomerReviewScreenState();
 }
 
 class _CustomerReviewScreenState extends ConsumerState<CustomerReviewScreen> {
@@ -156,29 +155,22 @@ class _CustomerReviewScreenState extends ConsumerState<CustomerReviewScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.size.width * 0.038,
-                ),
-                child: AppButton(
-                  onTap: () {
-                    ref
-                        .read(customerReviewProvider.notifier)
-                        .submitReview(
-                          score: _rating,
-                          reviewText: _reviewController.text.trim(),
-                          orderId: widget.orderId,
-                        );
-                  },
-                  height: AppSize.size.width * 0.12,
-                  backgroundColor: AppColors.instance.green,
-                  borderColor: AppColors.instance.green,
-                  title: ref.watch(customerReviewProvider).isLoading
-                      ? 'Loading...'
-                      : 'Submit',
-                ),
-              ),
-            ),
+                child: Padding(
+                  padding:  EdgeInsets.symmetric(horizontal:  AppSize.size.width * 0.038),
+                  child: AppButton(
+                    onTap: () {
+                      ref.read(customerReviewProvider.notifier).submitReview(
+                            score: _rating,
+                            reviewText: _reviewController.text.trim(),
+                            orderId: widget.orderId,
+                          );
+                    },
+                    height:  AppSize.size.width * 0.12,
+                    backgroundColor:  AppColors.instance.green,
+                    borderColor:  AppColors.instance.green,
+                    title: ref.watch(customerReviewProvider).isLoading ? 'Loading...' : 'Submit',
+                  ),
+                ),),
           ],
         ),
       ),

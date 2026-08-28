@@ -1,12 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nexprime/constant/app_colors.dart';
+import 'package:nexprime/screens/customer_screens/customer_order_track_list/customer_order_track_list.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_order_success/vendor_order_success.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
-
+import '../../../../constant/app_colors.dart';
 import '../../../../models/vendor_order_model.dart';
 import '../../../../utils/gap.dart';
-import '../../../customer_screens/customer_order_track_list/customer_order_track_list.dart';
 import '../../vendor_order_screen/provider/vendor_order_provider.dart';
 
 class VendorCustomerOrderActionButton extends ConsumerWidget {
@@ -129,11 +129,11 @@ class VendorCustomerOrderActionButton extends ConsumerWidget {
                 }
                 Navigator.pop(context);
                 ref.read(vendorOrderNotifierProvider.notifier).fulfillSubOrder(
-                  orderModel.id,
-                  true,
-                  trackingNumber: trackingNumber,
-                  courierName: "Japan Post",
-                );
+                      orderModel.id,
+                      true,
+                      trackingNumber: trackingNumber,
+                      courierName: "Japan Post",
+                    );
               },
               child: const AppText(
                 text: "Confirm",
@@ -176,19 +176,19 @@ class VendorCustomerOrderActionButton extends ConsumerWidget {
 
     final VoidCallback onTrackPressed = (orderModel.trackingUrl != null && orderModel.trackingUrl!.isNotEmpty)
         ? () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CustomerOrderTrackList(trackingUrl: orderModel.trackingUrl!),
-        ),
-      );
-    }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CustomerOrderTrackList(trackingUrl: orderModel.trackingUrl!),
+              ),
+            );
+          }
         : () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => VendorOrderSuccess()),
-      );
-    };
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => VendorOrderSuccess()),
+            );
+          };
 
     return Column(
       children: [

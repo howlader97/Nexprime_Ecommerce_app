@@ -15,6 +15,7 @@ class VendorOrderModel {
   final OrderInfo? order;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double totalShippingCharge;
 
   VendorOrderModel({
     required this.id,
@@ -33,6 +34,7 @@ class VendorOrderModel {
     this.order,
     required this.createdAt,
     required this.updatedAt,
+    required this.totalShippingCharge,
   });
 
   factory VendorOrderModel.fromJson(Map<String, dynamic> json) =>
@@ -55,6 +57,8 @@ class VendorOrderModel {
         order: json['order'] != null ? OrderInfo.fromJson(json['order']) : null,
         createdAt: DateTime.parse(json['createdAt']),
         updatedAt: DateTime.parse(json['updatedAt']),
+        totalShippingCharge:
+        double.tryParse("${json["totalShippingCharge"] ?? 0}") ?? 0.0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -74,6 +78,7 @@ class VendorOrderModel {
     'order': order?.toJson(),
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
+    "totalShippingCharge": totalShippingCharge,
   };
 }
 
@@ -141,17 +146,20 @@ class Product {
   final int id;
   final String name;
   final List<String> images;
+  final double taxFee;
 
   Product({
     required this.id,
     required this.name,
     required this.images,
+    required this.taxFee,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     id: json['id'],
     name: json['name'],
     images: json['images'] != null ? List<String>.from(json['images']) : [],
+    taxFee: double.tryParse("${json["taxFee"] ?? 0}") ?? 0.0,
   );
 
   Map<String, dynamic> toJson() => {

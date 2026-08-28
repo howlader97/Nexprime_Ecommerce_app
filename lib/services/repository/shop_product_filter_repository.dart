@@ -7,7 +7,7 @@ class ShopProductFilterRepository {
   ShopProductFilterRepository._privateConstructor();
 
   static final ShopProductFilterRepository _instance =
-  ShopProductFilterRepository._privateConstructor();
+      ShopProductFilterRepository._privateConstructor();
 
   static ShopProductFilterRepository get instance => _instance;
 

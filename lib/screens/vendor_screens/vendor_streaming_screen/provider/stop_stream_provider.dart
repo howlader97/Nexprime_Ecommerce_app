@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:nexprime/services/repository/stream_repository.dart';
 import 'package:nexprime/utils/app_log.dart';
-final stopStreamProvider =
-StateNotifierProvider<StopStreamProvider, bool>((ref) {
+
+final stopStreamProvider = StateNotifierProvider<StopStreamProvider, bool>((ref) {
   return StopStreamProvider();
 });
 
@@ -13,8 +13,7 @@ class StopStreamProvider extends StateNotifier<bool> {
     try {
       state = true;
 
-      final response = await StreamingRepository.instance
-          .closeStream(streamId: streamId);
+      final response = await StreamingRepository.instance.closeStream(streamId: streamId);
 
       state = false;
 

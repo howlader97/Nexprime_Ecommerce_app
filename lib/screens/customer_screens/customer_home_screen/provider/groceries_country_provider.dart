@@ -3,9 +3,14 @@ import 'package:nexprime/models/groceries_country_model.dart';
 import 'package:nexprime/services/repository/home_repository.dart';
 import 'package:nexprime/utils/app_log.dart';
 
-final groceriesProvider = StateNotifierProvider.family<GroceriesCountry, List<GroceriesCountryModel>?, String>((ref, id) {
-  return GroceriesCountry(id);
-});
+final groceriesProvider =
+    StateNotifierProvider.family<
+      GroceriesCountry,
+      List<GroceriesCountryModel>?,
+      String
+    >((ref, id) {
+      return GroceriesCountry(id);
+    });
 
 class GroceriesCountry extends StateNotifier<List<GroceriesCountryModel>?> {
   GroceriesCountry(String id) : super(null) {

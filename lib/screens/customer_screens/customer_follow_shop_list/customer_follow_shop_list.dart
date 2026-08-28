@@ -23,7 +23,7 @@ class CustomerFollowShopList extends ConsumerWidget {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: ()async{
-            ref.refresh(shopListProvider);
+            ref.invalidate(shopListProvider);
           },
           child: CustomScrollView(
             slivers: [

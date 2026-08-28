@@ -9,6 +9,7 @@ import 'package:nexprime/utils/app_snack_bar.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../routes/app_routes_key.dart';
 import '../../customer_cart_screen/provider/cart_provider.dart';
+import '../../customer_order_screen/provider/customer_order_screen_provider.dart';
 
 final deliveryProvider =
     StateNotifierProvider<DeliveryProvider, AsyncValue<bool>>((ref) {
@@ -26,6 +27,7 @@ class DeliveryProvider extends StateNotifier<AsyncValue<bool>> {
     required String address,
     required String roomNumber,
     required String phoneNumber,
+    String paymentMethod = "ONLINE", // "ONLINE" অথবা "COD"
   }) async {
     state = AsyncLoading();
     try {
@@ -40,17 +42,30 @@ class DeliveryProvider extends StateNotifier<AsyncValue<bool>> {
       if (deliveryId != null) {
         final orderId = await DeliveryInfoRepository.instance.createOrder(
           deliveryAddressId: deliveryId.toString(),
+          paymentMethod: paymentMethod,
         );
 
         if (orderId != null) {
-          final clientSecret = await DeliveryInfoRepository.instance
-              .createPaymentIntent(orderId: orderId);
-
-          state = AsyncData(false);
-          if (clientSecret != null) {
-            await makePayment(clientSecret);
+          if (paymentMethod == "COD") {
+            // COD: সরাসরি অর্ডার সফল স্ক্রিনে যাও
+            state = AsyncData(false);
+            AppSnackBar.instance.success("Cash on Delivery order placed successfully!");
+            ref.read(cartProvider.notifier).clearCart();
+            ref.invalidate(myOrderProvider);
+            AppRoutes.instance.pushNamed(
+              AppRoutesKey.instance.customerOrderSuccessfulScreen,
+            );
           } else {
-            AppSnackBar.instance.error("Payment creation failed");
+            // ONLINE: Stripe payment flow
+            final clientSecret = await DeliveryInfoRepository.instance
+                .createPaymentIntent(orderId: orderId);
+
+            state = AsyncData(false);
+            if (clientSecret != null) {
+              await makePayment(clientSecret);
+            } else {
+              AppSnackBar.instance.error("Payment creation failed");
+            }
           }
         } else {
           state = AsyncData(false);
@@ -79,14 +94,27 @@ class DeliveryProvider extends StateNotifier<AsyncValue<bool>> {
 
       await Stripe.instance.presentPaymentSheet();
 
+      debugPrint("PAYMENT SUCCESS");
+
       AppSnackBar.instance.success("Payment successfully completed");
 
       ref.read(cartProvider.notifier).clearCart();
+      ref.invalidate(myOrderProvider);
 
       AppRoutes.instance.pushNamed(
         AppRoutesKey.instance.customerOrderSuccessfulScreen,
       );
-    } catch (e) {
+    } on StripeException catch (e) {
+      debugPrint("STRIPE ERROR: ${e.error.localizedMessage}");
+      debugPrint("STRIPE CODE: ${e.error.code}");
+
+      AppSnackBar.instance.error(
+        e.error.localizedMessage ?? "Payment Failed",
+      );
+    } catch (e, s) {
+      debugPrint("GENERAL ERROR: $e");
+      debugPrintStack(stackTrace: s);
+
       AppSnackBar.instance.error("Payment Failed");
     }
   }

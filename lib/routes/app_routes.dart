@@ -13,15 +13,12 @@ import 'package:nexprime/screens/auth_screen/sign_in_screen/sign_in_screen.dart'
 import 'package:nexprime/screens/auth_screen/sign_up_screen/sign_up_screen.dart';
 import 'package:nexprime/screens/auth_screen/sign_up_verify_screen/sign_up_verify_screen.dart';
 import 'package:nexprime/screens/auth_screen/verification_in_progress_screen/verification_in_progress_screen.dart';
-import 'package:nexprime/screens/base_screen/about_us_screen/about_us_screen.dart';
 import 'package:nexprime/screens/base_screen/error_screen/error_screen.dart';
-import 'package:nexprime/screens/base_screen/faq_screen/faq_screen.dart';
 import 'package:nexprime/screens/base_screen/language_change_screen/language_change_screen.dart';
 import 'package:nexprime/screens/base_screen/no_internet_screen/no_internet_screen.dart';
 import 'package:nexprime/screens/base_screen/not_found_screen/not_found_screen.dart';
-import 'package:nexprime/screens/base_screen/privacy_policy_screen/privacy_policy_screen.dart';
-import 'package:nexprime/screens/base_screen/terms_and_conditions_screen/terms_and_conditions_screen.dart';
 import 'package:nexprime/screens/customer_screens/custom_cloth_details_screen/customer_cloth_details_screen.dart';
+import 'package:nexprime/screens/customer_screens/customer_about_us_screen/customer_about_us_screen.dart';
 import 'package:nexprime/screens/customer_screens/customer_cart_screen/customer_cart_screen.dart';
 import 'package:nexprime/screens/customer_screens/customer_chat_screen/customer_chat_screen.dart';
 import 'package:nexprime/screens/customer_screens/customer_cloth_checkout_screen/customer_cloth_checkout_screen.dart';
@@ -57,6 +54,8 @@ import 'package:nexprime/screens/vendor_screens/vendor_live_screen/vendor_live_s
 import 'package:nexprime/utils/app_log.dart';
 import 'package:go_router/go_router.dart';
 
+import '../screens/base_screen/faq_screen/faq_screen.dart';
+
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRoutes {
@@ -71,31 +70,15 @@ class AppRoutes {
     debugLogDiagnostics: kDebugMode,
     initialLocation: AppRoutesKey.instance.initial,
     routes: [
-      GoRoute(
-        path: AppRoutesKey.instance.initial,
-        name: AppRoutesKey.instance.splash,
-        builder: (context, state) => SplashScreen(),
-      ),
+      GoRoute(path: AppRoutesKey.instance.initial, name: AppRoutesKey.instance.initial, builder: (context, state) => SplashScreen()),
       GoRoute(
         path: "/${AppRoutesKey.instance.onBoardScreen}",
         name: AppRoutesKey.instance.onBoardScreen,
         builder: (context, state) => OnBoardScreen(),
       ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.forgotScreen}",
-        name: AppRoutesKey.instance.forgotScreen,
-        builder: (context, state) => ForgotScreen(),
-      ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.signInScreen}",
-        name: AppRoutesKey.instance.signInScreen,
-        builder: (context, state) => SignInScreen(),
-      ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.signUpScreen}",
-        name: AppRoutesKey.instance.signUpScreen,
-        builder: (context, state) => SignUpScreen(),
-      ),
+      GoRoute(path: "/${AppRoutesKey.instance.forgotScreen}", name: AppRoutesKey.instance.forgotScreen, builder: (context, state) => ForgotScreen()),
+      GoRoute(path: "/${AppRoutesKey.instance.signInScreen}", name: AppRoutesKey.instance.signInScreen, builder: (context, state) => SignInScreen()),
+      GoRoute(path: "/${AppRoutesKey.instance.signUpScreen}", name: AppRoutesKey.instance.signUpScreen, builder: (context, state) => SignUpScreen()),
       GoRoute(
         path: "/${AppRoutesKey.instance.appNavigationScreen}",
         name: AppRoutesKey.instance.appNavigationScreen,
@@ -111,30 +94,17 @@ class AppRoutes {
         name: AppRoutesKey.instance.notFoundScreen,
         builder: (context, state) => NotFoundScreen(),
       ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.errorScreen}",
-        name: AppRoutesKey.instance.errorScreen,
-        builder: (context, state) => ErrorScreen(),
-      ),
+      GoRoute(path: "/${AppRoutesKey.instance.errorScreen}", name: AppRoutesKey.instance.errorScreen, builder: (context, state) => ErrorScreen()),
       GoRoute(
         path: "/${AppRoutesKey.instance.noInternetScreen}",
         name: AppRoutesKey.instance.noInternetScreen,
         builder: (context, state) => NoInternetScreen(),
       ),
+      GoRoute(path: "/${AppRoutesKey.instance.faqScreen}", name: AppRoutesKey.instance.faqScreen, builder: (context, state) => FaqScreen()),
       GoRoute(
-        path: "/${AppRoutesKey.instance.faqScreen}",
-        name: AppRoutesKey.instance.faqScreen,
-        builder: (context, state) => FaqScreen(),
-      ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.privacyPolicyScreen}",
-        name: AppRoutesKey.instance.privacyPolicyScreen,
-        builder: (context, state) => PrivacyPolicyScreen(),
-      ),
-      GoRoute(
-        path: "/${AppRoutesKey.instance.termsAndConditionScreen}",
-        name: AppRoutesKey.instance.termsAndConditionScreen,
-        builder: (context, state) => TermsAndConditionsScreen(),
+        path: "/${AppRoutesKey.instance.customerAboutUsScreen}",
+        name: AppRoutesKey.instance.customerAboutUsScreen,
+        builder: (context, state) => CustomerAboutUsScreen(),
       ),
       GoRoute(
         path: "/${AppRoutesKey.instance.vendorEditProfileScreen}",
@@ -150,26 +120,17 @@ class AppRoutes {
         },
       ),
       GoRoute(
-        path: "/${AppRoutesKey.instance.aboutUsScreen}",
-        name: AppRoutesKey.instance.aboutUsScreen,
-        builder: (context, state) => AboutUsScreen(),
-      ),
-            GoRoute(
         path: "/${AppRoutesKey.instance.changeLanguageScreen}",
         name: AppRoutesKey.instance.changeLanguageScreen,
         builder: (context, state) => LanguageChangeScreen(),
       ),
       GoRoute(
-        path:
-            "/${AppRoutesKey.instance.customerGroceriesHomeCategories}/:id/:name",
+        path: "/${AppRoutesKey.instance.customerGroceriesHomeCategories}/:id/:name",
         name: AppRoutesKey.instance.customerGroceriesHomeCategories,
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           final name = state.pathParameters['name'] ?? '';
-          return CustomerGroceriesHomeCategories(
-            countryId: id,
-            countryName: name,
-          );
+          return CustomerGroceriesHomeCategories(countryId: id, countryName: name);
         },
       ),
       GoRoute(
@@ -190,8 +151,7 @@ class AppRoutes {
             final dummyProduct = pm.ProductModel(
               id: 0,
               name: "Dummy Huddie",
-              description:
-                  "A premium huddie for testing when no data is provided.",
+              description: "A premium huddie for testing when no data is provided.",
               basePrice: 0.0,
               stockUnits: 20,
               size: ["S", "M", "L", "XL"],
@@ -207,15 +167,11 @@ class AppRoutes {
                 'https://img.freepik.com/free-photo/young-woman-wearing-maroon-hoodie_23-2148767357.jpg?t=st=1740023447~exp=1740027047~hmac=6b93f7e5f9f6e56e0e56e0e56e0e56e0e56e0e56e0e56e0e56e0e56e0e56e0e5&w=740',
               ],
               storeId: 0,
-              store: pm.Store(
-                id: 0,
-                name: 'Generic Store',
-                address: '',
-                photo: '',
-              ),
+              store: pm.Store(id: 0, name: 'Generic Store', address: '', photo: ''),
               categories: [pm.Category(id: 0, name: 'Clothing', image: '')],
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
+              taxFee: 0,
             );
             return CustomerClothDetailsScreen(product: dummyProduct);
           }
@@ -279,17 +235,11 @@ class AppRoutes {
                 "https://images.unsplash.com/photo-1583623025817-d180a2221d0a?auto=format&fit=crop&w=800&q=80",
               ],
               storeId: 0,
-              store: pm.Store(
-                id: 0,
-                name: 'Green Thumb',
-                address: '',
-                photo: '',
-              ),
-              categories: [
-                pm.Category(id: 0, name: 'Home appliance', image: ''),
-              ],
+              store: pm.Store(id: 0, name: 'Green Thumb', address: '', photo: ''),
+              categories: [pm.Category(id: 0, name: 'Home appliance', image: '')],
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
+              taxFee: 0,
             );
             return CustomerFoodDetailsScreen(product: dummyProduct);
           }
@@ -300,17 +250,24 @@ class AppRoutes {
         path: "/${AppRoutesKey.instance.customerOrderTrackList}",
         name: AppRoutesKey.instance.customerOrderTrackList,
         builder: (context, state) {
+          if (state.extra is Map) {
+            final map = state.extra as Map;
+            return CustomerOrderTrackList(
+              trackingUrl: map['trackingUrl'] as String? ?? '',
+              subOrderId: map['subOrderId'] as int?,
+            );
+          }
           final trackingUrl = state.extra as String? ?? '';
           return CustomerOrderTrackList(trackingUrl: trackingUrl);
         },
       ),
       GoRoute(
-          path: "/${AppRoutesKey.instance.customerReviewScreen}",
-          name: AppRoutesKey.instance.customerReviewScreen,
-          builder: (context, state) {
-            final orderId = state.extra as int? ?? 0;
-            return CustomerReviewScreen(orderId: orderId);
-          }
+        path: "/${AppRoutesKey.instance.customerReviewScreen}",
+        name: AppRoutesKey.instance.customerReviewScreen,
+        builder: (context, state) {
+          final orderId = state.extra as int? ?? 0;
+          return CustomerReviewScreen(orderId: orderId);
+        },
       ),
       GoRoute(
         path: "/${AppRoutesKey.instance.customerFollowShopList}",
@@ -344,25 +301,17 @@ class AppRoutes {
         path: "/${AppRoutesKey.instance.customerChatScreen}",
         name: AppRoutesKey.instance.customerChatScreen,
         builder: (context, state) {
-
-          var args =  state.extra;
-          if(args is Map){
+          var args = state.extra;
+          if (args is Map) {
             var userId = int.tryParse("${args['userId'] ?? 0}") ?? 0;
             var userName = "${args['name'] ?? ""}";
             var profileImageUrl = "${args['profileImageUrl'] ?? ''}";
             MarketingProductModel? product = args["product"] is MarketingProductModel ? args["product"] : null;
-            bool showReport=args['showReport'] == true;
+            bool showReport = args['showReport'] == true;
 
-            return CustomerChatScreen(
-              name: userName,
-              profileImageUrl: profileImageUrl,
-              product: product,
-              userId: userId,
-              showReport: showReport,
-            );
+            return CustomerChatScreen(name: userName, profileImageUrl: profileImageUrl, product: product, userId: userId, showReport: showReport);
           }
           return NotFoundScreen();
-
         },
       ),
       GoRoute(
@@ -457,14 +406,7 @@ class AppRoutes {
           final shopPhoto = extra['shopPhoto'] as String? ?? '';
           final offer = extra['offer'] as String? ?? '';
 
-          return VendorLiveScreen(
-            token: token,
-            streamId: streamId,
-            isHost: isHost,
-            shopName: shopName,
-            shopPhoto: shopPhoto,
-            offer: offer,
-          );
+          return VendorLiveScreen(token: token, streamId: streamId, isHost: isHost, shopName: shopName, shopPhoto: shopPhoto, offer: offer);
         },
       ),
     ],
@@ -479,8 +421,7 @@ class AppRoutes {
       if (asyncStatus.hasError) return "/${AppRoutesKey.instance.errorScreen}";
 
       final isOnline = asyncStatus.value ?? true;
-      final goingToNoInternet =
-          state.name == AppRoutesKey.instance.noInternetScreen;
+      final goingToNoInternet = state.name == AppRoutesKey.instance.noInternetScreen;
 
       if (!isOnline && !goingToNoInternet) {
         return "/${AppRoutesKey.instance.noInternetScreen}";
@@ -513,13 +454,7 @@ class AppRoutes {
     String? fragment,
   }) {
     try {
-      router.goNamed(
-        value,
-        pathParameters: pathParameters,
-        extra: extra,
-        fragment: fragment,
-        queryParameters: queryParameters,
-      );
+      router.goNamed(value, pathParameters: pathParameters, extra: extra, fragment: fragment, queryParameters: queryParameters);
     } catch (e) {
       errorLog("goNamed", e);
     }
@@ -540,12 +475,7 @@ class AppRoutes {
     Object? extra,
   }) {
     try {
-      router.replaceNamed(
-        value,
-        pathParameters: pathParameters,
-        extra: extra,
-        queryParameters: queryParameters,
-      );
+      router.replaceNamed(value, pathParameters: pathParameters, extra: extra, queryParameters: queryParameters);
     } catch (e) {
       errorLog("replaceNamed", e);
     }
@@ -572,12 +502,7 @@ class AppRoutes {
     Object? extra,
   }) {
     try {
-      return router.pushNamed<T>(
-        value,
-        pathParameters: pathParameters,
-        extra: extra,
-        queryParameters: queryParameters,
-      );
+      return router.pushNamed<T>(value, pathParameters: pathParameters, extra: extra, queryParameters: queryParameters);
     } catch (e) {
       errorLog("pushNamed", e);
       return Future.value(null);
@@ -600,12 +525,7 @@ class AppRoutes {
     Object? extra,
   }) {
     try {
-      return router.pushReplacementNamed<T>(
-        value,
-        pathParameters: pathParameters,
-        extra: extra,
-        queryParameters: queryParameters,
-      );
+      return router.pushReplacementNamed<T>(value, pathParameters: pathParameters, extra: extra, queryParameters: queryParameters);
     } catch (e) {
       errorLog("pushReplacementNamed", e);
       return Future.value(null);

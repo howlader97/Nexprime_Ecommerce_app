@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:nexprime/routes/app_routes.dart';
-import 'package:nexprime/utils/app_snack_bar.dart';
-
+import '../../../../routes/app_routes.dart';
 import '../../../../services/repository/order_repository.dart';
+import '../../../../utils/app_snack_bar.dart';
 
 final customerReviewProvider =
 ChangeNotifierProvider((ref) => CustomerReviewProvider());

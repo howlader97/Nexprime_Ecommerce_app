@@ -38,15 +38,15 @@ class CustomerOrderSuccessfulScreen extends ConsumerWidget {
                           fontWeight: FontWeight.w400,
                         ),
                      ),
-                    AppButton(
-                      onTap: (){
-                      // AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerOrderScreen);
-                      },
-                      height: AppSize.size.height* 0.052,
-                      title: "Track My Order",
-                      backgroundColor: AppColors.instance.green,
-                      borderColor: AppColors.instance.green,
-                    ),
+                    // AppButton(
+                    //   onTap: (){
+                    //   // AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerOrderScreen);
+                    //   },
+                    //   height: AppSize.size.height* 0.052,
+                    //   title: "Track My Order",
+                    //   backgroundColor: AppColors.instance.green,
+                    //   borderColor: AppColors.instance.green,
+                    // ),
                     AppButton(
                       onTap: (){
                         ref.read(navIndexProvider.notifier).state = 0;

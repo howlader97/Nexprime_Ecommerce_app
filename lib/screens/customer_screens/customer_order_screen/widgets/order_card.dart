@@ -17,10 +17,13 @@ class OrderCard extends StatelessWidget {
   final String productName;
   final bool isTrackOrderOpen;
   final bool isReviewSectionOpen;
+  final bool isConfirmOrderOpen;
   final String productImageUrl;
   final String? trackingUrl;
+  final int? subOrderId;
   final VoidCallback? onTap;
   final VoidCallback? onPressed;
+  final VoidCallback? onConfirmOrder;
   final String? size;
   final String? color;
   final String? shopName;
@@ -34,9 +37,12 @@ class OrderCard extends StatelessWidget {
     required this.productImageUrl,
     this.onTap,
     this.onPressed,
+    this.onConfirmOrder,
     required this.isTrackOrderOpen,
     required this.isReviewSectionOpen,
+    this.isConfirmOrderOpen = false,
     this.trackingUrl,
+    this.subOrderId,
     this.size,
     this.color,
     this.shopName,
@@ -44,8 +50,6 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print("isReviewSectionOpen: $isReviewSectionOpen");
-    // print("isTrackOrderOpen $isTrackOrderOpen");
     return CustomDecoratedBox(
       child: Padding(
         padding: EdgeInsets.all(AppSize.size.width * 0.04),
@@ -168,7 +172,10 @@ class OrderCard extends StatelessWidget {
                           onTap: () {
                             AppRoutes.instance.pushNamed(
                               AppRoutesKey.instance.customerOrderTrackList,
-                              extra: trackingUrl ?? '',
+                              extra: {
+                                'trackingUrl': trackingUrl ?? '',
+                                'subOrderId': subOrderId,
+                              },
                             );
                           },
                           child: AppText(
@@ -186,6 +193,17 @@ class OrderCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (isConfirmOrderOpen) ...[
+              Gap(height: 12),
+              AppButton(
+                title: "Confirm Received (অর্ডার রিসিভ নিশ্চিত করুন)",
+                backgroundColor: AppColors.instance.green,
+                borderColor: AppColors.instance.green,
+                titleColor: Colors.white,
+                onTap: onConfirmOrder,
+                height: AppSize.size.height * 0.048,
+              ),
+            ],
             if (isReviewSectionOpen) ...[
               Gap(height: 16),
               AppButton(

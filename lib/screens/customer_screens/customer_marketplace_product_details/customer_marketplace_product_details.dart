@@ -16,15 +16,14 @@ final marketplaceProductPageProvider = StateProvider.autoDispose<int>((ref) => 0
 
 class CustomerMarketplaceProductDetails extends ConsumerStatefulWidget {
   final int productId;
+
   const CustomerMarketplaceProductDetails({super.key, required this.productId});
 
   @override
-  ConsumerState<CustomerMarketplaceProductDetails> createState() =>
-      _CustomerMarketplaceProductDetailsState();
+  ConsumerState<CustomerMarketplaceProductDetails> createState() => _CustomerMarketplaceProductDetailsState();
 }
 
-class _CustomerMarketplaceProductDetailsState
-    extends ConsumerState<CustomerMarketplaceProductDetails> {
+class _CustomerMarketplaceProductDetailsState extends ConsumerState<CustomerMarketplaceProductDetails> {
   final PageController _pageController = PageController();
 
   @override
@@ -35,7 +34,7 @@ class _CustomerMarketplaceProductDetailsState
 
   @override
   Widget build(BuildContext context) {
-    final currentUser=ref.watch(customerProfileProvider);
+    final currentUser = ref.watch(customerProfileProvider);
     final currentPage = ref.watch(marketplaceProductPageProvider);
     final productState = ref.watch(singleMarketingProductProvider(widget.productId));
 
@@ -49,15 +48,10 @@ class _CustomerMarketplaceProductDetailsState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppText(
-                      text: "Product not found",
-                      fontSize: 16,
-                    ),
+                    AppText(text: "Product not found", fontSize: 16),
                     const Gap(height: 16),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.instance.green,
-                      ),
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.instance.green),
                       onPressed: () => AppRoutes.instance.pop(),
                       child: const Text("Go Back", style: TextStyle(color: Colors.white)),
                     ),
@@ -68,9 +62,7 @@ class _CustomerMarketplaceProductDetailsState
 
             final images = (product.images != null && product.images!.isNotEmpty)
                 ? product.images!
-                : [
-              'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=60'
-            ];
+                : ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=60'];
 
             return Stack(
               children: [
@@ -85,9 +77,7 @@ class _CustomerMarketplaceProductDetailsState
                       PageView.builder(
                         controller: _pageController,
                         onPageChanged: (index) {
-                          ref
-                              .read(marketplaceProductPageProvider.notifier)
-                              .state = index;
+                          ref.read(marketplaceProductPageProvider.notifier).state = index;
                         },
                         itemCount: images.length,
                         itemBuilder: (context, index) {
@@ -107,23 +97,13 @@ class _CustomerMarketplaceProductDetailsState
                         child: GestureDetector(
                           onTap: () {
                             if (currentPage > 0) {
-                              _pageController.previousPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
+                              _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                             }
                           },
                           child: Container(
                             padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.instance.green,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                            decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(4)),
+                            child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 16),
                           ),
                         ),
                       ),
@@ -134,23 +114,13 @@ class _CustomerMarketplaceProductDetailsState
                         child: GestureDetector(
                           onTap: () {
                             if (currentPage < images.length - 1) {
-                              _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
+                              _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                             }
                           },
                           child: Container(
                             padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.instance.green,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                            decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(4)),
+                            child: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
                           ),
                         ),
                       ),
@@ -163,15 +133,13 @@ class _CustomerMarketplaceProductDetailsState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
                             images.length,
-                                (index) => Container(
+                            (index) => Container(
                               margin: const EdgeInsets.symmetric(horizontal: 4),
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: currentPage == index
-                                    ? AppColors.instance.green
-                                    : const Color(0xFF4A4A4A),
+                                color: currentPage == index ? AppColors.instance.green : const Color(0xFF4A4A4A),
                               ),
                             ),
                           ),
@@ -188,46 +156,31 @@ class _CustomerMarketplaceProductDetailsState
                   bottom: 0,
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Color(0xFFEFF1F0), // Light greyish green from image
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
+                      color: Color(0xFFEFF1F0),
+                      // Light greyish green from image
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                     ),
                     child: Column(
                       children: [
                         Expanded(
                           child: SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 24),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AppText(
-                                  text: product.goodsType ?? "Category",
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14,
-                                ),
+                                AppText(text: product.goodsType ?? "Category", color: Colors.grey.shade600, fontSize: 14),
                                 const Gap(height: 8),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: AppText(
-                                        text: product.name ?? 'Unknown Product',
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      child: AppText(text: product.name ?? 'Unknown Product', fontSize: 28, fontWeight: FontWeight.bold),
                                     ),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.instance.green,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                      decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(8)),
                                       child: AppText(
-                                        text: "\$${product.price ?? '0.00'}",
+                                        text: "¥${product.price ?? '0.00'}",
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
@@ -238,25 +191,13 @@ class _CustomerMarketplaceProductDetailsState
                                 const Gap(height: 16),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.location_on_outlined,
-                                      color: AppColors.instance.green,
-                                      size: 20,
-                                    ),
+                                    Icon(Icons.location_on_outlined, color: AppColors.instance.green, size: 20),
                                     const Gap(width: 4),
-                                    AppText(
-                                      text: product.location ?? 'Unknown Location',
-                                      color: AppColors.instance.green,
-                                      fontSize: 14,
-                                    ),
+                                    AppText(text: product.location ?? 'Unknown Location', color: AppColors.instance.green, fontSize: 14),
                                   ],
                                 ),
                                 const Gap(height: 24),
-                                AppText(
-                                  text: "Description",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
+                                AppText(text: "Description", fontWeight: FontWeight.bold, fontSize: 20),
                                 const Gap(height: 12),
                                 AppText(
                                   text: product.description != null && product.description!.isNotEmpty
@@ -275,18 +216,21 @@ class _CustomerMarketplaceProductDetailsState
                           padding: const EdgeInsets.all(20),
                           child: AppButton(
                             height: AppSize.size.height * 0.065,
-                            title: product.creatorId == currentUser?.id ?"Own Product": "Message Seller",
+                            title: product.creatorId == currentUser.value?.id ? "Own Product" : "Message Seller",
                             onTap: () {
-                              if(product.creatorId == currentUser?.id){
-                                return ;
+                              if (product.creatorId == currentUser.value?.id) {
+                                return;
                               }
-                              AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerChatScreen, extra: {
-                                "userId": product.creatorId,
-                                "name": product.creator?.fullname,
-                                "profileImageUrl": product.creator?.profileImageUrl,
-                                "product": product,
-                                "showReport":true,
-                              });
+                              AppRoutes.instance.pushNamed(
+                                AppRoutesKey.instance.customerChatScreen,
+                                extra: {
+                                  "userId": product.creatorId,
+                                  "name": product.creator?.fullname,
+                                  "profileImageUrl": product.creator?.profileImageUrl,
+                                  "product": product,
+                                  "showReport": true,
+                                },
+                              );
                             },
 
                             backgroundColor: AppColors.instance.green,
@@ -318,15 +262,8 @@ class _CustomerMarketplaceProductDetailsState
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.instance.green,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                          decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(8)),
+                          child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
                         ),
                       ),
                     ),
@@ -360,15 +297,10 @@ class _CustomerMarketplaceProductDetailsState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppText(
-                  text: "Failed to load product",
-                  fontSize: 16,
-                ),
+                AppText(text: "Failed to load product", fontSize: 16),
                 const Gap(height: 16),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.instance.green,
-                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.instance.green),
                   onPressed: () => ref.refresh(singleMarketingProductProvider(widget.productId)),
                   child: const Text("Retry", style: TextStyle(color: Colors.white)),
                 ),
@@ -380,4 +312,3 @@ class _CustomerMarketplaceProductDetailsState
     );
   }
 }
-

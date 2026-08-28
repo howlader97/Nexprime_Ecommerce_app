@@ -23,24 +23,22 @@ class CustomerMyProductScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: ()async{
-            ref.refresh(myMarketingProductProvider);
+          onRefresh: () async {
+            ref.invalidate(myMarketingProductProvider);
           },
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSize.size.width * 0.042,
-                    vertical: AppSize.size.width * 0.04,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.042, vertical: AppSize.size.width * 0.04),
                   child: Row(
                     children: [
                       IconButtonWidget(
-                        onTap: (){
+                        onTap: () {
                           AppRoutes.instance.pop();
                         },
-                          icon: Icons.arrow_back),
+                        icon: Icons.arrow_back,
+                      ),
                       Gap(width: AppSize.size.width * 0.03),
                       AppText(
                         text: "My Product",
@@ -50,12 +48,10 @@ class CustomerMyProductScreen extends ConsumerWidget {
                       ),
                       Gap(width: AppSize.size.width * 0.16),
                       AppButton(
-                        onTap: (){
-                          AppRoutes.instance.pushNamed(
-                            AppRoutesKey.instance.customerNewProductList,
-                          );
+                        onTap: () {
+                          AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerNewProductList);
                         },
-                        title: "New Product",
+                        title: "Add Product",
                         fontSize: AppSize.size.width * 0.038,
                         backgroundColor: AppColors.instance.green,
                         borderColor: AppColors.instance.green,
@@ -67,18 +63,13 @@ class CustomerMyProductScreen extends ConsumerWidget {
                 ),
               ),
               SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.size.width * 0.042,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.042),
                 sliver: myProductsAsync.when(
                   data: (products) {
                     if (products.isEmpty) {
                       return SliverToBoxAdapter(
                         child: Center(
-                          child: AppText(
-                            text: "No products available",
-                            fontSize: AppSize.size.width * 0.04,
-                          ),
+                          child: AppText(text: "No products available", fontSize: AppSize.size.width * 0.04),
                         ),
                       );
                     }
@@ -99,30 +90,31 @@ class CustomerMyProductScreen extends ConsumerWidget {
                         return MyProductCard(
                           imageUrl: imageUrl,
                           title: product.name ?? 'Unknown',
-                          price: '\$${product.price ?? 0}',
+                          price: '¥${product.price ?? 0}',
                           onEdit: () {
-                            AppRoutes.instance.pushNamed(
-                              AppRoutesKey.instance.customerNewProductList,
-                              extra: product,
-                            );
+                            AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerNewProductList, extra: product);
                           },
                           onDelete: () async {
                             final confirm = await showAdaptiveDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const AppText( text: "Delete Product",style: TextStyle(color: Colors.black),),
-                                content: const AppText( text: 
-                                  "Are you sure you want to delete this product?",style: TextStyle(color:Colors.black),
+                                title: const AppText(
+                                  text: "Delete Product",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                content: const AppText(
+                                  text: "Are you sure you want to delete this product?",
+                                  style: TextStyle(color: Colors.black),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, false),
-                                    child: const AppText( text: "Cancel"),
+                                    child: const AppText(text: "Cancel"),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(context, true),
-                                    child: const AppText( text: 
-                                      "Delete",
+                                    child: const AppText(
+                                      text: "Delete",
                                       style: TextStyle(color: Colors.red),
                                     ),
                                   ),
@@ -131,16 +123,12 @@ class CustomerMyProductScreen extends ConsumerWidget {
                             );
 
                             if (confirm == true) {
-                              final success = await MarketingProductRepository
-                                  .instance
-                                  .deleteMarketingProduct(product.id!);
+                              final success = await MarketingProductRepository.instance.deleteMarketingProduct(product.id!);
                               if (success) {
-                                AppSnackBar.instance
-                                    .success("Product deleted successfully");
+                                AppSnackBar.instance.success("Product deleted successfully");
                                 ref.invalidate(myMarketingProductProvider);
                               } else {
-                                AppSnackBar.instance
-                                    .error("Failed to delete product");
+                                AppSnackBar.instance.error("Failed to delete product");
                               }
                             }
                           },
@@ -150,17 +138,10 @@ class CustomerMyProductScreen extends ConsumerWidget {
                   },
                   error: (error, stack) => SliverToBoxAdapter(
                     child: Center(
-                      child: AppText(
-                        text: "Error loading my products",
-                        fontSize: AppSize.size.width * 0.04,
-                      ),
+                      child: AppText(text: "Error loading my products", fontSize: AppSize.size.width * 0.04),
                     ),
                   ),
-                  loading: () => const SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
+                  loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
                 ),
               ),
             ],

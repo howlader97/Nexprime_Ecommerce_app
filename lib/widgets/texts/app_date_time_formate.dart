@@ -1,5 +1,5 @@
-import 'package:nexprime/utils/app_log.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:nexprime/utils/app_log.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/standalone.dart' as tz;
 
@@ -25,7 +25,7 @@ class AppDateTimeFormate {
       if (dateTime == null) return "";
       tz.initializeTimeZones();
       DateTime utcTime = dateTime.toUtc();
-      tz.Location location = tz.getLocation(userTimezone ?? 'America/Detroit');
+      tz.Location location = tz.getLocation('Asia/Tokyo');
       tz.TZDateTime localTime = tz.TZDateTime.from(utcTime, location);
       const List<String> monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -45,7 +45,7 @@ class AppDateTimeFormate {
       if (dateTime == null) return "";
       tz.initializeTimeZones();
       DateTime utcTime = dateTime.toUtc();
-      tz.Location location = tz.getLocation(userTimezone ?? 'America/Detroit');
+      tz.Location location = tz.getLocation('Asia/Tokyo');
       tz.TZDateTime localTime = tz.TZDateTime.from(utcTime, location);
       const List<String> monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -66,7 +66,7 @@ class AppDateTimeFormate {
       if (dateTime == null) return "";
       tz.initializeTimeZones();
       DateTime utcTime = dateTime.toUtc();
-      tz.Location location = tz.getLocation(userTimezone ?? 'America/Detroit');
+      tz.Location location = tz.getLocation('Asia/Tokyo');
       tz.TZDateTime localTime = tz.TZDateTime.from(utcTime, location);
       const List<String> monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -95,7 +95,7 @@ class AppDateTimeFormate {
       DateTime utcTime = DateTime.parse(inputDateTime).toUtc();
 
       // Get the location for the user's timezone
-      tz.Location location = tz.getLocation(userTimezone ?? 'America/Detroit');
+      tz.Location location = tz.getLocation('Asia/Tokyo');
 
       // Convert UTC to the user's local time
       tz.TZDateTime localTime = tz.TZDateTime.from(utcTime, location);
@@ -133,10 +133,10 @@ class AppDateTimeFormate {
       if (tryDate == null) return "";
       tz.initializeTimeZones();
       DateTime utcTime = DateTime.parse(inputDateTime).toUtc();
-      tz.Location location = tz.getLocation(userTimezone ?? 'America/Detroit');
+      tz.Location location = tz.getLocation('Asia/Tokyo');
       tz.TZDateTime localTime = tz.TZDateTime.from(utcTime, location);
 
-      final DateTime now = DateTime.now();
+      final tz.TZDateTime now = tz.TZDateTime.now(location);
       final Duration difference = now.difference(localTime);
 
       if (difference.inDays == 0) {

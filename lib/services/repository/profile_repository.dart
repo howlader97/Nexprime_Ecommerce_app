@@ -7,8 +7,7 @@ class ProfileRepository {
   /////////////// constructor
   ProfileRepository._privateConstructor();
 
-  static final ProfileRepository _instance =
-      ProfileRepository._privateConstructor();
+  static final ProfileRepository _instance = ProfileRepository._privateConstructor();
 
   static ProfileRepository get instance => _instance;
 
@@ -30,5 +29,31 @@ class ProfileRepository {
       errorLog("profile data", e);
       return null;
     }
+  }
+
+  Future<double> myBalance() async {
+    try {
+      var response = await _apiServices.getServices(_api.myBalance);
+      if (response is Map) {
+        return double.tryParse(response["balance"].toString()) ?? 0.0;
+      }
+    } catch (e) {
+      errorLog("my balance", e);
+    }
+    return 0.0;
+  }
+
+  Future<String> myBalanceTopUp(double amount) async {
+    try {
+      var response = await _apiServices.postServices(url: _api.myBalanceTopUp, body: {"amount": amount});
+      if (response is Map) {
+        if (response.containsKey("clientSecret") && response["clientSecret"] is String) {
+          return response["clientSecret"].toString();
+        }
+      }
+    } catch (e) {
+      errorLog("my balance", e);
+    }
+    return "";
   }
 }

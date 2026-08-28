@@ -33,12 +33,7 @@ class CustomerCartScreen extends ConsumerWidget {
                 automaticallyImplyLeading: false,
                 title: Row(
                   children: [
-                    AppText(
-                      text: "My Cart",
-                      fontSize: AppSize.size.width * 0.055,
-                      color: AppColors.instance.black06,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    AppText(text: "My Cart", fontSize: AppSize.size.width * 0.055, color: AppColors.instance.black06, fontWeight: FontWeight.w600),
                   ],
                 ),
               ),
@@ -50,21 +45,14 @@ class CustomerCartScreen extends ConsumerWidget {
                         child: Center(
                           child: Padding(
                             padding: EdgeInsets.all(20.0),
-                            child: AppText(
-                              text: "Cart is empty",
-                              color: AppColors.instance.black06,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,),
-
+                            child: AppText(text: "Cart is empty", color: AppColors.instance.black06, fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ];
                   }
                   final subtotal = cart.items.fold<double>(0, (sum, item) {
-                    final price = item.product.salePrice > 0
-                        ? item.product.salePrice
-                        : item.product.basePrice;
+                    final price = item.product.salePrice > 0 ? item.product.salePrice : item.product.basePrice;
 
                     return sum + (price * item.quantity);
                   });
@@ -72,9 +60,7 @@ class CustomerCartScreen extends ConsumerWidget {
                   final itemSlivers = cart.items.map((cartItem) {
                     return SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: AppSize.size.height * 0.02,
-                        ),
+                        padding: EdgeInsets.only(bottom: AppSize.size.height * 0.02),
                         child: CustomDecoratedBox(
                           height: AppSize.size.height * 0.22,
                           child: Padding(
@@ -85,6 +71,8 @@ class CustomerCartScreen extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(12),
                                   child: AppImage(
                                     width: AppSize.size.width * 0.4,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
                                     url: cartItem.product.images.isNotEmpty
                                         ? cartItem.product.images.first
                                         : "https://www.yellowclothing.net/cdn/shop/files/DSC0004288_16.jpg?v=1771044529",
@@ -93,15 +81,14 @@ class CustomerCartScreen extends ConsumerWidget {
                                 Gap(width: AppSize.size.width * 0.028),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       AppText(
-                                        text: cartItem.product.name.isNotEmpty
-                                            ? cartItem.product.name
-                                            : "",
-                                        fontSize: AppSize.size.width * 0.047,
+                                        text: cartItem.product.name.isNotEmpty ? cartItem.product.name : "",
+                                        fontSize: AppSize.size.width * 0.045,
                                         color: AppColors.instance.black06,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.w600,
                                       ),
                                       if (cartItem.product.store != null) ...[
@@ -111,6 +98,8 @@ class CustomerCartScreen extends ConsumerWidget {
                                           fontSize: AppSize.size.width * 0.035,
                                           color: AppColors.instance.green,
                                           fontWeight: FontWeight.bold,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
                                       if (cartItem.size != null || cartItem.color != null) ...[
@@ -120,108 +109,70 @@ class CustomerCartScreen extends ConsumerWidget {
                                             if (cartItem.size != null) ...[
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade200,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: AppText(
-                                                  text: "Size: ${cartItem.size}",
-                                                  fontSize: 11,
-                                                  color: Colors.black87,
-                                                ),
+                                                decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
+                                                child: AppText(text: "Size: ${cartItem.size}", fontSize: 12, color: Colors.black87),
                                               ),
                                               const Gap(width: 8),
                                             ],
                                             if (cartItem.color != null) ...[
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade200,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: AppText(
-                                                  text: "Color: ${cartItem.color}",
-                                                  fontSize: 11,
-                                                  color: Colors.black87,
-                                                ),
+                                                decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
+                                                child: AppText(text: "Color: ${cartItem.color}", fontSize: 12, color: Colors.black87),
                                               ),
                                             ],
                                           ],
                                         ),
                                       ],
-                                      Gap(height: AppSize.size.height * 0.007),
+                                      Gap(height: AppSize.size.height * 0.005),
                                       AppText(
-                                        text:
-                                        cartItem
-                                            .product
-                                            .description
-                                            .isNotEmpty
-                                            ? cartItem.product.description
-                                            : "",
+                                        text: cartItem.product.description.isNotEmpty ? cartItem.product.description : "",
                                         maxLines: 2,
                                         fontSize: AppSize.size.width * 0.038,
                                         overflow: TextOverflow.ellipsis,
                                         color: AppColors.instance.black06,
                                         fontWeight: FontWeight.w400,
                                       ),
-                                      const Spacer(),
+                                      Spacer(),
+                                      AppText(
+                                        text: "Tax Fee: ${cartItem.product.taxFee}%",
+                                        fontSize: AppSize.size.width * 0.038,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: AppColors.instance.black06,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                       Row(
                                         children: [
                                           AppText(
                                             text:
-                                            "\$${(cartItem.product.salePrice > 0 ? cartItem.product.salePrice : cartItem.product.basePrice).toStringAsFixed(2)}",
-                                            fontSize:
-                                            AppSize.size.width * 0.047,
+                                                "¥${(cartItem.product.salePrice > 0 ? cartItem.product.salePrice : cartItem.product.basePrice).toStringAsFixed(2)}",
+                                            fontSize: AppSize.size.width * 0.047,
                                             color: AppColors.instance.black06,
                                             fontWeight: FontWeight.w600,
                                           ),
-                                          Gap(
-                                            width: AppSize.size.height * 0.015,
-                                          ),
+                                          Gap(width: AppSize.size.height * 0.015),
                                           IconButtonWidget(
                                             padding: AppSize.size.width * 0.008,
                                             icon: Icons.remove,
                                             onTap: () {
                                               if (cartItem.quantity > 1) {
-                                                ref
-                                                    .read(cartProvider.notifier)
-                                                    .updateQuantity(
-                                                  cartItem.id,
-                                                  "decrease",
-                                                );
+                                                ref.read(cartProvider.notifier).updateQuantity(cartItem.id, "decrease");
                                               } else {
-                                                AppSnackBar.instance.error(
-                                                  "minimum quantity",
-                                                );
+                                                AppSnackBar.instance.error("minimum quantity");
                                               }
                                             },
                                           ),
-                                          Gap(
-                                            width: AppSize.size.height * 0.006,
-                                          ),
-                                          AppText(
-                                            fontSize: AppSize.size.width * 0.05,
-                                            text: cartItem.quantity.toString(),
-                                          ),
-                                          Gap(
-                                            width: AppSize.size.height * 0.006,
-                                          ),
+                                          Gap(width: AppSize.size.height * 0.006),
+                                          AppText(fontSize: AppSize.size.width * 0.05, text: cartItem.quantity.toString()),
+                                          Gap(width: AppSize.size.height * 0.006),
                                           IconButtonWidget(
                                             padding: AppSize.size.width * 0.008,
                                             icon: Icons.add,
                                             onTap: () {
-                                              if (cartItem.quantity <
-                                                  cartItem.product.stockUnits) {
-                                                ref
-                                                    .read(cartProvider.notifier)
-                                                    .updateQuantity(
-                                                  cartItem.id,
-                                                  "increase",
-                                                );
+                                              if (cartItem.quantity < cartItem.product.stockUnits) {
+                                                ref.read(cartProvider.notifier).updateQuantity(cartItem.id, "increase");
                                               } else {
-                                                AppSnackBar.instance.error(
-                                                  "Insufficient stock quantity",
-                                                );
+                                                AppSnackBar.instance.error("Insufficient stock quantity");
                                               }
                                             },
                                           ),
@@ -238,36 +189,33 @@ class CustomerCartScreen extends ConsumerWidget {
                     );
                   }).toList();
 
+                  final totalShipping = cart.items.fold(0.0, (sum, item) {
+                    final resp = item.product.shippingResponsibility;
+                    if (resp == "CUSTOMER" || resp.isEmpty) {
+                      return sum + (item.product.shippingCharge * item.quantity);
+                    }
+                    return sum;
+                  });
+                  final totalDisplayAmount = subtotal + totalShipping;
+
                   final bottomSliver = SliverToBoxAdapter(
                     child: CustomDecoratedBox(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppSize.size.width * 0.04,
-                          vertical: AppSize.size.height * 0.03,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.04, vertical: AppSize.size.height * 0.03),
                         child: Column(
                           spacing: 10,
                           children: [
-                            WidgetRow(
-                              name: "Subtotal",
-                              value: "\$${subtotal.toStringAsFixed(2)}",
-                            ),
+                            WidgetRow(name: "Subtotal", value: "¥${subtotal.toStringAsFixed(2)}"),
                             WidgetRow(
                               name: "Shipping",
-                              value:
-                              "\$${cart.items.fold(0.0, (sum, item) => sum + item.product.shippingCharge).toStringAsFixed(2)}",
+                              value: "¥${totalShipping.toStringAsFixed(2)}",
                             ),
                             const Divider(),
-                            WidgetRow(
-                              name: "Total",
-                              value: "\$${cart.totalAmount.toStringAsFixed(2)}",
-                            ),
+                            WidgetRow(name: "Total", value: "¥${totalDisplayAmount.toStringAsFixed(2)}"),
                             Gap(height: AppSize.size.height * 0.016),
                             AppButton(
                               onTap: () {
-                                AppRoutes.instance.pushNamed(
-                                  AppRoutesKey.instance.customerDeliveryInfo,
-                                );
+                                AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerDeliveryInfo);
                               },
                               height: AppSize.size.height * 0.053,
                               backgroundColor: AppColors.instance.green,

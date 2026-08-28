@@ -19,16 +19,14 @@ class VendorEditProfileScreen extends ConsumerStatefulWidget {
   const VendorEditProfileScreen({super.key});
 
   @override
-  ConsumerState<VendorEditProfileScreen> createState() =>
-      _VendorEditProfileScreenState();
+  ConsumerState<VendorEditProfileScreen> createState() => _VendorEditProfileScreenState();
 }
 
-class _VendorEditProfileScreenState
-    extends ConsumerState<VendorEditProfileScreen> {
+class _VendorEditProfileScreenState extends ConsumerState<VendorEditProfileScreen> {
   late TextEditingController storeNameTEController;
   late TextEditingController storeBioTextEditingController;
   late TextEditingController storeAddressTextController;
-  
+
   String? profileImageFilePath;
   String? coverImageFilePath;
   bool _isInitialized = false;
@@ -75,9 +73,9 @@ class _VendorEditProfileScreenState
       body: SafeArea(
         child: storeAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, st) => Center(child: AppText( text: "Error: $err")),
+          error: (err, st) => Center(child: AppText(text: "Error: $err")),
           data: (store) {
-            if (store == null) return const Center(child: AppText( text: "No store data found"));
+            if (store == null) return const Center(child: AppText(text: "No store data found"));
 
             return CustomScrollView(
               slivers: [
@@ -88,17 +86,8 @@ class _VendorEditProfileScreenState
                     children: [
                       // Cover Image
                       coverImageFilePath != null
-                          ? AppImage(
-                              filePath: coverImageFilePath,
-                              width: AppSize.size.width,
-                              isZomBle: true,
-                            )
-                          : AppImage(
-                              width: AppSize.size.width,
-                              isZomBle: true,
-                              url: store.coverImgUrl,
-                              fit: BoxFit.cover,
-                            ),
+                          ? AppImage(filePath: coverImageFilePath ?? "", width: AppSize.size.width, isZomBle: true)
+                          : AppImage(width: AppSize.size.width, isZomBle: true, url: store.coverImgUrl ?? "", fit: BoxFit.cover),
                       Positioned(
                         top: AppSize.size.height * 0.05,
                         left: 16,
@@ -114,11 +103,13 @@ class _VendorEditProfileScreenState
                         right: 16,
                         child: GestureDetector(
                           onTap: () {
-                            appImageUserTake(callBack: (v) {
-                              setState(() {
-                                coverImageFilePath = v;
-                              });
-                            });
+                            appImageUserTake(
+                              callBack: (v) {
+                                setState(() {
+                                  coverImageFilePath = v;
+                                });
+                              },
+                            );
                           },
                           child: const IconButtonWidget(icon: Icons.image_rounded),
                         ),
@@ -138,49 +129,33 @@ class _VendorEditProfileScreenState
                             width: AppSize.size.width,
                             decoration: BoxDecoration(
                               color: AppColors.instance.white50,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                             ),
                           ),
                         ),
                         // Profile Image
                         Container(
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: AppColors.instance.error,
-                              width: 2,
-                            ),
+                            border: Border.all(color: AppColors.instance.error, width: 2),
                             shape: BoxShape.circle,
                           ),
                           child: profileImageFilePath != null
-                              ? AppImageCircular(
-                                  filePath: profileImageFilePath,
-                                  width: AppSize.size.width * 0.3,
-                                  height: AppSize.size.width * 0.30,
-                                )
-                              : AppImageCircular(
-                                  width: AppSize.size.width * 0.3,
-                                  height: AppSize.size.width * 0.30,
-                                  url: store.photo,
-                                ),
+                              ? AppImageCircular(filePath: profileImageFilePath, width: AppSize.size.width * 0.3, height: AppSize.size.width * 0.30)
+                              : AppImageCircular(width: AppSize.size.width * 0.3, height: AppSize.size.width * 0.30, url: store.photo),
                         ),
                         Positioned(
                           child: Center(
                             child: IconButton(
                               onPressed: () {
-                                appImageUserTake(callBack: (v) {
-                                  setState(() {
-                                    profileImageFilePath = v;
-                                  });
-                                });
+                                appImageUserTake(
+                                  callBack: (v) {
+                                    setState(() {
+                                      profileImageFilePath = v;
+                                    });
+                                  },
+                                );
                               },
-                              icon: Icon(
-                                Icons.camera_alt_outlined,
-                                size: 36,
-                                color: AppColors.instance.white50,
-                              ),
+                              icon: Icon(Icons.camera_alt_outlined, size: 36, color: AppColors.instance.white50),
                             ),
                           ),
                         ),
@@ -214,7 +189,6 @@ class _VendorEditProfileScreenState
                         Padding(
                           padding: EdgeInsets.all(AppSize.size.width * 0.04),
                           child: AppButton(
-
                             height: AppSize.size.width * 0.14,
                             backgroundColor: AppColors.instance.green,
                             borderColor: AppColors.instance.green,
@@ -227,12 +201,8 @@ class _VendorEditProfileScreenState
                                     name: storeNameTEController.text,
                                     bio: storeBioTextEditingController.text,
                                     address: storeAddressTextController.text,
-                                    photo: profileImageFilePath != null
-                                        ? File(profileImageFilePath!)
-                                        : null,
-                                    coverPhoto: coverImageFilePath != null
-                                        ? File(coverImageFilePath!)
-                                        : null,
+                                    photo: profileImageFilePath != null ? File(profileImageFilePath!) : null,
+                                    coverPhoto: coverImageFilePath != null ? File(coverImageFilePath!) : null,
                                   );
                               if (success && mounted) {
                                 AppRoutes.instance.pop();

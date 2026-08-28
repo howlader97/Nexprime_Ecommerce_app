@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/widgets/customer_groceries_home_categories_widgets.dart';
+import 'package:nexprime/screens/customer_screens/customer_profile_screen/provider/customer_profile_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_shop_screen/provider/customer_shop_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_shop_screen/provider/shop_product_filter_provider.dart';
 import 'package:nexprime/utils/app_size.dart';
@@ -30,8 +31,13 @@ class CustomerShopScreen extends ConsumerWidget {
     final groceryCategories = ref.watch(groceriesProvider("grocery"));
     final wardrobeCategories = ref.watch(groceriesProvider("wardrobe"));
     final cart = ref.watch(addToCartProvider);
-    final groceryFilterState = ref.watch(groceryFilterProvider(int.parse(storeId)));
-    final wardrobeFilterState = ref.watch(wardrobeFilterProvider(int.parse(storeId)));
+    final groceryFilterState = ref.watch(
+      groceryFilterProvider(int.parse(storeId)),
+    );
+    final wardrobeFilterState = ref.watch(
+      wardrobeFilterProvider(int.parse(storeId)),
+    );
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -40,13 +46,13 @@ class CustomerShopScreen extends ConsumerWidget {
               data: (shop) {
                 return SliverAppBar(
                   automaticallyImplyLeading: false,
-                  expandedHeight: AppSize.size.height * 0.35,
+                  expandedHeight: AppSize.size.height * 0.27,
                   flexibleSpace: Stack(
                     children: [
                       AppImage(
                         width: AppSize.size.width,
                         isZomBle: true,
-                        url: shop?.coverImgUrl,
+                        url: shop?.coverImgUrl ?? "",
                         fit: BoxFit.cover,
                       ),
                       Positioned(
@@ -144,10 +150,10 @@ class CustomerShopScreen extends ConsumerWidget {
                               onTap: () {
                                 ref
                                     .read(
-                                  customerShopProvider(
-                                    int.parse(storeId),
-                                  ).notifier,
-                                )
+                                      customerShopProvider(
+                                        int.parse(storeId),
+                                      ).notifier,
+                                    )
                                     .toggleFollow();
                               },
                               padding: EdgeInsets.all(
@@ -166,6 +172,42 @@ class CustomerShopScreen extends ConsumerWidget {
                           ],
                         ),
                         Divider(color: AppColors.instance.grayEE),
+
+                        Consumer(
+                          builder: (context, ref, child) {
+                            final currentUser = ref.read(
+                              customerProfileProvider,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: AppButton(
+                                height: AppSize.size.height * 0.065,
+                                title:
+                                    shopData.value?.vendorId == currentUser.value?.id
+                                    ? "Own Product"
+                                    : "Message Seller",
+                                onTap: () {
+                                  if (shopData.value?.vendorId ==
+                                      currentUser.value?.id) {
+                                    return;
+                                  }
+                                  AppRoutes.instance.pushNamed(
+                                    AppRoutesKey.instance.customerChatScreen,
+                                    extra: {
+                                      "userId": shopData.value?.vendor?.id,
+                                      "name": shopData.value?.vendor?.fullname,
+                                      "profileImageUrl": shopData.value?.photo,
+                                      "showReport": false,
+                                    },
+                                  );
+                                },
+
+                                backgroundColor: AppColors.instance.green,
+                                borderColor: AppColors.instance.green,
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -181,16 +223,23 @@ class CustomerShopScreen extends ConsumerWidget {
 
             shopData.when(
               data: (shop) {
-                final storeGroceryCategoryNames = shop?.products
-                    .where((p) => p.size.isEmpty || p.colors.isEmpty)
-                    .expand((p) => p.categories)
-                    .map((c) => c.name.toLowerCase().trim())
-                    .toSet() ??
+                final storeGroceryCategoryNames =
+                    shop?.products
+                        .where((p) => p.size.isEmpty || p.colors.isEmpty)
+                        .expand((p) => p.categories)
+                        .map((c) => c.name.toLowerCase().trim())
+                        .toSet() ??
                     {};
 
-                final filteredGroceryCategories = groceryCategories
-                    ?.where((cat) => storeGroceryCategoryNames.contains(cat.name.toLowerCase().trim()))
-                    .toList() ?? [];
+                final filteredGroceryCategories =
+                    groceryCategories
+                        ?.where(
+                          (cat) => storeGroceryCategoryNames.contains(
+                            cat.name.toLowerCase().trim(),
+                          ),
+                        )
+                        .toList() ??
+                    [];
 
                 return SliverToBoxAdapter(
                   child: CustomerGroceriesHomeCategoriesWidgets(
@@ -198,7 +247,9 @@ class CustomerShopScreen extends ConsumerWidget {
                     categories: filteredGroceryCategories,
                     onTapCategory: (categoryId) {
                       ref
-                          .read(groceryFilterProvider(int.parse(storeId)).notifier)
+                          .read(
+                            groceryFilterProvider(int.parse(storeId)).notifier,
+                          )
                           .filterProducts(categoryId);
                     },
                   ),
@@ -211,14 +262,14 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
               error: (e, _) =>
-              const SliverToBoxAdapter(child: SizedBox.shrink()),
+                  const SliverToBoxAdapter(child: SizedBox.shrink()),
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(left: AppSize.size.width * 0.04),
                 child: AppText(
                   text: "Popular Food",
-                  fontSize: AppSize.size.width * 0.056,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.instance.black06,
                 ),
@@ -228,19 +279,22 @@ class CustomerShopScreen extends ConsumerWidget {
               data: (filteredList) {
                 return shopData.when(
                   data: (shop) {
-                    final productsToDisplay = filteredList ?? shop?.products.where((product) {
-                      final sizes = product.size;
-                      final colors = product.colors;
-                      return (sizes.isEmpty) || (colors.isEmpty);
-                    }).toList();
+                    final productsToDisplay =
+                        filteredList ??
+                        shop?.products.where((product) {
+                          final sizes = product.size;
+                          final colors = product.colors;
+                          return (sizes.isEmpty) || (colors.isEmpty);
+                        }).toList();
 
-                    if (productsToDisplay == null || productsToDisplay.isEmpty) {
+                    if (productsToDisplay == null ||
+                        productsToDisplay.isEmpty) {
                       return SliverToBoxAdapter(
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 40),
-                            child: AppText( text:
-                            'No Data Available',
+                            child: AppText(
+                              text: 'No Data Available',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.instance.black06,
@@ -269,7 +323,9 @@ class CustomerShopScreen extends ConsumerWidget {
                               return GestureDetector(
                                 onTap: () {
                                   AppRoutes.instance.pushReplacement(
-                                    AppRoutesKey.instance.customerFoodDetailsScreen,
+                                    AppRoutesKey
+                                        .instance
+                                        .customerFoodDetailsScreen,
                                     extra: shopProduct,
                                   );
                                 },
@@ -279,34 +335,36 @@ class CustomerShopScreen extends ConsumerWidget {
                                       ? shopProduct.images.first
                                       : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
                                   itemTitle: shopProduct.name,
-                                  price: '\$${shopProduct.salePrice}',
+                                  price: '¥${shopProduct.salePrice}',
                                   onPressed: cart.isLoading
                                       ? null
                                       : () async {
-                                    try {
-                                      await ref
-                                          .read(addToCartProvider.notifier)
-                                          .addCartData(
-                                        productId: shopProduct.id,
-                                        quantity: 1,
-                                      );
+                                          try {
+                                            await ref
+                                                .read(
+                                                  addToCartProvider.notifier,
+                                                )
+                                                .addCartData(
+                                                  productId: shopProduct.id,
+                                                  quantity: 1,
+                                                );
 
-                                      if (context.mounted) {
-                                        AppSnackBar.instance.success(
-                                          "Data successfully added to cart",
-                                        );
-                                      }
-                                      await ref
-                                          .read(cartProvider.notifier)
-                                          .getCartData();
-                                    } catch (e) {
-                                      if (context.mounted) {
-                                        AppSnackBar.instance.error(
-                                          "Data add failed: $e",
-                                        );
-                                      }
-                                    }
-                                  },
+                                            if (context.mounted) {
+                                              AppSnackBar.instance.success(
+                                                "Data successfully added to cart",
+                                              );
+                                            }
+                                            await ref
+                                                .read(cartProvider.notifier)
+                                                .getCartData();
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              AppSnackBar.instance.error(
+                                                "Data add failed: $e",
+                                              );
+                                            }
+                                          }
+                                        },
                                 ),
                               );
                             },
@@ -326,22 +384,28 @@ class CustomerShopScreen extends ConsumerWidget {
               loading: () => const SliverToBoxAdapter(
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (e, _) => SliverToBoxAdapter(
-                child: Center(child: Text(e.toString())),
-              ),
+              error: (e, _) =>
+                  SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
             ),
             shopData.when(
               data: (shop) {
-                final storeWardrobeCategoryNames = shop?.products
-                    .where((p) => p.size.isNotEmpty || p.colors.isNotEmpty)
-                    .expand((p) => p.categories)
-                    .map((c) => c.name.toLowerCase().trim())
-                    .toSet() ??
+                final storeWardrobeCategoryNames =
+                    shop?.products
+                        .where((p) => p.size.isNotEmpty || p.colors.isNotEmpty)
+                        .expand((p) => p.categories)
+                        .map((c) => c.name.toLowerCase().trim())
+                        .toSet() ??
                     {};
 
-                final filteredWardrobeCategories = wardrobeCategories
-                    ?.where((cat) => storeWardrobeCategoryNames.contains(cat.name.toLowerCase().trim()))
-                    .toList() ?? [];
+                final filteredWardrobeCategories =
+                    wardrobeCategories
+                        ?.where(
+                          (cat) => storeWardrobeCategoryNames.contains(
+                            cat.name.toLowerCase().trim(),
+                          ),
+                        )
+                        .toList() ??
+                    [];
 
                 return SliverToBoxAdapter(
                   child: CustomerGroceriesHomeCategoriesWidgets(
@@ -349,7 +413,9 @@ class CustomerShopScreen extends ConsumerWidget {
                     categories: filteredWardrobeCategories,
                     onTapCategory: (categoryId) {
                       ref
-                          .read(wardrobeFilterProvider(int.parse(storeId)).notifier)
+                          .read(
+                            wardrobeFilterProvider(int.parse(storeId)).notifier,
+                          )
                           .filterProducts(categoryId);
                     },
                   ),
@@ -362,16 +428,16 @@ class CustomerShopScreen extends ConsumerWidget {
                 ),
               ),
               error: (e, _) =>
-              const SliverToBoxAdapter(child: SizedBox.shrink()),
+                  const SliverToBoxAdapter(child: SizedBox.shrink()),
             ),
 
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(left: AppSize.size.width * 0.04),
-                child: AppText( text:
-                "Clothing",
+                child: AppText(
+                  text: "Clothing",
                   style: TextStyle(
-                    fontSize: AppSize.size.width * 0.057,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.instance.black06,
                   ),
@@ -382,19 +448,22 @@ class CustomerShopScreen extends ConsumerWidget {
               data: (filteredList) {
                 return shopData.when(
                   data: (shop) {
-                    final productsToDisplay = filteredList ?? shop?.products.where((product) {
-                      final sizes = product.size;
-                      final colors = product.colors;
-                      return (sizes.isNotEmpty) || (colors.isNotEmpty);
-                    }).toList();
+                    final productsToDisplay =
+                        filteredList ??
+                        shop?.products.where((product) {
+                          final sizes = product.size;
+                          final colors = product.colors;
+                          return (sizes.isNotEmpty) || (colors.isNotEmpty);
+                        }).toList();
 
-                    if (productsToDisplay == null || productsToDisplay.isEmpty) {
+                    if (productsToDisplay == null ||
+                        productsToDisplay.isEmpty) {
                       return const SliverToBoxAdapter(
                         child: Center(
                           child: Padding(
                             padding: EdgeInsets.all(16),
-                            child: AppText( text:
-                            'No Data Available',
+                            child: AppText(
+                              text: 'No Data Available',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -407,7 +476,10 @@ class CustomerShopScreen extends ConsumerWidget {
 
                     return SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         child: SizedBox(
                           height: AppSize.size.height * 0.188,
                           child: ListView.builder(
@@ -419,7 +491,9 @@ class CustomerShopScreen extends ConsumerWidget {
                               return GestureDetector(
                                 onTap: () {
                                   AppRoutes.instance.pushReplacement(
-                                    AppRoutesKey.instance.customerClothDetailsScreen,
+                                    AppRoutesKey
+                                        .instance
+                                        .customerClothDetailsScreen,
                                     extra: shopProduct,
                                   );
                                 },
@@ -429,34 +503,44 @@ class CustomerShopScreen extends ConsumerWidget {
                                       ? shopProduct.images.first
                                       : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
                                   itemTitle: shopProduct.name,
-                                  price: '\$${shopProduct.salePrice}',
-                                  onPressed: cart.isLoading
-                                      ? null
-                                      : () async {
-                                    try {
-                                      await ref
-                                          .read(addToCartProvider.notifier)
-                                          .addCartData(
-                                        productId: shopProduct.id,
-                                        quantity: 1,
-                                      );
-
-                                      if (context.mounted) {
-                                        AppSnackBar.instance.success(
-                                          "Data successfully added to cart",
-                                        );
-                                      }
-                                      await ref
-                                          .read(cartProvider.notifier)
-                                          .getCartData();
-                                    } catch (e) {
-                                      if (context.mounted) {
-                                        AppSnackBar.instance.error(
-                                          "Data add failed: $e",
-                                        );
-                                      }
-                                    }
+                                  price: '¥${shopProduct.salePrice}',
+                                  onPressed: (){
+                                    AppRoutes.instance.pushReplacement(
+                                      AppRoutesKey
+                                          .instance
+                                          .customerClothDetailsScreen,
+                                      extra: shopProduct,
+                                    );
                                   },
+                                  // onPressed: cart.isLoading
+                                  //     ? null
+                                  //     : () async {
+                                  //         try {
+                                  //           await ref
+                                  //               .read(
+                                  //                 addToCartProvider.notifier,
+                                  //               )
+                                  //               .addCartData(
+                                  //                 productId: shopProduct.id,
+                                  //                 quantity: 1,
+                                  //               );
+                                  //
+                                  //           if (context.mounted) {
+                                  //             AppSnackBar.instance.success(
+                                  //               "Data successfully added to cart",
+                                  //             );
+                                  //           }
+                                  //           await ref
+                                  //               .read(cartProvider.notifier)
+                                  //               .getCartData();
+                                  //         } catch (e) {
+                                  //           if (context.mounted) {
+                                  //             AppSnackBar.instance.error(
+                                  //               "Data add failed: $e",
+                                  //             );
+                                  //           }
+                                  //         }
+                                  //       },
                                 ),
                               );
                             },
@@ -476,9 +560,8 @@ class CustomerShopScreen extends ConsumerWidget {
               loading: () => const SliverToBoxAdapter(
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (e, _) => SliverToBoxAdapter(
-                child: Center(child: Text(e.toString())),
-              ),
+              error: (e, _) =>
+                  SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
             ),
           ],
         ),

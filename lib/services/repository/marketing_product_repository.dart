@@ -35,9 +35,13 @@ class MarketingProductRepository {
     return 0;
   }
 
-  Future<List<MarketingProductModel>> fetchMarketingProducts() async {
+  Future<List<MarketingProductModel>> fetchMarketingProducts({
+    String? goodsType,
+    String? location,
+  }) async {
     try {
-      var response = await _apiServices.getServices(_api.marketingProducts);
+      final url = _api.marketingProductsFiltered(goodsType: goodsType, location: location);
+      var response = await _apiServices.getServices(url);
       if (response != null && response is List) {
         return response.map((e) => MarketingProductModel.fromJson(e)).toList();
       }
@@ -59,6 +63,20 @@ class MarketingProductRepository {
       errorLog("getMarketingProductById error", e);
       return null;
     }
+  }
+
+  Future<Map<String, dynamic>?> createPublishingFeePaymentIntent() async {
+    try {
+      var response = await _apiServices.postServices(
+        url: _api.marketingProductPaymentIntent,
+      );
+      if (response is Map<String, dynamic>) {
+        return response;
+      }
+    } catch (e) {
+      errorLog("createPublishingFeePaymentIntent", e);
+    }
+    return null;
   }
 
   Future<bool> publishMarketingProduct(Map<String, dynamic> data, List<File> images) async {

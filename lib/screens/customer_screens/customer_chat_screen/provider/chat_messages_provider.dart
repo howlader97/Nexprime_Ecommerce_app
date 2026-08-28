@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,10 +13,7 @@ class ChatMessagesState {
   final AsyncValue<List<ChatHistoryModel>> messages;
   final ChatHistoryModel? replyingToMessage;
 
-  ChatMessagesState({
-    required this.messages,
-    this.replyingToMessage,
-  });
+  ChatMessagesState({required this.messages, this.replyingToMessage});
 
   ChatMessagesState copyWith({
     AsyncValue<List<ChatHistoryModel>>? messages,
@@ -24,29 +22,31 @@ class ChatMessagesState {
   }) {
     return ChatMessagesState(
       messages: messages ?? this.messages,
-      replyingToMessage: clearReply ? null : (replyingToMessage ?? this.replyingToMessage),
+      replyingToMessage: clearReply
+          ? null
+          : (replyingToMessage ?? this.replyingToMessage),
     );
   }
 }
 
 final chatMessagesProvider =
-    StateNotifierProvider.family<
-      ChatMessagesProvider,
-      ChatMessagesState,
-      int
-    >((ref, userId) {
+    StateNotifierProvider.family<ChatMessagesProvider, ChatMessagesState, int>((
+      ref,
+      userId,
+    ) {
       return ChatMessagesProvider(userId, ref);
     });
 
-class ChatMessagesProvider
-    extends StateNotifier<ChatMessagesState> {
+class ChatMessagesProvider extends StateNotifier<ChatMessagesState> {
   final int userId;
   final Ref ref;
   final ChatRepository _chatRepository = ChatRepository();
+  StreamSubscription? _subscription;
 
   ChatWebsocketService get _websocketService => ref.read(chatWebsocketProvider);
 
-  ChatMessagesProvider(this.userId, this.ref) : super(ChatMessagesState(messages: const AsyncLoading())) {
+  ChatMessagesProvider(this.userId, this.ref)
+    : super(ChatMessagesState(messages: const AsyncLoading())) {
     _initialize();
   }
 
@@ -56,7 +56,10 @@ class ChatMessagesProvider
   }
 
   void setReplyingTo(ChatHistoryModel? message) {
-    state = state.copyWith(replyingToMessage: message, clearReply: message == null);
+    state = state.copyWith(
+      replyingToMessage: message,
+      clearReply: message == null,
+    );
   }
 
   Future<void> fetchChatHistory() async {
@@ -72,14 +75,15 @@ class ChatMessagesProvider
 
   Future<void> _connectWebSocket() async {
     await _websocketService.connect();
-    _websocketService.stream?.listen(
+    _subscription = _websocketService.stream?.listen(
       (event) {
         try {
           final decoded = json.decode(event);
           final newMessage = ChatHistoryModel.fromJson(decoded);
 
           // Only add if relevant to this conversation
-          if (newMessage.senderId == userId || newMessage.receiverId == userId) {
+          if (newMessage.senderId == userId ||
+              newMessage.receiverId == userId) {
             state.messages.whenData((messages) {
               final updatedList = List<ChatHistoryModel>.from(messages)
                 ..insert(0, newMessage);
@@ -94,6 +98,12 @@ class ChatMessagesProvider
         errorLog("WebSocket Error", error);
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   void sendTextMessage(String text) {
@@ -127,5 +137,4 @@ class ChatMessagesProvider
       errorLog("Pusher Image Send Error", e);
     }
   }
-
 }

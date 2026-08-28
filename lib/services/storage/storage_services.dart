@@ -1,5 +1,7 @@
 import 'dart:convert';
-
+import 'package:nexprime/main_app_entry.dart';
+import 'package:nexprime/routes/app_routes.dart';
+import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/services/storage/storage_key.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,6 +55,28 @@ class StorageServices {
     }
   }
 
+  Future<int> getUserId() async {
+    try {
+      final token = await getToken();
+      if (token.isEmpty) return 0;
+      final parts = token.split('.');
+      if (parts.length < 2) return 0;
+
+      var payload = parts[1];
+      final padLength = 4 - (payload.length % 4);
+      if (padLength < 4) {
+        payload += '=' * padLength;
+      }
+
+      final payloadStr = utf8.decode(base64Url.decode(payload));
+      final decoded = jsonDecode(payloadStr);
+      return int.tryParse(decoded['sub'].toString()) ?? 0;
+    } catch (e) {
+      errorLog("getUserId error", e);
+      return 0;
+    }
+  }
+
   Future<void> setEmail(String value) async {
     final pref = await _pref;
     await pref.setString(StorageKey.instance.email, value);
@@ -101,13 +125,18 @@ class StorageServices {
   }
 
   /// Logout (clear all data)
-  Future<void> logout() async {
+  Future<void> logout({String? route}) async {
     try {
       final pref = await _pref;
       await pref.setString(StorageKey.instance.refreshToken, "");
       await pref.setString(StorageKey.instance.token, "");
       await pref.setString(StorageKey.instance.appUserRollData, "");
 
+      AppRoutes.instance.go(route ?? AppRoutesKey.instance.signInScreen);
+
+      Future.delayed(const Duration(milliseconds: 600), () {
+        mainAppKey.currentState?.resetRiverpod();
+      });
     } catch (e) {
       errorLog("logout", e);
     }

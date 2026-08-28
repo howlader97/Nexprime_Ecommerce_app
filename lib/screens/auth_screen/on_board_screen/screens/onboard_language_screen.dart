@@ -26,17 +26,18 @@ class OnboardLanguageScreen extends StatefulWidget {
 
 class _OnboardLanguageScreenState extends State<OnboardLanguageScreen> {
   StorageServices storageServices = StorageServices.instance;
-  List<AppLanguageModel> appLanguages = [
-    AppLanguageModel(
-      flag: "US",
-      name: "English",
-      value: "en_US",
-      isSelected: true,
-    ),
-    AppLanguageModel(flag: "BD", name: "Bangla", value: "bn_BD"),
-    AppLanguageModel(flag: "JP", name: "Japanese", value: "ja_JP"),
-    AppLanguageModel(flag: "SA", name: "Arabic", value: "ar_SA"),
-  ];
+  // List<AppLanguageModel> appLanguages = [
+  //   AppLanguageModel(
+  //     flag: "US",
+  //     name: "English",
+  //     value: "en_US",
+  //     isSelected: true,
+  //   ),
+  //   AppLanguageModel(flag: "BD", name: "Bangla", value: "bn_BD"),
+  //   AppLanguageModel(flag: "JP", name: "Japanese", value: "ja_JP"),
+  //   AppLanguageModel(flag: "SA", name: "Arabic", value: "ar_SA"),
+  //   AppLanguageModel(flag: "CN", name: "Chinese", value: "zh_CN",),
+  // ];
 
   List<AppLanguageModel> result = [];
   void onSelected(int index) {
@@ -51,7 +52,7 @@ class _OnboardLanguageScreenState extends State<OnboardLanguageScreen> {
 
   void onSearch(String value) {
     try {
-      var newList = appLanguages
+      var newList = publicAppLanguagesList
           .where((e) => e.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
       newList.sort((a, b) => a.name.compareTo(b.name));
@@ -85,8 +86,8 @@ class _OnboardLanguageScreenState extends State<OnboardLanguageScreen> {
   void initState() {
     super.initState();
     try {
-      appLanguages.sort((a, b) => a.name.compareTo(b.name));
-      result = appLanguages;
+      publicAppLanguagesList.sort((a, b) => a.name.compareTo(b.name));
+      result = publicAppLanguagesList;
     } catch (e) {
       errorLog("initState", e);
     }

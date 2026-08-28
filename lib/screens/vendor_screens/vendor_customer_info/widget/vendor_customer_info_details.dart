@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:nexprime/models/vendor_order_model.dart';
+import 'package:intl/intl.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_customer_info/widget/vendor_customer_info_text_row.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
+
+import '../../../../models/vendor_order_model.dart';
 
 class VendorCustomerInfoDetails extends StatelessWidget {
   final VendorOrderModel orderModel;
   const VendorCustomerInfoDetails({
-    super.key, required this.orderModel,
+    super.key,
+    required this.orderModel
   });
 
   @override
   Widget build(BuildContext context) {
+    tz.initializeTimeZones();
+    final utcTime = DateTime.parse(orderModel.order!.createdAt.toString()).toUtc();
+    final japan = tz.getLocation('Asia/Tokyo');
+    final jstTime = tz.TZDateTime.from(utcTime, japan);
+
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -31,8 +41,12 @@ class VendorCustomerInfoDetails extends StatelessWidget {
             title: 'Phone number: ',
             subTitle: '${orderModel.order?.deliveryAddress?.phoneNumber}',
           ),
+          VendorCustomerInfoTextRow(
+            title: 'Date and time: ',
+            subTitle: DateFormat('dd MMM yyyy, hh:mm a').format(jstTime),
+          ),
         ],
       ),
     );
   }
-}
+}

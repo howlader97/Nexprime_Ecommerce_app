@@ -4,6 +4,7 @@ import 'package:nexprime/constant/app_colors.dart';
 import 'package:nexprime/constant/app_constant.dart';
 import 'package:nexprime/utils/languages/language_provider.dart';
 import 'package:nexprime/utils/languages/translation_cache.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:translator/translator.dart';
 
 class AppText extends ConsumerStatefulWidget {
@@ -22,7 +23,7 @@ class AppText extends ConsumerStatefulWidget {
     this.isDynamic = true,
     this.decorationColor,
     this.fontFamily,
-    this.style
+    this.style,
   });
 
   final String text;
@@ -70,19 +71,18 @@ class _AppTextState extends ConsumerState<AppText> {
   @override
   Widget build(BuildContext context) {
     final selectedLanguage = ref.watch(languageProvider).value ?? "en_US";
-    var style = widget.style ?? Theme.of(context).textTheme.displaySmall?.copyWith(
-      height: widget.height,
-      fontSize: widget.fontSize,
-      color: widget.color ?? AppColors.instance.black500,
-      fontWeight: widget.fontWeight,
-      fontFamily: widget.fontFamily ?? AppConstant.instance.openSans,
-      fontFamilyFallback: [
-        AppConstant.instance.montserrat,
-        AppConstant.instance.openSans,
-      ],
-      decoration: widget.decoration,
-      decorationColor: widget.decorationColor,
-    );
+    var style =
+        widget.style ??
+        Theme.of(context).textTheme.displaySmall?.copyWith(
+          height: widget.height,
+          fontSize: widget.fontSize,
+          color: widget.color ?? AppColors.instance.black500,
+          fontWeight: widget.fontWeight,
+          fontFamily: widget.fontFamily ?? AppConstant.instance.openSans,
+          fontFamilyFallback: [AppConstant.instance.montserrat, AppConstant.instance.openSans],
+          decoration: widget.decoration,
+          decorationColor: widget.decorationColor,
+        );
 
     if (!widget.isDynamic) {
       return Text(
@@ -100,13 +100,16 @@ class _AppTextState extends ConsumerState<AppText> {
       future: _translateText(selectedLanguage),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text(
-            "...",
-            maxLines: widget.maxLines,
-            overflow: widget.overflow,
-            textAlign: widget.textAlign,
-            style: style,
-            textScaler: TextScaler.linear(widget.textScaleFactor),
+          return Skeletonizer(
+            enabled: true,
+            child: Text(
+              widget.text,
+              maxLines: widget.maxLines,
+              overflow: widget.overflow,
+              textAlign: widget.textAlign,
+              style: style,
+              textScaler: TextScaler.linear(widget.textScaleFactor),
+            ),
           );
         }
         final txt = snapshot.data ?? widget.text;

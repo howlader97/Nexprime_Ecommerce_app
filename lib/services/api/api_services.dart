@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:nexprime/routes/app_routes.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/services/api/api.dart';
@@ -21,18 +21,10 @@ class ApiServices {
 
   // services
 
-  Future<dynamic> putServices({
-    required String url,
-    dynamic body,
-    int statusCode = 200,
-    Map<String, dynamic>? query,
-  }) async {
+  Future<dynamic> putServices({required String url, dynamic body, int statusCode = 200, Map<String, dynamic>? query}) async {
     try {
-      final response = await api.sendRequest.put(
-        url,
-        data: body,
-        queryParameters: query,
-      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      final response = await api.sendRequest.put(url, data: body, queryParameters: query);
       if (response.statusCode == statusCode) {
         return response.data;
       } else {
@@ -47,11 +39,6 @@ class ApiServices {
       return null;
     } on DioException catch (e) {
       if (e.response.runtimeType != Null) {
-        if (e.response?.statusCode == 401) {
-          await storageServices.logout();
-          appRoutes.pushReplacement(AppRoutesKey.instance.splash);
-        }
-
         if (e.response?.data["message"].runtimeType != Null) {
           AppSnackBar.instance.error("${e.response?.data["message"]}");
         }
@@ -75,6 +62,7 @@ class ApiServices {
     Options? options,
   }) async {
     try {
+      FocusManager.instance.primaryFocus?.unfocus();
       Options? requestOptions = options;
       if (body is FormData) {
         requestOptions = Options(contentType: 'multipart/form-data');
@@ -82,14 +70,8 @@ class ApiServices {
         requestOptions = Options(contentType: 'application/json');
       }
 
-      final dynamic response = await AppApi().sendRequest.post(
-        url,
-        data: body,
-        queryParameters: query,
-        options: requestOptions,
-      );
-      if (response.statusCode >= statusCodeStart &&
-          response.statusCode <= statusCodeEnd) {
+      final dynamic response = await AppApi().sendRequest.post(url, data: body, queryParameters: query, options: requestOptions);
+      if (response.statusCode >= statusCodeStart && response.statusCode <= statusCodeEnd) {
         return response.data;
       } else {
         return null;
@@ -104,12 +86,15 @@ class ApiServices {
     } on DioException catch (e) {
       if (e.response.runtimeType != Null) {
         if (e.response?.statusCode == 401) {
-          await storageServices.logout();
-          appRoutes.pushReplacement(AppRoutesKey.instance.splash);
+          await storageServices.logout(route: AppRoutesKey.instance.initial);
+          // appRoutes.pushReplacement(AppRoutesKey.instance.initial);
         }
 
         if (e.response?.data["message"].runtimeType != Null) {
           AppSnackBar.instance.error("${e.response?.data["message"]}");
+        }
+        if (e.response?.data["detail"].runtimeType != Null) {
+          AppSnackBar.instance.error("${e.response?.data["detail"]}");
         }
 
         return null;
@@ -122,18 +107,10 @@ class ApiServices {
     }
   }
 
-  Future<dynamic> getServices(
-    String url, {
-    int statusCode = 200,
-    Map<String, dynamic>? queryParameters,
-    dynamic body,
-  }) async {
+  Future<dynamic> getServices(String url, {int statusCode = 200, Map<String, dynamic>? queryParameters, dynamic body}) async {
     try {
-      final response = await api.sendRequest.get(
-        url,
-        queryParameters: queryParameters,
-        data: body,
-      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      final response = await api.sendRequest.get(url, queryParameters: queryParameters, data: body);
       if (response.statusCode == statusCode) {
         return response.data;
       } else {
@@ -148,11 +125,6 @@ class ApiServices {
       return null;
     } on DioException catch (e) {
       if (e.response.runtimeType != Null) {
-        if (e.response?.statusCode == 401) {
-          await storageServices.logout();
-          appRoutes.pushReplacement(AppRoutesKey.instance.splash);
-        }
-
         if (e.response?.data["message"].runtimeType != Null) {
           AppSnackBar.instance.error("${e.response?.data["message"]}");
         }
@@ -167,33 +139,21 @@ class ApiServices {
     }
   }
 
-  Future<dynamic> patchServices({
-    required String url,
-    Object? body,
-    int statusCode = 200,
-    Map<String, dynamic>? query,
-    Options? options,
-  }) async {
+  Future<dynamic> patchServices({required String url, Object? body, int statusCode = 200, Map<String, dynamic>? query, Options? options}) async {
     try {
+      FocusManager.instance.primaryFocus?.unfocus();
       Options? requestOptions = options;
       if (body is FormData) {
         requestOptions = Options(contentType: 'multipart/form-data');
       } else {
         requestOptions = Options(contentType: 'application/json');
       }
-      final response = await api.sendRequest.patch(
-        url,
-        data: body,
-        queryParameters: query,
-        options: requestOptions,
-      );
+      final response = await api.sendRequest.patch(url, data: body, queryParameters: query, options: requestOptions);
 
       if (response.statusCode == statusCode) {
         return response.data;
       } else {
-        AppSnackBar.instance.error(
-          "Unexpected response: ${response.statusCode} ${response.statusMessage}",
-        );
+        AppSnackBar.instance.error("Unexpected response: ${response.statusCode} ${response.statusMessage}");
         return null;
       }
     } on SocketException catch (e) {
@@ -205,11 +165,6 @@ class ApiServices {
       return null;
     } on DioException catch (e) {
       if (e.response.runtimeType != Null) {
-        if (e.response?.statusCode == 401) {
-          await storageServices.logout();
-          appRoutes.pushReplacement(AppRoutesKey.instance.splash);
-        }
-
         if (e.response?.data["message"].runtimeType != Null) {
           AppSnackBar.instance.error("${e.response?.data["message"]}");
         }
@@ -224,27 +179,15 @@ class ApiServices {
     }
   }
 
-  Future<dynamic> deleteServices({
-    required String url,
-    Object? body,
-    int statusCode = 200,
-    Map<String, dynamic>? query,
-    Options? options,
-  }) async {
+  Future<dynamic> deleteServices({required String url, Object? body, int statusCode = 200, Map<String, dynamic>? query, Options? options}) async {
     try {
-      final response = await api.sendRequest.delete(
-        url,
-        data: body,
-        queryParameters: query,
-        options: options,
-      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      final response = await api.sendRequest.delete(url, data: body, queryParameters: query, options: options);
 
       if (response.statusCode == statusCode) {
         return response.data;
       } else {
-        AppSnackBar.instance.error(
-          "Unexpected response: ${response.statusCode} ${response.statusMessage}",
-        );
+        AppSnackBar.instance.error("Unexpected response: ${response.statusCode} ${response.statusMessage}");
         return null;
       }
     } on SocketException catch (e) {
@@ -256,15 +199,9 @@ class ApiServices {
       return null;
     } on DioException catch (e) {
       if (e.response.runtimeType != Null) {
-        if (e.response?.statusCode == 401) {
-          await storageServices.logout();
-          appRoutes.pushReplacement(AppRoutesKey.instance.splash);
-        }
-
         if (e.response?.data["message"].runtimeType != Null) {
           AppSnackBar.instance.error("${e.response?.data["message"]}");
         }
-
         return null;
       }
       errorLog('api dio exception', e);

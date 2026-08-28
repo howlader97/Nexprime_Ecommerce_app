@@ -10,7 +10,8 @@ Future<void> main() async {
   //////////////  flutter binding initialize
   WidgetsFlutterBinding.ensureInitialized();
 
-  Stripe.publishableKey = "pk_test_51TioGt721aYTGBGeF7WMRV6PhrXvZpLcZ8mQ2jXqEShwJU11eOUlHjAsrBsHJKW4woD1V0R5fEoBlRR5nLSXTfLU00Rn2TNYcP";
+  Stripe.publishableKey =
+      "pk_test_51TQqdCRoEEHWeaT3NSujFKhBN1Ulz2NZWTPjbt2ObHiPyzXT9wMCcoDnoz6KlgeqGbYLeTuF96gikCZPciOebuQC00QPK6s78G";
 
   await Stripe.instance.applySettings();
 
@@ -33,7 +34,7 @@ Future<void> main() async {
   ////////////// network
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp( MainAppEntry());
+  runApp(MainAppEntry(key: mainAppKey));
   ////////// time formate
   await AppDateTimeFormate.instance.initial();
 }

@@ -50,11 +50,12 @@ class DeliveryInfoRepository {
 
   Future<int?> createOrder({
     required String deliveryAddressId,
-
+    String paymentMethod = "ONLINE",
   }) async {
     try {
       Map<String, dynamic> bodyData = {
         "deliveryAddressId": deliveryAddressId,
+        "paymentMethod": paymentMethod,
       };
 
       var response = await _apiServices.postServices(

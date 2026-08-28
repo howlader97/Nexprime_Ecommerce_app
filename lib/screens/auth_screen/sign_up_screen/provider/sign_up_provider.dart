@@ -9,7 +9,7 @@ import 'package:nexprime/utils/app_snack_bar.dart';
 
 import '../../../../services/storage/storage_services.dart';
 
-final signUpProvider = StateNotifierProvider((ref) => _SignUpProvider());
+final signUpProvider = StateNotifierProvider<_SignUpProvider, SignUpProviderState>((ref) => _SignUpProvider());
 
 class _SignUpProvider extends StateNotifier<SignUpProviderState> {
   _SignUpProvider() : super(SignUpProviderState());
@@ -62,32 +62,29 @@ class _SignUpProvider extends StateNotifier<SignUpProviderState> {
 
   Future<void> customerSignUp({required GlobalKey<FormState> formKey}) async {
     try {
-      if(!formKey.currentState!.validate()) return;
+      if (!formKey.currentState!.validate()) return;
 
-      if(state.isCustomer){
+      if (state.isCustomer) {
         stateUpdate(isLoading: true);
-       bool success = await AuthRepository.instance.customerSignUp(
+        bool success = await AuthRepository.instance.customerSignUp(
           fullName: state.name,
           email: state.email,
           phoneNumber: state.phoneNumber,
           password: state.password,
           frontImage: state.idCardFrontendPart,
-          backImage: state.idCardBackendPart,);
-       stateUpdate(isLoading: false);
-       if(success){
-         await StorageServices.instance.setEmail(state.email);
-         appLog("////////////////${state.email}");
-         AppSnackBar.instance.success("Customer signup successful,\n Verify your account");
-
-         AppRoutes.instance.pushNamed(
-             AppRoutesKey.instance.signUpVerifyScreen
-         );
-         clearAll();
-       }
-      }else{
-        AppRoutes.instance.pushNamed(
-          AppRoutesKey.instance.kycVerificationScreen,
+          backImage: state.idCardBackendPart,
         );
+        stateUpdate(isLoading: false);
+        if (success) {
+          await StorageServices.instance.setEmail(state.email);
+          appLog("////////////////${state.email}");
+          AppSnackBar.instance.success("Customer signup successful,\n Verify your account");
+
+          AppRoutes.instance.pushNamed(AppRoutesKey.instance.signUpVerifyScreen);
+          clearAll();
+        }
+      } else {
+        AppRoutes.instance.pushNamed(AppRoutesKey.instance.kycVerificationScreen);
       }
     } catch (e) {
       errorLog("customerSignUp provider", e);
@@ -95,8 +92,8 @@ class _SignUpProvider extends StateNotifier<SignUpProviderState> {
     }
   }
 
-  Future<void> vendorSignup()async{
-    try{
+  Future<void> vendorSignup() async {
+    try {
       stateUpdate(isLoading: true);
 
       bool success = await AuthRepository.instance.vendorSignUp(
@@ -111,20 +108,16 @@ class _SignUpProvider extends StateNotifier<SignUpProviderState> {
         backImage: state.idCardBackendPart,
         storePhoto: state.storePhoto,
         kycDocument: state.kycDocument,
-         );
+      );
       stateUpdate(isLoading: false);
-      if(success){
+      if (success) {
         await StorageServices.instance.setEmail(state.email);
         AppSnackBar.instance.success("Vendor signup successful,\n Verify your account");
 
-        AppRoutes.instance.pushNamed(
-          AppRoutesKey.instance.signUpVerifyScreen
-        );
+        AppRoutes.instance.pushNamed(AppRoutesKey.instance.signUpVerifyScreen);
         clearAll();
-      }else{
-        AppSnackBar.instance.error(" signup failed,\n Try again");
       }
-    }catch(e){
+    } catch (e) {
       errorLog("vendor Signup", e);
       stateUpdate(isLoading: false);
     }

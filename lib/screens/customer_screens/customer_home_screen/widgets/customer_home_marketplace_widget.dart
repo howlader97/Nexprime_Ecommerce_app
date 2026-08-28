@@ -16,9 +16,9 @@ class CustomerHomeMarketplaceWidget extends StatelessWidget {
     return  GestureDetector(
               onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(horizontal: 14,vertical: 12),
           decoration: BoxDecoration(
             color: AppColors.instance.grayEE,
             borderRadius: BorderRadius.circular(16),

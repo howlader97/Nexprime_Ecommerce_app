@@ -4,7 +4,11 @@ import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 
 final chatWebsocketProvider = Provider<ChatWebsocketService>((ref) {
-  return ChatWebsocketService();
+  final service = ChatWebsocketService();
+  ref.onDispose(() {
+    service.disconnect();
+  });
+  return service;
 });
 
 class ChatWebsocketService {
@@ -26,7 +30,7 @@ class ChatWebsocketService {
         return;
       }
 
-      final wsUrl = Uri.parse('ws://www.nexprime.mtscorporate.com/chat/ws/$token');
+      final wsUrl = Uri.parse('ws://api.nexprimeapp.com/chat/ws/$token');
       
       _channel = WebSocketChannel.connect(wsUrl);
       _broadcastStream = _channel!.stream.asBroadcastStream();

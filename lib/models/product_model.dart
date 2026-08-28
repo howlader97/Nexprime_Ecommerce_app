@@ -18,6 +18,7 @@ class ProductModel {
   final List<Category> categories;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double taxFee;
 
   ProductModel({
     required this.id,
@@ -39,6 +40,7 @@ class ProductModel {
     required this.categories,
     required this.createdAt,
     required this.updatedAt,
+    required this.taxFee,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -71,6 +73,7 @@ class ProductModel {
           .toList(),
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
+      taxFee: double.tryParse("${json["taxFee"] ?? 0}") ?? 0.0,
     );
   }
 }

@@ -34,15 +34,15 @@ class ProfileWidget extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.instance.grayE5,
                   borderRadius: BorderRadius.circular(6),
 
                 ),
                 child: SizedBox(
-                  height: 50,
-                  width: 50,
+                  height: 45,
+                  width: 45,
                   child: Padding(
                     padding: const EdgeInsets.all(7.0),
                     child: child,

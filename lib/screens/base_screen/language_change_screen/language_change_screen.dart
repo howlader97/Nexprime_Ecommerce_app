@@ -25,17 +25,18 @@ class LanguageChangeScreen extends StatefulWidget {
 
 class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   StorageServices storageServices = StorageServices.instance;
-  List<AppLanguageModel> appLanguages = [
-    AppLanguageModel(
-      flag: "US",
-      name: "English",
-      value: "en_US",
-      isSelected: true,
-    ),
-    AppLanguageModel(flag: "BD", name: "Bangla", value: "bn_BD"),
-    AppLanguageModel(flag: "JP", name: "Japanese", value: "ja_JP"),
-    AppLanguageModel(flag: "SA", name: "Arabic", value: "ar_SA"),
-  ];
+  // List<AppLanguageModel> appLanguages = [
+  //   AppLanguageModel(
+  //     flag: "US",
+  //     name: "English",
+  //     value: "en_US",
+  //     isSelected: true,
+  //   ),
+  //   AppLanguageModel(flag: "BD", name: "Bangla", value: "bn_BD"),
+  //   AppLanguageModel(flag: "JP", name: "Japanese", value: "ja_JP"),
+  //   AppLanguageModel(flag: "SA", name: "Arabic", value: "ar_SA"),
+  //   AppLanguageModel(flag: "CN", name: "Chinese", value: "zh_CN",),
+  // ];
 
   List<AppLanguageModel> result = [];
   void onSelected(int index) {
@@ -50,7 +51,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
 
   void onSearch(String value) {
     try {
-      var newList = appLanguages
+      var newList = publicAppLanguagesList
           .where((e) => e.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
       newList.sort((a, b) => a.name.compareTo(b.name));
@@ -84,8 +85,8 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   void initState() {
     super.initState();
     try {
-      appLanguages.sort((a, b) => a.name.compareTo(b.name));
-      result = appLanguages;
+      publicAppLanguagesList.sort((a, b) => a.name.compareTo(b.name));
+      result = publicAppLanguagesList;
     } catch (e) {
       errorLog("initState", e);
     }
@@ -178,6 +179,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                           Gap(width: 10),
                           Expanded(
                             child: AppText(
+                              isDynamic: false,
                               text: item.name,
                               fontWeight: FontWeight.w700,
                               fontSize: AppSize.size.width * 0.05,
@@ -201,6 +203,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
                 continueFunction(ref);
               },
               title: "Continue",
+              isTitleDynamic: false,
               height: AppSize.size.width * 0.15,
               backgroundColor: AppColors.instance.green,
               borderColor: AppColors.instance.green,

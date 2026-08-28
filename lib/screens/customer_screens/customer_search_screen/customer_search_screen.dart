@@ -88,25 +88,17 @@ class _CustomerSearchScreenState extends ConsumerState<CustomerSearchScreen> {
                   return const SliverFillRemaining(
                     hasScrollBody: false,
                     child: Center(
-                      child: AppText(
-                        text: "No products matching with search data",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
+                      child: AppText(text: "No products matching with search data", fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
                     ),
                   );
                 }
                 return SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final product = products[index];
-                        return ProductCard(product: product);
-                      },
-                      childCount: products.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final product = products[index];
+                      return ProductCard(product: product);
+                    }, childCount: products.length),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
@@ -116,12 +108,8 @@ class _CustomerSearchScreenState extends ConsumerState<CustomerSearchScreen> {
                   ),
                 );
               },
-              loading: () => const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (err, stack) => SliverFillRemaining(
-                child: Center(child: Text('Error: $err')),
-              ),
+              loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
+              error: (err, stack) => SliverFillRemaining(child: Center(child: Text('Error: $err'))),
             ),
           ],
         ),
@@ -139,23 +127,14 @@ class ProductCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (product.size.isEmpty && product.colors.isEmpty) {
-          AppRoutes.instance.pushNamed(
-            AppRoutesKey.instance.customerFoodDetailsScreen,
-            extra: product,
-          );
+          AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerFoodDetailsScreen, extra: product);
         } else {
-          AppRoutes.instance.pushNamed(
-            AppRoutesKey.instance.customerClothDetailsScreen,
-            extra: product,
-          );
+          AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerClothDetailsScreen, extra: product);
         }
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: const Color(0xffF2F5F2),
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: BoxDecoration(color: const Color(0xffF2F5F2), borderRadius: BorderRadius.circular(16)),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -194,20 +173,12 @@ class ProductCard extends StatelessWidget {
                     color: AppColors.instance.gray300,
                   ),
                   const Spacer(),
-                  AppText(
-                    text: "\$${product.salePrice}",
-                    fontSize: AppSize.size.width * 0.04,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  AppText(text: "¥${product.salePrice}", fontSize: AppSize.size.width * 0.04, fontWeight: FontWeight.bold, color: Colors.black),
                   const Spacer(),
                   Container(
                     width: 32,
                     height: 32,
-                    decoration: BoxDecoration(
-                      color: AppColors.instance.green,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(8)),
                     child: const Icon(Icons.add, color: Colors.white, size: 20),
                   ),
                 ],

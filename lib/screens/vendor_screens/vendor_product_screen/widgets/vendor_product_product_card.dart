@@ -14,6 +14,7 @@ class VendorProductProductCard extends StatelessWidget {
   final String image;
   final VoidCallback? edit;
   final VoidCallback? delete;
+  final bool isClickable;
 
   const VendorProductProductCard({
     super.key,
@@ -25,20 +26,15 @@ class VendorProductProductCard extends StatelessWidget {
     this.edit,
     this.delete,
     required this.description,
+    this.isClickable = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.instance.dark50,
-        borderRadius: BorderRadius.circular(AppSize.width(value: 10)),
-      ),
+      decoration: BoxDecoration(color: AppColors.instance.dark50, borderRadius: BorderRadius.circular(AppSize.width(value: 10))),
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: AppSize.size.height * 0.009,
-          horizontal: AppSize.size.width * 0.02,
-        ),
+        padding: EdgeInsets.symmetric(vertical: AppSize.size.height * 0.009, horizontal: AppSize.size.width * 0.02),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -47,24 +43,18 @@ class VendorProductProductCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(AppSize.width(value: 4)),
               child: AppImage(
-                path: image.startsWith('http') ? null : image,
-                url: image.startsWith('http') ? image : null,
+                path: image.startsWith('http') ? "" : image,
+                url: image.startsWith('http') ? image : "",
                 height: AppSize.size.width * 0.21,
                 width: AppSize.size.width,
                 fit: BoxFit.cover,
               ),
             ),
             //    Gap(height: 8,),
-            AppText(
-              text: title,
-              fontWeight: FontWeight.w600,
-              fontSize: AppSize.width(value: 16),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+            AppText(text: title, fontWeight: FontWeight.w600, fontSize: AppSize.width(value: 16), overflow: TextOverflow.ellipsis, maxLines: 1),
             // Gap(height: 4),
             AppText(
-              text:description,
+              text: description,
               fontSize: AppSize.width(value: 12),
               color: AppColors.instance.gray300,
               overflow: TextOverflow.ellipsis,
@@ -72,7 +62,6 @@ class VendorProductProductCard extends StatelessWidget {
             ),
 
             //  Gap(height: 5),
-
             SizedBox(
               width: AppSize.size.width,
               height: AppSize.size.width * 0.06,
@@ -81,13 +70,7 @@ class VendorProductProductCard extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Row(
                   children: [
-                    AppText(
-                      text: price,
-                      fontWeight: FontWeight.w600,
-                      fontSize: AppSize.size.width * 0.05,
-                      height: 1,
-                      maxLines: 1,
-                    ),
+                    AppText(text: price, fontWeight: FontWeight.w600, fontSize: AppSize.size.width * 0.05, height: 1, maxLines: 1),
                     if (oldPrice.isNotEmpty) ...[
                       Gap(width: 12),
                       AppText(
@@ -114,48 +97,32 @@ class VendorProductProductCard extends StatelessWidget {
               ),
             ),
 
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(AppSize.width(value: 5)),
-                  decoration: BoxDecoration(
-                    color: AppColors.instance.green,
-                    borderRadius: BorderRadius.circular(
-                      AppSize.width(value: 6),
+            if (isClickable)
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(AppSize.width(value: 5)),
+                    decoration: BoxDecoration(color: AppColors.instance.green, borderRadius: BorderRadius.circular(AppSize.width(value: 6))),
+                    child: GestureDetector(
+                      onTap: edit,
+                      child: Icon(Icons.edit, size: AppSize.width(value: 16), color: AppColors.instance.white50),
                     ),
                   ),
-                  child: GestureDetector(
-                    onTap: edit,
-                    child: Icon(
-                      Icons.edit,
-                      size: AppSize.width(value: 16),
-                      color: AppColors.instance.white50,
+                  Gap(width: 10),
+                  Container(
+                    padding: EdgeInsets.all(AppSize.width(value: 4)),
+                    decoration: BoxDecoration(
+                      color: AppColors.instance.dark50,
+                      borderRadius: BorderRadius.circular(AppSize.width(value: 6)),
+                      border: Border.all(color: AppColors.instance.black700),
+                    ),
+                    child: GestureDetector(
+                      onTap: delete,
+                      child: Icon(Icons.delete_outline_outlined, size: AppSize.width(value: 16), color: AppColors.instance.black400),
                     ),
                   ),
-                ),
-                Gap(width: 10),
-                Container(
-                  padding: EdgeInsets.all(AppSize.width(value: 4)),
-                  decoration: BoxDecoration(
-                    color: AppColors.instance.dark50,
-                    borderRadius: BorderRadius.circular(
-                      AppSize.width(value: 6),
-                    ),
-                    border: Border.all(
-                      color: AppColors.instance.black700,
-                    ),
-                  ),
-                  child: GestureDetector(
-                    onTap: delete,
-                    child: Icon(
-                      Icons.delete_outline_outlined,
-                      size: AppSize.width(value: 16),
-                      color: AppColors.instance.black400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),

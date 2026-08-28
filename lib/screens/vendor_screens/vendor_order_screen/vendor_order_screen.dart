@@ -7,7 +7,6 @@ import '../../../utils/app_size.dart';
 import '../../../utils/gap.dart';
 import '../vendor_common_widget/vendor_custom_order_ordercard.dart';
 import '../vendor_common_widget/vendor_custom_search_filter_row.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_order_screen/provider/vendor_order_provider.dart';
 
@@ -30,38 +29,27 @@ class VendorOrderScreen extends ConsumerWidget {
                   error: (err, stack) => Center(child: Text("Error: $err")),
                   data: (orders) {
                     return CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
                       slivers: [
                         SliverToBoxAdapter(child: _HeaderSection()),
                         orders.isEmpty
                             ? const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: AppText(
-                              text: "No active orders found",
-                              fontSize: 18,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        )
+                                hasScrollBody: false,
+                                child: Center(
+                                  child: AppText(text: "No active orders found", fontSize: 18, color: Colors.grey),
+                                ),
+                              )
                             : SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                              final order = orders[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>  VendorCustomerInfo(orderId: order.id),
-                                    ),
+                                delegate: SliverChildBuilderDelegate((context, index) {
+                                  final order = orders[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => VendorCustomerInfo(orderId: order.id)));
+                                    },
+                                    child: VendorCustomOrderOrdercard(order: order),
                                   );
-                                },
-                                child: VendorCustomOrderOrdercard(order: order),
-                              );
-                            },
-                            childCount: orders.length,
-                          ),
-                        ),
+                                }, childCount: orders.length),
+                              ),
                       ],
                     );
                   },
@@ -74,38 +62,22 @@ class VendorOrderScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    offset: const Offset(0, -4),
-                    blurRadius: 10,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), offset: const Offset(0, -4), blurRadius: 10)],
               ),
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const VendorViewArchive(),
-                      ),
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const VendorViewArchive()));
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: Colors.grey),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const AppText( text:
-                  "View archive",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: const AppText(
+                    text: "View archive",
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -122,23 +94,16 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSize.size.width * 0.05,
-        vertical: AppSize.size.height * 0.02,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.05, vertical: AppSize.size.height * 0.02),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           VendorAppBar(title: "Manage Order"),
           Gap(height: 8),
-          const AppText(
-            text: "Keep track of your sales and logistics.",
-            color: Colors.grey,
-            fontSize: 16,
-          ),
+          const AppText(text: "Keep track of your sales and logistics.", color: Colors.grey, fontSize: 16),
           Gap(height: 20),
           const VendorCustomSearchFilterRow(),
-          Gap(height: 16),
+          Gap(height: 4),
         ],
       ),
     );

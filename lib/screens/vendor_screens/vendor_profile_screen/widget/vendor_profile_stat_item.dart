@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../widgets/texts/app_text.dart';
 
 class VendorProfileStatItem extends StatelessWidget {
-  const VendorProfileStatItem({required this.value, required this.label});
+  const VendorProfileStatItem({super.key, required this.value, required this.label});
 
   final String value;
   final String label;

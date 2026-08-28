@@ -52,8 +52,8 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   void initState() {
-    selectedDate = widget.firstDate;
     selectedDate = widget.initialDate;
+    selectedCurrentDate = widget.initialDate;
     selectedYear = selectedDate.year;
     super.initState();
   }
@@ -123,21 +123,33 @@ class _CalendarViewState extends State<CalendarView> {
     // Actual days of the current month
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime currentDay = DateTime(selectedDate.year, selectedDate.month, day);
-      bool isSelected =
-          currentDay.day == selectedCurrentDate.day && currentDay.year == selectedCurrentDate.year && currentDay.month == selectedCurrentDate.month;
+      final isDisabled = _active(dateTime: currentDay);
+      final isSelected = currentDay.day == selectedCurrentDate.day &&
+          currentDay.year == selectedCurrentDate.year &&
+          currentDay.month == selectedCurrentDate.month;
+
       dayWidgets.add(
         GestureDetector(
-          // onTap: currentDay.month == selectedDate.month ? () => _onDaySelected(currentDay) : null,
-          onTap: () => _onDaySelected(currentDay),
+          onTap: isDisabled ? null : () => _onDaySelected(currentDay),
           child: Container(
-            decoration: BoxDecoration(color: _active(dateTime: currentDay) ? AppColors.instance.black200 : AppColors.instance.black200),
+            color: Colors.transparent,
             child: Container(
-              margin: EdgeInsets.all(AppSize.width(value: 5)),
+              margin: EdgeInsets.all(AppSize.width(value: 4)),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(width: 2, color: isSelected ? AppColors.instance.primary : AppColors.instance.transparent),
+                color: isSelected
+                    ? AppColors.instance.primary
+                    : Colors.transparent,
               ),
-              child: Center(child: AppText(text: day.toString())),
+              child: Center(
+                child: AppText(
+                  text: day.toString(),
+                  color: isSelected
+                      ? Colors.white
+                      : (isDisabled ? AppColors.instance.black200 : AppColors.instance.black900),
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
             ),
           ),
         ),
@@ -191,9 +203,9 @@ class _CalendarViewState extends State<CalendarView> {
             margin: EdgeInsets.all(AppSize.width(value: 20)),
             padding: EdgeInsets.all(AppSize.width(value: 20)),
             decoration: BoxDecoration(
-              color: AppColors.instance.primary,
+              color: AppColors.instance.white,
               borderRadius: BorderRadius.circular(AppSize.width(value: 10)),
-              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: Offset(0, 4))],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -208,9 +220,9 @@ class _CalendarViewState extends State<CalendarView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           PopupMenuButton(
-                            color: AppColors.instance.primary,
+                            color: AppColors.instance.white,
                             position: PopupMenuPosition.under,
-                            child: AppText(text: selectedYear.toString(), fontSize: 24, fontWeight: FontWeight.bold),
+                            child: AppText(text: selectedYear.toString(), fontSize: 24, color: AppColors.instance.black900, fontWeight: FontWeight.bold),
                             onSelected: (value) {
                               _changeYear(value);
                             },
@@ -233,11 +245,11 @@ class _CalendarViewState extends State<CalendarView> {
                               });
                             },
                           ),
-                          AppText(text: "  -  ", fontSize: 24, fontWeight: FontWeight.bold),
+                          AppText(text: "  -  ", fontSize: 24, color: AppColors.instance.black900, fontWeight: FontWeight.bold),
                           PopupMenuButton(
-                            color: AppColors.instance.primary,
+                            color: AppColors.instance.white,
                             position: PopupMenuPosition.under,
-                            child: AppText(text: months[selectedDate.month - 1], fontSize: 24, fontWeight: FontWeight.bold),
+                            child: AppText(text: months[selectedDate.month - 1], fontSize: 24, color: AppColors.instance.black900, fontWeight: FontWeight.bold),
                             onSelected: (value) {
                               setState(() {
                                 selectedDate = DateTime(selectedDate.year, value + 1, 1);

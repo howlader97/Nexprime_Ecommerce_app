@@ -7,6 +7,7 @@ import 'package:nexprime/screens/customer_screens/customer_home_screen/widgets/c
 import 'package:nexprime/screens/customer_screens/customer_message_screen/provider/chat_active_users_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_profile_screen/provider/customer_profile_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_message_screen/provider/chat_conversations_provider.dart';
+import 'package:nexprime/screens/vendor_screens/vendor_profile_screen/provider/vendor_profile_provider.dart';
 import 'package:nexprime/utils/gap.dart';
 import 'package:nexprime/widgets/app_image/app_image_circular.dart';
 import 'package:nexprime/widgets/buttons/icon_button_widget.dart';
@@ -15,6 +16,18 @@ import '../../../constant/app_colors.dart';
 import '../../../utils/app_size.dart';
 import '../../../widgets/texts/app_text.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
+
+final chatMyProfileImageUrlProvider = Provider<String?>((ref) {
+  final customerProfile = ref.watch(customerProfileProvider).value;
+  if (customerProfile == null) return null;
+  if (customerProfile.role.toUpperCase() == "VENDOR") {
+    final vendorStore = ref.watch(vendorStoreProvider).value;
+    return vendorStore?.photo ?? customerProfile.profileImageUrl;
+  }
+  return customerProfile.profileImageUrl;
+});
 
 final chatSearchQueryProvider = StateProvider<String>((ref) => '');
 
@@ -24,8 +37,11 @@ class CustomerMessageScreen extends ConsumerWidget {
   String _formatTime(String? timeStr) {
     if (timeStr == null || timeStr.isEmpty) return "";
     try {
-      final dateTime = DateTime.parse(timeStr).toLocal();
-      return DateFormat('hh:mm a').format(dateTime);
+      tz.initializeTimeZones();
+      final utcTime = DateTime.parse(timeStr).toUtc();
+      final japan = tz.getLocation('Asia/Tokyo');
+      final jstTime = tz.TZDateTime.from(utcTime, japan);
+      return DateFormat('hh:mm a').format(jstTime);
     } catch (e) {
       return timeStr;
     }
@@ -36,6 +52,7 @@ class CustomerMessageScreen extends ConsumerWidget {
     final activeUsersState = ref.watch(chatActiveUsersProvider);
     final conversationsState = ref.watch(chatConversationsProvider);
     final customerProfile = ref.watch(customerProfileProvider);
+    final myProfileUrl = ref.watch(chatMyProfileImageUrlProvider);
 
     final activeUsers = activeUsersState.when(
       data: (data) => data,
@@ -52,7 +69,7 @@ class CustomerMessageScreen extends ConsumerWidget {
     );
 
     final searchQuery = ref.watch(chatSearchQueryProvider).toLowerCase();
-    
+
     final chattedUsers = allChattedUsers.where((u) {
       if (searchQuery.isEmpty) return true;
       final name = (u.fullname ?? "").toLowerCase();
@@ -62,14 +79,13 @@ class CustomerMessageScreen extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: ()async{
-            ref.refresh(chatActiveUsersProvider);
-            ref.refresh(chatConversationsProvider);
+          onRefresh: () async {
+            ref.invalidate(chatActiveUsersProvider);
+            ref.invalidate(chatConversationsProvider);
             await Future.delayed(const Duration(milliseconds: 800));
           },
           child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-            ),
+            physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
@@ -79,10 +95,14 @@ class CustomerMessageScreen extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      IconButtonWidget(icon: Icons.arrow_back, padding: 2,onTap: (){
-                        AppRoutes.instance.pop();
-                      },),
-                      Gap(width: 3,),
+                      IconButtonWidget(
+                        icon: Icons.arrow_back,
+                        padding: 2,
+                        onTap: () {
+                          AppRoutes.instance.pop();
+                        },
+                      ),
+                      Gap(width: 3),
                       AppText(
                         text: "Message",
                         fontSize: AppSize.size.width * 0.06,
@@ -93,7 +113,9 @@ class CustomerMessageScreen extends ConsumerWidget {
                       Expanded(
                         child: CustomSearchBar(
                           hintText: "Search by name",
-                          onChanged: (val) => ref.read(chatSearchQueryProvider.notifier).state = val,
+                          onChanged: (val) =>
+                              ref.read(chatSearchQueryProvider.notifier).state =
+                                  val,
                         ),
                       ),
                     ],
@@ -105,7 +127,7 @@ class CustomerMessageScreen extends ConsumerWidget {
                 child:
                     (activeUsersState.isLoading &&
                         activeUsers.isEmpty &&
-                        customerProfile == null)
+                        customerProfile.value == null)
                     ? const Padding(
                         padding: EdgeInsets.all(20.0),
                         child: Center(child: CircularProgressIndicator()),
@@ -119,7 +141,7 @@ class CustomerMessageScreen extends ConsumerWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            if (customerProfile != null)
+                            if (customerProfile.value != null)
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: AppSize.size.width * 0.008,
@@ -128,7 +150,7 @@ class CustomerMessageScreen extends ConsumerWidget {
                                   children: [
                                     AppImageCircular(
                                       url:
-                                          customerProfile.profileImageUrl ??
+                                          myProfileUrl ??
                                           'https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg',
                                       width: AppSize.size.width * 0.15,
                                       height: AppSize.size.width * 0.15,
@@ -161,14 +183,15 @@ class CustomerMessageScreen extends ConsumerWidget {
                                 ),
                                 child: InkWell(
                                   onTap: () {
-                                    AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerChatScreen, extra: {
-                                      "userId": user.userId,
-                                      "name": user.fullname,
-                                      "profileImageUrl": user.profileImageUrl,
-                                      "showReport":false,
-
-                                    });
-
+                                    AppRoutes.instance.pushNamed(
+                                      AppRoutesKey.instance.customerChatScreen,
+                                      extra: {
+                                        "userId": user.userId,
+                                        "name": user.fullname,
+                                        "profileImageUrl": user.profileImageUrl,
+                                        "showReport": false,
+                                      },
+                                    );
                                   },
                                   child: Stack(
                                     children: [
@@ -222,8 +245,7 @@ class CustomerMessageScreen extends ConsumerWidget {
                 ),
               ),
 
-              if (chattedUsers.isEmpty &&
-                  !conversationsState.isLoading)
+              if (chattedUsers.isEmpty && !conversationsState.isLoading)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(40.0),
@@ -243,18 +265,29 @@ class CustomerMessageScreen extends ConsumerWidget {
                     final bool hasUnread = chatUser.unreadCount > 0;
                     return InkWell(
                       onTap: () {
-                        ref.read(chatConversationsProvider.notifier).setActiveChatUser(chatUser.userId);
-                        AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerChatScreen, extra: {
-                          "userId": chatUser.userId,
-                          "name": chatUser.fullname,
-                          "profileImageUrl": chatUser.profileImageUrl,
-                          "showReport":false,
-                        }).then((_) {
-      ref.read(chatConversationsProvider.notifier).setActiveChatUser(null);
-    });
+                        ref
+                            .read(chatConversationsProvider.notifier)
+                            .setActiveChatUser(chatUser.userId);
+                        AppRoutes.instance
+                            .pushNamed(
+                              AppRoutesKey.instance.customerChatScreen,
+                              extra: {
+                                "userId": chatUser.userId,
+                                "name": chatUser.fullname,
+                                "profileImageUrl": chatUser.profileImageUrl,
+                                "showReport": false,
+                              },
+                            )
+                            .then((_) {
+                              ref
+                                  .read(chatConversationsProvider.notifier)
+                                  .setActiveChatUser(null);
+                            });
                       },
                       child: Container(
-                        color: hasUnread ? Colors.grey[200] : Colors.transparent,
+                        color: hasUnread
+                            ? Colors.grey[200]
+                            : Colors.transparent,
                         padding: EdgeInsets.symmetric(
                           horizontal: AppSize.size.width * 0.04,
                           vertical: AppSize.size.width * 0.02,

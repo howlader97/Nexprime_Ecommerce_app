@@ -8,8 +8,7 @@ class ReportRepository {
   ////////////// Contractures
   ReportRepository._privetContractures();
 
-  static final ReportRepository _instance =
-      ReportRepository._privetContractures();
+  static final ReportRepository _instance = ReportRepository._privetContractures();
 
   static ReportRepository get instance => _instance;
 
@@ -33,10 +32,7 @@ class ReportRepository {
         "content": content,
       };
 
-      var response = await apiServices.postServices(
-        url: api.report,
-        body: body,
-      );
+      var response = await apiServices.postServices(url: api.report, body: body);
 
       if (response != null) {
         return response;

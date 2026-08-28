@@ -29,7 +29,7 @@ class CustomerChatScreen extends ConsumerStatefulWidget {
     required this.name,
     required this.profileImageUrl,
     required this.product,
-    this.showReport =false,
+    this.showReport = false,
   });
 
   @override
@@ -131,10 +131,7 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
       decoration: BoxDecoration(
         color: Colors.grey.withValues(alpha: 0.1),
         border: Border(
-          left: BorderSide(
-            color: AppColors.instance.success,
-            width: 4,
-          ),
+          left: BorderSide(color: AppColors.instance.success, width: 4),
         ),
       ),
       child: Row(
@@ -151,7 +148,9 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
                   color: AppColors.instance.success,
                 ),
                 AppText(
-                  text: message.type == "IMAGE" ? "Photo" : (message.content ?? ""),
+                  text: message.type == "IMAGE"
+                      ? "Photo"
+                      : (message.content ?? ""),
                   fontSize: AppSize.size.width * 0.035,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -252,33 +251,34 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
               ],
             ),
           ),
-          widget.showReport?
-          GestureDetector(
-            onTap: () {
-              ref.read(reportDataProvider.notifier).state = ReportArgs(
-                userId: widget.userId,
-                product: widget.product,
-              );
-              AppRoutes.instance.pushNamed(
-                AppRoutesKey.instance.customerReportScreen,
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSize.size.width * 0.03,
-                vertical: AppSize.size.width * 0.018,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const AppText(
-                text: "Report",
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ): const SizedBox(),
+          widget.showReport
+              ? GestureDetector(
+                  onTap: () {
+                    ref.read(reportDataProvider.notifier).state = ReportArgs(
+                      userId: widget.userId,
+                      product: widget.product,
+                    );
+                    AppRoutes.instance.pushNamed(
+                      AppRoutesKey.instance.customerReportScreen,
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSize.size.width * 0.03,
+                      vertical: AppSize.size.width * 0.018,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const AppText(
+                      text: "Report",
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
@@ -332,8 +332,9 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
                 children: [
                   if (message.type == "IMAGE" && message.content != null)
                     Column(
-                      crossAxisAlignment:
-                          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      crossAxisAlignment: isMe
+                          ? CrossAxisAlignment.end
+                          : CrossAxisAlignment.start,
                       children: [
                         if (parentMessage != null)
                           Container(
@@ -385,7 +386,10 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
                             ],
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: Image.network(message.content!, fit: BoxFit.cover),
+                          child: Image.network(
+                            message.content!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ],
                     )
@@ -418,7 +422,9 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border(
                                   left: BorderSide(
-                                    color: isMe ? Colors.white : AppColors.instance.success,
+                                    color: isMe
+                                        ? Colors.white
+                                        : AppColors.instance.success,
                                     width: 3,
                                   ),
                                 ),
@@ -427,17 +433,26 @@ class _CustomerChatScreenState extends ConsumerState<CustomerChatScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AppText(
-                                    text: parentMessage!.senderId == widget.userId ? widget.name : "You",
+                                    text:
+                                        parentMessage!.senderId == widget.userId
+                                        ? widget.name
+                                        : "You",
                                     fontSize: AppSize.size.width * 0.03,
                                     fontWeight: FontWeight.bold,
-                                    color: isMe ? Colors.white70 : AppColors.instance.success,
+                                    color: isMe
+                                        ? Colors.white70
+                                        : AppColors.instance.success,
                                   ),
                                   AppText(
-                                    text: parentMessage!.type == "IMAGE" ? "Photo" : (parentMessage!.content ?? ""),
+                                    text: parentMessage!.type == "IMAGE"
+                                        ? "Photo"
+                                        : (parentMessage!.content ?? ""),
                                     fontSize: AppSize.size.width * 0.03,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    color: isMe ? Colors.white60 : Colors.grey[300],
+                                    color: isMe
+                                        ? Colors.white60
+                                        : Colors.grey[300],
                                   ),
                                 ],
                               ),

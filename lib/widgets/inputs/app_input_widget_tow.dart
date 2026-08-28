@@ -55,8 +55,9 @@ class AppInputWidgetTwo extends StatefulWidget {
     this.titleFontWeight,
     this.isDense,
     this.isCollapsed,
+    this.needTopGap = true,
   });
-
+  final bool needTopGap;
   final String? title;
   final String? subTitle;
   final String hintText;
@@ -117,7 +118,7 @@ class _AppInputWidgetTwoState extends State<AppInputWidgetTwo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.title != null) const Gap(height: 15),
+          if (widget.title != null && widget.needTopGap) const Gap(height: 15),
           if (widget.title != null)
             SizedBox(
               width: AppSize.size.width,

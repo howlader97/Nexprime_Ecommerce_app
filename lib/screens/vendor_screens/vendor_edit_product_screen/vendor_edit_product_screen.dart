@@ -26,12 +26,10 @@ class VendorEditProductScreen extends ConsumerStatefulWidget {
   const VendorEditProductScreen({super.key, required this.product});
 
   @override
-  ConsumerState<VendorEditProductScreen> createState() =>
-      _VendorEditProductScreenState();
+  ConsumerState<VendorEditProductScreen> createState() => _VendorEditProductScreenState();
 }
 
-class _VendorEditProductScreenState
-    extends ConsumerState<VendorEditProductScreen> {
+class _VendorEditProductScreenState extends ConsumerState<VendorEditProductScreen> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController basePriceController;
@@ -45,25 +43,13 @@ class _VendorEditProductScreenState
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.product.name);
-    descriptionController = TextEditingController(
-      text: widget.product.description,
-    );
-    basePriceController = TextEditingController(
-      text: widget.product.basePrice.toString(),
-    );
-    stockUnitsController = TextEditingController(
-      text: widget.product.stockUnits.toString(),
-    );
+    descriptionController = TextEditingController(text: widget.product.description);
+    basePriceController = TextEditingController(text: widget.product.basePrice.toString());
+    stockUnitsController = TextEditingController(text: widget.product.stockUnits.toString());
     sizeController = TextEditingController(text: widget.product.size.join(','));
-    colorsController = TextEditingController(
-      text: widget.product.colors.join(','),
-    );
-    salePriceController = TextEditingController(
-      text: widget.product.salePrice.toString(),
-    );
-    shippingChargeController = TextEditingController(
-      text: widget.product.shippingCharge.toString(),
-    );
+    colorsController = TextEditingController(text: widget.product.colors.join(','));
+    salePriceController = TextEditingController(text: widget.product.salePrice.toString());
+    shippingChargeController = TextEditingController(text: widget.product.shippingCharge.toString());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeProviderData();
@@ -124,9 +110,7 @@ class _VendorEditProductScreenState
     }
 
     if (provider.isDiscountSale && salePriceController.text.isEmpty) {
-      AppSnackBar.instance.error(
-        "Please provide a sale price for discounted items",
-      );
+      AppSnackBar.instance.error("Please provide a sale price for discounted items");
       return;
     }
 
@@ -140,10 +124,8 @@ class _VendorEditProductScreenState
       "shippingCharge": shippingChargeController.text,
     };
 
-    if (provider.selectedFoodTypeId != null &&
-        provider.selectedCategoryId != null) {
-      data["categoryIds"] =
-          "[${provider.selectedFoodTypeId}, ${provider.selectedCategoryId}]";
+    if (provider.selectedFoodTypeId != null && provider.selectedCategoryId != null) {
+      data["categoryIds"] = "[${provider.selectedFoodTypeId}, ${provider.selectedCategoryId}]";
     } else if (provider.selectedFoodTypeId != null) {
       data["categoryIds"] = "[${provider.selectedFoodTypeId}]";
     }
@@ -157,16 +139,13 @@ class _VendorEditProductScreenState
       data["colors"] = colorsController.text;
     }
 
-    bool success = await ref
-        .read(vendorEditProductScreenProvider.notifier)
-        .updateProduct(widget.product.id, data);
+    bool success = await ref.read(vendorEditProductScreenProvider.notifier).updateProduct(widget.product.id, data);
 
     if (success) {
-
       ref.read(vendorEditProductScreenProvider.notifier).clearImages();
       ref.read(vendorStoreProvider.notifier).fetchVendorStoreData();
       AppSnackBar.instance.success("Product updated successfully");
-      Navigator.pop(context);
+      AppRoutes.instance.pop();
     } else {
       AppSnackBar.instance.error("Failed to update product");
     }
@@ -184,10 +163,7 @@ class _VendorEditProductScreenState
                 slivers: [
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: AppSize.size.height * 0.02,
-                        horizontal: AppSize.size.width * 0.03,
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: AppSize.size.height * 0.02, horizontal: AppSize.size.width * 0.03),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -200,11 +176,7 @@ class _VendorEditProductScreenState
                                 icon: Icons.arrow_back,
                               ),
                               const Gap(width: 10),
-                              AppText(
-                                text: "Edit Catalog Entry",
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              AppText(text: "Edit Catalog Entry", fontSize: 22, fontWeight: FontWeight.w600),
                             ],
                           ),
 
@@ -218,70 +190,39 @@ class _VendorEditProductScreenState
                               Expanded(
                                 child: provider.isGrocery
                                     ? ElevatedButton(
-                                        onPressed: () => ref
-                                            .read(
-                                              vendorEditProductScreenProvider
-                                                  .notifier,
-                                            )
-                                            .toggleCatalogType(true),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.instance.green,
-                                        ),
-                                        child: const AppText( text: 
-                                          "Grocery",
+                                        onPressed: () => ref.read(vendorEditProductScreenProvider.notifier).toggleCatalogType(true),
+                                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.instance.green),
+                                        child: const AppText(
+                                          text: "Grocery",
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       )
                                     : OutlinedButton(
-                                        onPressed: () => ref
-                                            .read(
-                                              vendorEditProductScreenProvider
-                                                  .notifier,
-                                            )
-                                            .toggleCatalogType(true),
-                                        child: const AppText( text: "Grocery"),
+                                        onPressed: () => ref.read(vendorEditProductScreenProvider.notifier).toggleCatalogType(true),
+                                        child: const AppText(text: "Grocery"),
                                       ),
                               ),
                               const Gap(width: 4),
                               Expanded(
                                 child: !provider.isGrocery
                                     ? ElevatedButton(
-                                        onPressed: () => ref
-                                            .read(
-                                              vendorEditProductScreenProvider
-                                                  .notifier,
-                                            )
-                                            .toggleCatalogType(false),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.instance.green,
-                                        ),
-                                        child: const AppText( text: 
-                                          "Wardrobe",
+                                        onPressed: () => ref.read(vendorEditProductScreenProvider.notifier).toggleCatalogType(false),
+                                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.instance.green),
+                                        child: const AppText(
+                                          text: "Wardrobe",
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       )
                                     : OutlinedButton(
-                                        onPressed: () => ref
-                                            .read(
-                                              vendorEditProductScreenProvider
-                                                  .notifier,
-                                            )
-                                            .toggleCatalogType(false),
-                                        child: const AppText( text: "Wardrobe"),
+                                        onPressed: () => ref.read(vendorEditProductScreenProvider.notifier).toggleCatalogType(false),
+                                        child: const AppText(text: "Wardrobe"),
                                       ),
                               ),
                             ],
                           ),
                           const Gap(height: 8),
 
-                          AppInputWidgetTwo(
-                            controller: nameController,
-                            padding: EdgeInsets.zero,
-                            title: "Name *",
-                            hintText: "Product Name",
-                          ),
+                          AppInputWidgetTwo(controller: nameController, padding: EdgeInsets.zero, title: "Name *", hintText: "Product Name"),
                           const Gap(height: 14),
 
                           // Dropdowns
@@ -306,25 +247,11 @@ class _VendorEditProductScreenState
                           const Gap(height: 12),
 
                           // Price & Inventory
-                          AppText(
-                            text: "Price & Inventory",
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          AppText(text: "Price & Inventory", fontSize: 16, fontWeight: FontWeight.bold),
                           const Divider(),
-                          AppInputWidgetTwo(
-                            controller: basePriceController,
-                            padding: EdgeInsets.zero,
-                            title: "Base price *",
-                            hintText: "\$0.00",
-                          ),
+                          AppInputWidgetTwo(controller: basePriceController, padding: EdgeInsets.zero, title: "Base price *", hintText: "¥0.00"),
                           const Gap(height: 12),
-                          AppInputWidgetTwo(
-                            controller: stockUnitsController,
-                            padding: EdgeInsets.zero,
-                            title: "Stock units *",
-                            hintText: "0",
-                          ),
+                          AppInputWidgetTwo(controller: stockUnitsController, padding: EdgeInsets.zero, title: "Stock units *", hintText: "0"),
                           const Gap(height: 12),
 
                           // Conditionally show Size and Colors for Wardrobe
@@ -359,16 +286,11 @@ class _VendorEditProductScreenState
                               onPressed: onUpdate,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.instance.green,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                               ),
-                              child: const AppText( text: 
-                                "Update",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
+                              child: const AppText(
+                                text: "Update",
+                                style: TextStyle(color: Colors.white, fontSize: 16),
                               ),
                             ),
                           ),
@@ -384,11 +306,7 @@ class _VendorEditProductScreenState
   }
 
   Widget _buildFoodTypeDropdown(VendorEditProductScreenProviderState state) {
-    final listAsync = ref.watch(
-      groceriesProvider(
-        state.isGrocery ? "Grocery Country" : "Wardrobe Country",
-      ),
-    );
+    final listAsync = ref.watch(groceriesProvider(state.isGrocery ? "Grocery Country" : "Wardrobe Country"));
     List<GroceriesCountryModel> items = listAsync ?? [];
 
     return CustomDropDownButton(
@@ -399,18 +317,13 @@ class _VendorEditProductScreenState
       value: state.foodType.isEmpty ? null : state.foodType,
       onChanged: (val) {
         final selected = items.firstWhere((e) => e.name == val);
-        ref
-            .read(vendorEditProductScreenProvider.notifier)
-            .changeFoodTypeDropdown(val, selected.id);
+        ref.read(vendorEditProductScreenProvider.notifier).changeFoodTypeDropdown(val, selected.id);
       },
-
     );
   }
 
   Widget _buildCategoryDropdown(VendorEditProductScreenProviderState state) {
-    final listAsync = ref.watch(
-      groceriesProvider(state.isGrocery ? "Grocery" : "Wardrobe"),
-    );
+    final listAsync = ref.watch(groceriesProvider(state.isGrocery ? "Grocery" : "Wardrobe"));
     List<GroceriesCountryModel> items = listAsync ?? [];
     return CustomDropDownButton(
       header: "Category *",
@@ -420,9 +333,7 @@ class _VendorEditProductScreenState
       value: state.category.isEmpty ? null : state.category,
       onChanged: (val) {
         final selected = items.firstWhere((e) => e.name == val);
-        ref
-            .read(vendorEditProductScreenProvider.notifier)
-            .changeDropdown(val, selected.id);
+        ref.read(vendorEditProductScreenProvider.notifier).changeDropdown(val, selected.id);
       },
     );
   }
@@ -434,9 +345,7 @@ class _VendorEditProductScreenState
           onTap: () {
             appImageUserTake(
               callBack: (v) {
-                ref
-                    .read(vendorEditProductScreenProvider.notifier)
-                    .addImage(File(v));
+                ref.read(vendorEditProductScreenProvider.notifier).addImage(File(v));
               },
             );
           },
@@ -444,22 +353,15 @@ class _VendorEditProductScreenState
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 20),
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey.shade300,
-                style: BorderStyle.solid,
-              ),
+              border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.add_a_photo,
-                  color: AppColors.instance.green,
-                  size: 32,
-                ),
+                Icon(Icons.add_a_photo, color: AppColors.instance.green, size: 32),
                 const Gap(height: 8),
-                const AppText( text: 
-                  "Add Product Photos",
+                const AppText(
+                  text: "Add Product Photos",
                   style: TextStyle(color: Colors.grey),
                 ),
               ],
@@ -470,8 +372,8 @@ class _VendorEditProductScreenState
           const Gap(height: 12),
           const Align(
             alignment: Alignment.centerLeft,
-            child: AppText( text: 
-              "Previous Images",
+            child: AppText(
+              text: "Previous Images",
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
@@ -486,12 +388,7 @@ class _VendorEditProductScreenState
                   padding: const EdgeInsets.only(right: 8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      widget.product.images[index],
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.network(widget.product.images[index], width: 80, height: 80, fit: BoxFit.cover),
                   ),
                 );
               },
@@ -502,8 +399,8 @@ class _VendorEditProductScreenState
           const Gap(height: 12),
           const Align(
             alignment: Alignment.centerLeft,
-            child: AppText( text: 
-              "New Images",
+            child: AppText(
+              text: "New Images",
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
@@ -521,31 +418,17 @@ class _VendorEditProductScreenState
                       padding: const EdgeInsets.only(right: 8.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          file,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
+                        child: Image.file(file, width: 80, height: 80, fit: BoxFit.cover),
                       ),
                     ),
                     Positioned(
                       top: 0,
                       right: 8,
                       child: GestureDetector(
-                        onTap: () => ref
-                            .read(vendorEditProductScreenProvider.notifier)
-                            .removeImage(file),
+                        onTap: () => ref.read(vendorEditProductScreenProvider.notifier).removeImage(file),
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            size: 16,
-                            color: Colors.white,
-                          ),
+                          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                          child: const Icon(Icons.close, size: 16, color: Colors.white),
                         ),
                       ),
                     ),
@@ -568,25 +451,19 @@ class _VendorEditProductScreenState
             const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText( text: 
-                  "Sale Settings",
+                AppText(
+                  text: "Sale Settings",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                AppText( text: 
-                  "Apply a 'Sale' badge",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
+                AppText(
+                  text: "Apply a 'Sale' badge",
+                  style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             FlutterSwitch(
               value: state.isDiscountSale,
-              onToggle: (val) => ref
-                  .read(vendorEditProductScreenProvider.notifier)
-                  .toggleDiscountSale(val),
+              onToggle: (val) => ref.read(vendorEditProductScreenProvider.notifier).toggleDiscountSale(val),
               height: 25,
               width: 45,
             ),
@@ -594,12 +471,7 @@ class _VendorEditProductScreenState
         ),
         if (state.isDiscountSale) ...[
           const Gap(height: 12),
-          AppInputWidgetTwo(
-            controller: salePriceController,
-            padding: EdgeInsets.zero,
-            title: "Sale Price *",
-            hintText: "\$0.00",
-          ),
+          AppInputWidgetTwo(controller: salePriceController, padding: EdgeInsets.zero, title: "Sale Price *", hintText: "¥0.00"),
         ],
       ],
     );
@@ -609,48 +481,66 @@ class _VendorEditProductScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppText( text: 
-          "Shipping Cost Responsibility",
+        const AppText(
+          text: "Shipping Cost Responsibility",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const AppText( text: 
-          "Who will pay the shipping fee?",
+        const AppText(
+          text: "Who will pay the shipping fee?",
           style: TextStyle(fontSize: 12, color: Colors.grey),
         ),
         const Gap(height: 8),
-        Row(
-          children: [
-            Radio<String>(
-              value: "CUSTOMER",
-              groupValue: state.shippingResponsibility,
-              onChanged: (v) => ref
-                  .read(vendorEditProductScreenProvider.notifier)
-                  .changeShippingResponsibility(v!),
-              activeColor: AppColors.instance.green,
-            ),
-            AppText( text: 
-              "Customer",
-              style: TextStyle(color: AppColors.instance.black06),
-            ),
-            const Gap(width: 16),
-            Radio<String>(
-              value: "VENDOR",
-              groupValue: state.shippingResponsibility,
-              onChanged: (v) => ref
-                  .read(vendorEditProductScreenProvider.notifier)
-                  .changeShippingResponsibility(v!),
-              activeColor: AppColors.instance.green,
-            ),
-            AppText( text: "Vendor", style: TextStyle(color: AppColors.instance.black06)),
-          ],
+        // Row(
+        //   children: [
+        //     Radio<String>(
+        //       value: "CUSTOMER",
+        //       groupValue: state.shippingResponsibility,
+        //       onChanged: (v) => ref
+        //           .read(vendorEditProductScreenProvider.notifier)
+        //           .changeShippingResponsibility(v!),
+        //       activeColor: AppColors.instance.green,
+        //     ),
+        //     AppText( text:
+        //       "Customer",
+        //       style: TextStyle(color: AppColors.instance.black06),
+        //     ),
+        //     const Gap(width: 16),
+        //     Radio<String>(
+        //       value: "VENDOR",
+        //       groupValue: state.shippingResponsibility,
+        //       onChanged: (v) => ref
+        //           .read(vendorEditProductScreenProvider.notifier)
+        //           .changeShippingResponsibility(v!),
+        //       activeColor: AppColors.instance.green,
+        //     ),
+        //     AppText( text: "Vendor", style: TextStyle(color: AppColors.instance.black06)),
+        //   ],
+        // ),
+        RadioGroup<String>(
+          groupValue: state.shippingResponsibility,
+          onChanged: (value) {
+            ref.read(vendorEditProductScreenProvider.notifier).changeShippingResponsibility(value!);
+          },
+          child: Row(
+            children: [
+              Radio<String>(value: "CUSTOMER"),
+              AppText(
+                text: "Customer",
+                style: TextStyle(color: AppColors.instance.black06),
+              ),
+
+              const Gap(width: 16),
+
+              Radio<String>(value: "VENDOR"),
+              AppText(
+                text: "Vendor",
+                style: TextStyle(color: AppColors.instance.black06),
+              ),
+            ],
+          ),
         ),
         const Gap(height: 12),
-        AppInputWidgetTwo(
-          controller: shippingChargeController,
-          padding: EdgeInsets.zero,
-          title: "Shipping Charge *",
-          hintText: "\$0.00",
-        ),
+        AppInputWidgetTwo(controller: shippingChargeController, padding: EdgeInsets.zero, title: "Shipping Charge *", hintText: "¥0.00"),
       ],
     );
   }

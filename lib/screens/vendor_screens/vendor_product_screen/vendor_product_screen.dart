@@ -19,8 +19,7 @@ class VendorProductScreen extends ConsumerStatefulWidget {
   const VendorProductScreen({super.key});
 
   @override
-  ConsumerState<VendorProductScreen> createState() =>
-      _VendorProductScreenState();
+  ConsumerState<VendorProductScreen> createState() => _VendorProductScreenState();
 }
 
 class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
@@ -31,20 +30,12 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
     return VendorProductProductCard(
       title: product.name,
       description: product.description,
-      price:
-      "\$${product.isDiscountSale ? product.salePrice : product.basePrice}",
-      oldPrice: product.isDiscountSale ? "\$${product.basePrice}" : "",
+      price: "¥${product.isDiscountSale ? product.salePrice : product.basePrice}",
+      oldPrice: product.isDiscountSale ? "¥${product.basePrice}" : "",
       stock: "Stock:${product.stockUnits}",
-      image: product.images.isNotEmpty
-          ? product.images.first
-          : "assets/dev_image/product_pizza.png",
+      image: product.images.isNotEmpty ? product.images.first : "a",
       edit: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VendorEditProductScreen(product: product),
-          ),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => VendorEditProductScreen(product: product)));
       },
       delete: () => _onDeleteProduct(product.id),
     );
@@ -60,46 +51,29 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
     final allProducts = storeData?.products ?? [];
 
     final selectedGroceryId = ref.watch(vendorSelectedGroceryCategoryProvider);
-    final selectedWardrobeId = ref.watch(
-      vendorSelectedWardrobeCategoryProvider,
-    );
+    final selectedWardrobeId = ref.watch(vendorSelectedWardrobeCategoryProvider);
 
-    var genericProducts = allProducts
-        .where((p) => p.size.isEmpty && p.colors.isEmpty)
-        .toList();
+    var genericProducts = allProducts.where((p) => p.size.isEmpty && p.colors.isEmpty).toList();
     if (selectedGroceryId != null) {
-      genericProducts = genericProducts
-          .where((p) => p.categories.any((c) => c.id == selectedGroceryId))
-          .toList();
+      genericProducts = genericProducts.where((p) => p.categories.any((c) => c.id == selectedGroceryId)).toList();
     }
     final firstListProducts = genericProducts;
 
-    var clotheProducts = allProducts
-        .where((p) => p.size.isNotEmpty || p.colors.isNotEmpty)
-        .toList();
+    var clotheProducts = allProducts.where((p) => p.size.isNotEmpty || p.colors.isNotEmpty).toList();
     if (selectedWardrobeId != null) {
-      clotheProducts = clotheProducts
-          .where((p) => p.categories.any((c) => c.id == selectedWardrobeId))
-          .toList();
+      clotheProducts = clotheProducts.where((p) => p.categories.any((c) => c.id == selectedWardrobeId)).toList();
     }
     final clothingProducts = clotheProducts;
     final isLoading = vendorProduct.isLoading;
 
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: AppSize.size.height * 0.02,
-          horizontal: AppSize.size.width * 0.02,
-        ),
+        padding: EdgeInsets.symmetric(vertical: AppSize.size.height * 0.02, horizontal: AppSize.size.width * 0.02),
         child: RefreshIndicator(
           onRefresh: () async {
             await ref.read(vendorStoreProvider.notifier).fetchVendorStoreData();
-            ref
-                .read(groceriesProvider("Grocery").notifier)
-                .getCountry("Grocery");
-            ref
-                .read(groceriesProvider("Wardrobe").notifier)
-                .getCountry("Wardrobe");
+            ref.read(groceriesProvider("Grocery").notifier).getCountry("Grocery");
+            ref.read(groceriesProvider("Wardrobe").notifier).getCountry("Wardrobe");
           },
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -117,17 +91,13 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                 child: VendorCategoriesWidget(
                   headerTitle: "Categories",
                   categories: grocery,
-                  selectedCategoryIdProvider:
-                  vendorSelectedGroceryCategoryProvider,
+                  selectedCategoryIdProvider: vendorSelectedGroceryCategoryProvider,
                 ),
               ),
 
               if (isLoading)
                 const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 440,
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
+                  child: SizedBox(height: 440, child: Center(child: CircularProgressIndicator())),
                 )
               else if (firstListProducts.isEmpty)
                 SliverToBoxAdapter(
@@ -136,48 +106,50 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                     child: Center(
                       child: AppText(
                         text: "No products found",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppColors.instance.black06,
-                        ),
+                        style: TextStyle(fontSize: 18, color: AppColors.instance.black06),
                       ),
                     ),
                   ),
                 )
               else if (firstListProducts.length <= 4)
-                  SliverGrid(
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.02),
+                  sliver: SliverGrid(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      mainAxisExtent: 214,
+                      childAspectRatio: 0.85,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
                     ),
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final product = firstListProducts[index];
                       return _buildProductCard(product);
                     }, childCount: firstListProducts.length),
-                  )
-                else
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 440,
-                      child: GridView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: firstListProducts.length,
-                        gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // 2 rows
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          mainAxisExtent: 195, // width of each item
-                        ),
-                        itemBuilder: (context, index) {
-                          final product = firstListProducts[index];
-                          return _buildProductCard(product);
-                        },
+                  ),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 440,
+                    child: GridView.builder(
+                      // padding: EdgeInsets.symmetric(
+                      //   horizontal: AppSize.size.width * 0.02,
+                      // ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: firstListProducts.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // 2 rows
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        mainAxisExtent: 180, // width of each item
                       ),
+                      itemBuilder: (context, index) {
+                        final product = firstListProducts[index];
+                        return _buildProductCard(product);
+                      },
                     ),
                   ),
+                ),
               const SliverToBoxAdapter(child: SizedBox(height: 10)),
 
               SliverToBoxAdapter(
@@ -185,11 +157,7 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(height: 20),
-                    AppText(
-                      text: "Clothing",
-                      fontSize: AppSize.width(value: 24),
-                      fontWeight: FontWeight.w600,
-                    ),
+                    AppText(text: "Clothing", fontSize: AppSize.width(value: 24), fontWeight: FontWeight.w600),
                     const Gap(height: 8),
                   ],
                 ),
@@ -199,17 +167,13 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                 child: VendorCategoriesWidget(
                   headerTitle: "Categories",
                   categories: wardrobe,
-                  selectedCategoryIdProvider:
-                  vendorSelectedWardrobeCategoryProvider,
+                  selectedCategoryIdProvider: vendorSelectedWardrobeCategoryProvider,
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 10)),
               if (isLoading)
                 const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 440,
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
+                  child: SizedBox(height: 440, child: Center(child: CircularProgressIndicator())),
                 )
               else if (clothingProducts.isEmpty)
                 SliverToBoxAdapter(
@@ -218,48 +182,44 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
                     child: Center(
                       child: AppText(
                         text: "No clothing products found",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppColors.instance.black06,
-                        ),
+                        style: TextStyle(fontSize: 18, color: AppColors.instance.black06),
                       ),
                     ),
                   ),
                 )
               else if (clothingProducts.length <= 4)
-                  SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      mainAxisExtent: 214,
-                    ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final product = clothingProducts[index];
-                      return _buildProductCard(product);
-                    }, childCount: clothingProducts.length),
-                  )
-                else
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 440,
-                      child: GridView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: clothingProducts.length,
-                        gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // 2 rows
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          mainAxisExtent: 195, // width of each item
-                        ),
-                        itemBuilder: (context, index) {
-                          final product = clothingProducts[index];
-                          return _buildProductCard(product);
-                        },
+                SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    mainAxisExtent: 214,
+                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = clothingProducts[index];
+                    return _buildProductCard(product);
+                  }, childCount: clothingProducts.length),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 440,
+                    child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: clothingProducts.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // 2 rows
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        mainAxisExtent: 195, // width of each item
                       ),
+                      itemBuilder: (context, index) {
+                        final product = clothingProducts[index];
+                        return _buildProductCard(product);
+                      },
                     ),
                   ),
+                ),
             ],
           ),
         ),
@@ -274,9 +234,7 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const AppText(text: "Delete Product"),
-        content: const AppText(
-          text: "Are you sure you want to delete this product?",
-        ),
+        content: const AppText(text: "Are you sure you want to delete this product?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -294,9 +252,7 @@ class _VendorProductScreenState extends ConsumerState<VendorProductScreen> {
     );
 
     if (confirm == true) {
-      final success = await ref
-          .read(vendorStoreProvider.notifier)
-          .deleteProduct(productId);
+      final success = await ref.read(vendorStoreProvider.notifier).deleteProduct(productId);
       if (success) {
         AppSnackBar.instance.success("Product deleted successfully");
       } else {
@@ -315,12 +271,7 @@ class _Header extends StatelessWidget {
       isButton: true,
       isBack: false,
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const VendorAddProductScreen(),
-          ),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const VendorAddProductScreen()));
       },
       title: "Store catalog",
     );

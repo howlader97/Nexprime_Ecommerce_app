@@ -67,7 +67,7 @@ class CustomerNotificationScreen extends ConsumerWidget {
                       return SliverToBoxAdapter(
                         child: Center(
                           child: AppText( text: 
-                            "No Streaming available",
+                            "No notification available",
                             style: TextStyle(
                               color: AppColors.instance.black06,
                               fontSize: 20,

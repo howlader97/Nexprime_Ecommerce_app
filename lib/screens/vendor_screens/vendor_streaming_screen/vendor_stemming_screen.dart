@@ -319,15 +319,6 @@ class _VendorStreamingScreenState extends ConsumerState<VendorStreamingScreen> {
                   onPressed: isLoading
                       ? null
                       : () {
-                          if (ref.read(streamingSetupProvider).selectedImage == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: AppText( text: "Please select image"),
-                              ),
-                            );
-                            return;
-                          }
-
                           if (title.text.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -340,7 +331,7 @@ class _VendorStreamingScreenState extends ConsumerState<VendorStreamingScreen> {
                            ref
                               .read(streamProvider.notifier)
                               .startStream(
-                                thumbnail: ref.read(streamingSetupProvider).selectedImage!.path,
+                                thumbnail: ref.read(streamingSetupProvider).selectedImage?.path,
                                 title: title.text.trim(),
                                 offer: offerTEController.text.trim(),
                               );
@@ -379,8 +370,6 @@ class _VendorStreamingScreenState extends ConsumerState<VendorStreamingScreen> {
       ),
     );
   }
-
-
 }
 
 

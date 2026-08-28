@@ -22,15 +22,22 @@ class VendorCustomSearchFilterRow extends ConsumerWidget {
             onChanged: (val) => ref.read(orderSearchQueryProvider.notifier).state = val,style: TextStyle(color: Colors.black),
             decoration:  InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 11, horizontal: 0),
-              hintText: "Search by name or ID",
+              hintText: "Search by order number",
               hintStyle: TextStyle(color: Colors.black, fontSize: 13),
-              prefixIcon: Icon(Icons.search, color: Colors.grey),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: Colors.black,
-                  )
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 26,
+                minHeight: 26,
               ),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: Icon(Icons.search, color: Colors.grey),
+              ),
+             border: OutlineInputBorder(
+               borderRadius: BorderRadius.circular(8),
+               borderSide: BorderSide(
+                 color: Colors.black,
+               )
+             ),
               isDense: true,
 
 

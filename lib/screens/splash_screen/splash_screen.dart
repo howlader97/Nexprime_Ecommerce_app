@@ -23,7 +23,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     try {
       var firstTime = await storageServices.getAppFirstTime();
       if (firstTime) {
-        AppRoutes.instance.go(AppRoutesKey.instance.onBoardScreen);
+        if(mounted){
+          AppRoutes.instance.go(AppRoutesKey.instance.onBoardScreen);
+        }
         return;
       }
       var token = await storageServices.getToken();

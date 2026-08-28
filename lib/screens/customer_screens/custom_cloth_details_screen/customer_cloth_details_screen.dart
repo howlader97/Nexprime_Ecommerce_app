@@ -25,6 +25,7 @@ import '../customer_food_details_screen/provider/review_provider.dart';
 
 class CustomerClothDetailsScreen extends ConsumerStatefulWidget {
   final ProductModel product;
+
   const CustomerClothDetailsScreen({super.key, required this.product});
 
   @override
@@ -63,7 +64,7 @@ class _CustomerClothDetailsScreenState
     final currentPage = ref.watch(pageProvider);
     final cartState = ref.watch(addToCartProvider);
     final colors = ref.watch(parsedColorsProvider(widget.product.colors));
-    final reviewDetails=ref.watch(reviewProvider(widget.product.id));
+    final reviewDetails = ref.watch(reviewProvider(widget.product.id));
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
@@ -88,57 +89,84 @@ class _CustomerClothDetailsScreenState
                       productName: widget.product.name.isNotEmpty
                           ? widget.product.name
                           : 'N/A',
-                      price: "\$${widget.product.salePrice.toStringAsFixed(2)}",
+                      price: "¥${widget.product.salePrice.toStringAsFixed(2)}",
                     ),
-                    Gap(height: AppSize.size.width * 0.03),
                     Row(
                       children: [
-                        reviewDetails.when(data: (reviews){
-                          double avgRating = 0;
-                          int totalReviews = reviews.length;
+                        AppText(
+                          text:
+                              "Shipping: ${widget.product.shippingResponsibility}",
+                          fontSize: 16,
+                          color: Colors.black,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Gap(width: 20),
+                        // if(widget.product.shippingResponsibility != "VENDOR")
+                        AppText(
+                          text: "Charge: ${widget.product.shippingCharge}",
+                          fontSize: 16,
+                          color: Colors.black,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    Gap(height: 5),
+                    Row(
+                      children: [
+                        reviewDetails.when(
+                          data: (reviews) {
+                            double avgRating = 0;
+                            int totalReviews = reviews.length;
 
-                          if (reviews.isNotEmpty) {
-                            int totalScore = 0;
+                            if (reviews.isNotEmpty) {
+                              int totalScore = 0;
 
-                            for (var item in reviews) {
-                              totalScore += item.score;
+                              for (var item in reviews) {
+                                totalScore += item.score;
+                              }
+
+                              avgRating = totalScore / totalReviews;
                             }
-
-                            avgRating = totalScore / totalReviews;
-                          }
-                          return Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: AppSize.size.width * 0.055,
-                              ),
-                              Gap(width: AppSize.size.width * 0.012),
-                              AppText(
-                                text: avgRating.toStringAsFixed(1),
-                                fontWeight: FontWeight.bold,
-                                fontSize: AppSize.size.width * 0.046,
-                              ),
-                              Gap(width: AppSize.size.width * 0.012),
-                              GestureDetector(
-                                onTap: () {
-                                  AppRoutes.instance.pushNamed(
-                                    AppRoutesKey
-                                        .instance
-                                        .customerReviewListScreen,
-                                    extra: widget.product.id,
-                                  );
-                                },
-                                child: AppText(
-                                  text: "($totalReviews reviews)",
-                                  color: Colors.grey.shade600,
-                                  fontSize: AppSize.size.width * 0.04,
+                            return Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: AppSize.size.width * 0.054,
                                 ),
-                              ),
-                            ],);
-                        }, error: (e,_){
-                          return Text(e.toString());
-                        }, loading:() => Center(child: CircularProgressIndicator(),) ),
+                                Gap(width: AppSize.size.width * 0.01),
+                                AppText(
+                                  text: avgRating.toStringAsFixed(1),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppSize.size.width * 0.046,
+                                ),
+                                Gap(width: AppSize.size.width * 0.012),
+                                GestureDetector(
+                                  onTap: () {
+                                    AppRoutes.instance.pushNamed(
+                                      AppRoutesKey
+                                          .instance
+                                          .customerReviewListScreen,
+                                      extra: widget.product.id,
+                                    );
+                                  },
+                                  child: AppText(
+                                    text: "($totalReviews reviews)",
+                                    color: Colors.grey.shade600,
+                                    fontSize: AppSize.size.width * 0.04,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          error: (e, _) {
+                            return Text(e.toString());
+                          },
+                          loading: () =>
+                              Center(child: CircularProgressIndicator()),
+                        ),
 
                         Spacer(),
                         DecoratedBox(
@@ -149,26 +177,15 @@ class _CustomerClothDetailsScreenState
                           child: SizedBox(width: 8, height: 8),
                         ),
                         Gap(width: AppSize.size.width * 0.012),
-                        Text(
-                          "${widget.product.stockUnits} in stock",
+                        AppText(
+                          text: "${widget.product.stockUnits} in stock",
                           style: TextStyle(
                             fontSize: 14,
                             color: AppColors.instance.gray400,
                           ),
                         ),
                         const Spacer(),
-                        // AppText(
-                        //   text: "Copy link",
-                        //   fontSize: 14,
-                        //   color: AppColors.instance.gray400,
-                        // ),
-                        // Gap(width: AppSize.size.width * 0.022),
-                        // Icon(
-                        //   Icons.copy,
-                        //   size: 16,
-                        //   color: AppColors.instance.gray400,
-                        // ),
-                        Gap(width: AppSize.size.width * 0.03),
+                        AppText(text: "Tax:${widget.product.taxFee}%"),
                       ],
                     ),
                     Gap(height: AppSize.size.width * 0.03),
@@ -254,39 +271,46 @@ class _CustomerClothDetailsScreenState
                       onTap: cartState.isLoading
                           ? null
                           : () async {
-                        try {
-                          final selectedSize = sizes.isNotEmpty && sizeIndex >= 0 && sizeIndex < sizes.length
-                              ? sizes[sizeIndex]
-                              : null;
-                          final selectedColor = widget.product.colors.isNotEmpty && colorIndex >= 0 && colorIndex < widget.product.colors.length
-                              ? widget.product.colors[colorIndex]
-                              : null;
+                              try {
+                                final selectedSize =
+                                    sizes.isNotEmpty &&
+                                        sizeIndex >= 0 &&
+                                        sizeIndex < sizes.length
+                                    ? sizes[sizeIndex]
+                                    : null;
+                                final selectedColor =
+                                    widget.product.colors.isNotEmpty &&
+                                        colorIndex >= 0 &&
+                                        colorIndex <
+                                            widget.product.colors.length
+                                    ? widget.product.colors[colorIndex]
+                                    : null;
 
-                          await ref
-                              .read(addToCartProvider.notifier)
-                              .addCartData(
-                            productId: widget.product.id,
-                            quantity: 1, // Add quantity if required
-                            size: selectedSize,
-                            color: selectedColor,
-                          );
+                                await ref
+                                    .read(addToCartProvider.notifier)
+                                    .addCartData(
+                                      productId: widget.product.id,
+                                      quantity: 1, // Add quantity if required
+                                      size: selectedSize,
+                                      color: selectedColor,
+                                    );
 
-                          if (context.mounted) {
-                            AppSnackBar.instance.success(
-                              "Successfully added to cart",
-                            );
-                          }
-                          await ref
-                              .read(cartProvider.notifier)
-                              .getCartData();
-                        } catch (e) {
-                          if (context.mounted) {
-                            AppSnackBar.instance.error(
-                              "Add to cart failed: $e",
-                            );
-                          }
-                        }
-                      },
+                                if (context.mounted) {
+                                  AppSnackBar.instance.success(
+                                    "Successfully added to cart",
+                                  );
+                                }
+                                await ref
+                                    .read(cartProvider.notifier)
+                                    .getCartData();
+                              } catch (e) {
+                                if (context.mounted) {
+                                  AppSnackBar.instance.error(
+                                    "Add to cart failed: $e",
+                                  );
+                                }
+                              }
+                            },
                       backgroundColor: AppColors.instance.green,
                       borderColor: AppColors.instance.green,
                     ),

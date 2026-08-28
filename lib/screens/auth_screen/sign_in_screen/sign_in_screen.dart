@@ -38,11 +38,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
      final response =await ref.read(signInProvider.notifier).signIn(
          emailTextEditingController.text.trim(),
          passwordTextEditingController.text.trim());
-      if(response){
+      if(response["success"] == true){
         ref.invalidate(navIndexProvider);
         AppRoutes.instance.go( AppRoutesKey.instance.appNavigationScreen);
       }else{
-        AppSnackBar.instance.error("Invalid email and password");
+        AppSnackBar.instance.error(response["data"]?["detail"]?.toString() ??  "Something went wrong");
       }
     } catch (e) {
       errorLog("checkLoginFunction", e);

@@ -15,7 +15,7 @@ import 'package:nexprime/screens/vendor_screens/vendor_product_screen/vendor_pro
 import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:nexprime/utils/app_size.dart';
-import 'package:nexprime/widgets/dialogs/login_popup.dart';
+import 'package:nexprime/widgets/dialogs/login_pop_up.dart';
 
 import '../vendor_screens/vendor_profile_screen/vendor_profile_screen.dart';
 import '../vendor_screens/vendor_streaming_screen/vendor_stemming_screen.dart';
@@ -24,8 +24,7 @@ class AppNavigationScreen extends ConsumerStatefulWidget {
   const AppNavigationScreen({super.key});
 
   @override
-  ConsumerState<AppNavigationScreen> createState() =>
-      _AppNavigationScreenState();
+  ConsumerState<AppNavigationScreen> createState() => _AppNavigationScreenState();
 }
 
 class _AppNavigationScreenState extends ConsumerState<AppNavigationScreen> {
@@ -34,11 +33,11 @@ class _AppNavigationScreenState extends ConsumerState<AppNavigationScreen> {
   // removed local selectedIndex
   List<Widget> bodyWidget = [ErrorScreen()];
   List<BottomNavigationBarItem> bottomNavigation = [];
-  void changeNavigation(int index) async{
+  void changeNavigation(int index) async {
     try {
       if (!context.mounted) return;
       var role = await storageServices.getAppRoll();
-      if (role.toLowerCase() == "GUEST".toLowerCase() && (index == 2 || index == 3)){
+      if (role.toLowerCase() == "GUEST".toLowerCase() && (index == 2 || index == 3)) {
         callLoginDialog();
         return;
       }
@@ -52,203 +51,91 @@ class _AppNavigationScreenState extends ConsumerState<AppNavigationScreen> {
     try {
       await Future.delayed(Durations.medium1);
       var role = await storageServices.getAppRoll();
-      if (role.toLowerCase() == "CUSTOMER".toLowerCase() ||role.toLowerCase() == "GUEST".toLowerCase()  ) {
-        bodyWidget = [
-          CustomerHomeScreen(),
-          CustomerSearchScreen(),
-          CustomerCartScreen(),
-          CustomerOrderScreen(),
-          CustomerProfileScreen(),
-        ];
+      if (role.toLowerCase() == "CUSTOMER".toLowerCase() || role.toLowerCase() == "GUEST".toLowerCase()) {
+        bodyWidget = [CustomerHomeScreen(), CustomerSearchScreen(), CustomerCartScreen(), CustomerOrderScreen(), CustomerProfileScreen()];
         bottomNavigation = [
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.homeIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.homeIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.homeIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.homeIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.searchIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.searchIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.searchIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.searchIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.cartIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.cartIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.cartIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.cartIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.orderIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.orderIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.orderIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.orderIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.accountIcon),
-              color: const Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.accountIcon), color: const Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.accountIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.accountIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
         ];
       }
       if (role.toLowerCase() == "vendor".toLowerCase()) {
-        bodyWidget = [
-          VendorHomeScreen(),
-          VendorProductScreen(),
-          VendorStreamingScreen(),
-          VendorOrderScreen(),
-          VendorProfileScreen(),
-        ];
+        bodyWidget = [VendorHomeScreen(), VendorProductScreen(), VendorStreamingScreen(), VendorOrderScreen(), VendorProfileScreen()];
         bottomNavigation = [
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.homeIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.homeIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.homeIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.homeIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.vendorProductIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.vendorProductIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.vendorProductIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.vendorProductIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.cameraIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.cameraIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.cameraIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.cameraIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.orderIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.orderIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.orderIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.orderIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(AppAssertsIconsPath.instance.accountIcon),
-              color: Color(0xF8FCF8B8),
-              size: AppSize.size.width * 0.1,
-            ),
+            icon: ImageIcon(AssetImage(AppAssertsIconsPath.instance.accountIcon), color: Color(0xF8FCF8B8), size: AppSize.size.width * 0.1),
             activeIcon: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(AppSize.size.width * 0.02),
-              ),
-              child: ImageIcon(
-                AssetImage(AppAssertsIconsPath.instance.accountIcon),
-                size: AppSize.size.width * 0.1,
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppSize.size.width * 0.02)),
+              child: ImageIcon(AssetImage(AppAssertsIconsPath.instance.accountIcon), size: AppSize.size.width * 0.1),
             ),
             label: "app",
           ),
@@ -276,16 +163,8 @@ class _AppNavigationScreenState extends ConsumerState<AppNavigationScreen> {
     return Scaffold(
       extendBody: true,
       body: isLoading
-          ? Center(
-              child: Transform.scale(
-                scale: 1.5,
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            )
-          : IndexedStack(
-              index: ref.watch(navIndexProvider),
-              children: bodyWidget,
-            ),
+          ? Center(child: Transform.scale(scale: 1.5, child: CircularProgressIndicator.adaptive()))
+          : IndexedStack(index: ref.watch(navIndexProvider), children: bodyWidget),
       bottomNavigationBar: isLoading || bottomNavigation.length < 2
           ? SizedBox()
           : BottomNavigationBar(

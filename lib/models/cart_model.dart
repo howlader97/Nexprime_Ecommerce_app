@@ -110,6 +110,8 @@ class Product {
   final StoreSimple? store;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double taxFee;
+
 
   Product({
     required this.id,
@@ -130,6 +132,7 @@ class Product {
     this.store,
     required this.createdAt,
     required this.updatedAt,
+    required this.taxFee,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -151,6 +154,7 @@ class Product {
     store: json['store'] != null ? StoreSimple.fromJson(json['store']) : null,
     createdAt: DateTime.parse(json['createdAt']),
     updatedAt: DateTime.parse(json['updatedAt']),
+    taxFee: double.tryParse("${json["taxFee"] ?? 0}") ?? 0.0,
   );
 
   Map<String, dynamic> toJson() => {
@@ -172,5 +176,6 @@ class Product {
     'store': store?.toJson(),
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
+    'taxFee':taxFee,
   };
 }

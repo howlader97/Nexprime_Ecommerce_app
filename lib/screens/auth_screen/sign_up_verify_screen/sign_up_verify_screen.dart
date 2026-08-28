@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexprime/constant/app_colors.dart';
 import 'package:nexprime/screens/auth_screen/sign_up_screen/provider/sign_up_provider.dart';
 import 'package:nexprime/screens/auth_screen/sign_up_verify_screen/provider/otp_verify_provider.dart';
+import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:nexprime/utils/app_size.dart';
 import 'package:nexprime/utils/app_snack_bar.dart';
@@ -25,13 +26,17 @@ class SignUpVerifyScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
+  late TextEditingController emailController;
   late TextEditingController otpController;
   late GlobalKey<FormState> formKey;
 
-  void onAppInitial() {
+  Future<void> onAppInitial() async {
     try {
       otpController = TextEditingController();
+      emailController = TextEditingController();
       formKey = GlobalKey<FormState>();
+      String email = await StorageServices.instance.getEmail();
+      emailController.text = email;
     } catch (e) {
       errorLog("onAppInitial", e);
     }
@@ -39,6 +44,7 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
 
   void onAppClose() {
     otpController.dispose();
+    emailController.dispose();
   }
 
   @override
@@ -67,10 +73,7 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
                   width: AppSize.size.width * 0.8,
                   height: AppSize.size.height * 0.14,
                   child: Center(
-                    child: AppImage(
-                      width: AppSize.size.width * 0.8,
-                      path: AppAssertsImagePath.instance.appLogo,
-                    ),
+                    child: AppImage(width: AppSize.size.width * 0.8, path: AppAssertsImagePath.instance.appLogo),
                   ),
                 ),
               ),
@@ -78,7 +81,7 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
                 child: SizedBox(
                   width: AppSize.size.width * 0.8,
                   child: AppText(
-                    text: "Sent to code your Gmail\n**@gmail.com",
+                    text: "Sent to code your ${_maskEmail(emailController.text)}",
                     textAlign: TextAlign.center,
                     fontFamily: AppConstant.instance.openSans,
                     fontWeight: FontWeight.w500,
@@ -113,11 +116,7 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
                         onTap: () {
                           ref.read(otpVerifyProvider.notifier).resendOtp();
                         },
-                        child: AppText(
-                          text: "Resend",
-                          fontSize: AppSize.size.width * 0.04,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        child: AppText(text: "Resend", fontSize: AppSize.size.width * 0.04, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -125,31 +124,20 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSize.size.width * 0.04,
-                    vertical: AppSize.size.width * 0.04,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: AppSize.size.width * 0.04, vertical: AppSize.size.width * 0.04),
                   child: AppButton(
                     onTap: isLoading
                         ? null
                         : () async {
                             if (formKey.currentState!.validate()) {
-                              final isSuccess = await ref
-                                  .read(otpVerifyProvider.notifier)
-                                  .verifyOtp(otpController.text.trim());
+                              final isSuccess = await ref.read(otpVerifyProvider.notifier).verifyOtp(otpController.text.trim());
                               if (isSuccess) {
                                 AppSnackBar.instance.success("Verified successfully!");
                                 final provider = ref.read(signUpProvider);
                                 if (provider.isCustomer) {
-                                  AppRoutes.instance.go(
-                                    AppRoutesKey.instance.signInScreen,
-                                  );
+                                  AppRoutes.instance.go(AppRoutesKey.instance.signInScreen);
                                 } else {
-                                  AppRoutes.instance.go(
-                                    AppRoutesKey
-                                        .instance
-                                        .verificationInProgressScreen,
-                                  );
+                                  AppRoutes.instance.go(AppRoutesKey.instance.verificationInProgressScreen);
                                 }
                               } else {
                                 AppSnackBar.instance.error("Invalid OTP");
@@ -169,5 +157,29 @@ class _SignUpVerifyScreenState extends ConsumerState<SignUpVerifyScreen> {
         ),
       ),
     );
+  }
+}
+
+String _maskEmail(String email) {
+  try {
+    // Check if the email is valid and contains an '@'
+    if (!email.contains('@')) return email;
+
+    // Split the email into username and domain
+    List<String> parts = email.split('@');
+    String username = parts[0];
+    String domain = parts[1];
+
+    // If username is empty, just return the original string
+    if (username.isEmpty) return email;
+
+    // Keep the first character, and replace the rest with asterisks
+    String maskedUsername = username[0] + '*' * 5;
+
+    // Return the combined masked email
+    return '$maskedUsername@$domain';
+  } catch (e) {
+    errorLog('Error masking email:', e);
+    return email; // Return original email if there's an error
   }
 }

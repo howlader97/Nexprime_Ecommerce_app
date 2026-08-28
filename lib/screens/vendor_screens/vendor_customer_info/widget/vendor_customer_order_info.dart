@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../../../widgets/app_image/app_image.dart';
 
@@ -21,9 +20,7 @@ class VendorCustomerOrderInfo extends StatelessWidget {
           children: List.generate(orderModel.orderItems.length, (index) {
             final orderItem = orderModel.orderItems[index];
             String? productName = orderItem.product?.name;
-            String? productImage = (orderItem.product?.images != null && orderItem.product!.images.isNotEmpty)
-                ? orderItem.product!.images[0]
-                : null;
+            String? productImage = (orderItem.product?.images != null && orderItem.product!.images.isNotEmpty) ? orderItem.product!.images[0] : null;
             int? quantity = orderItem.quantity;
             double? price = orderItem.price;
             String? size = orderItem.size;
@@ -44,8 +41,8 @@ class VendorCustomerOrderInfo extends StatelessWidget {
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white),
                     clipBehavior: Clip.antiAlias,
                     child: AppImage(
-                      url: isNetwork ? productImage : null,
-                      path: !isNetwork ? (productImage ?? "assets/dev_image/food_image.png") : null,
+                      url: isNetwork ? productImage : "",
+                      path: !isNetwork ? (productImage ?? "assets/dev_image/food_image.png") : "",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -54,61 +51,65 @@ class VendorCustomerOrderInfo extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+
                       children: [
                         AppText(text: productName ?? "Crispy Delights", fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
 
-                        const Gap(height: 6),
+                        const Gap(height: 5),
 
-                        AppText(
-                          text: "Product Quantity: ${quantity ?? 0}",
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          height: 1.5,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            AppText(
+                              text: "Product Quantity: ${quantity ?? 0}",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              height: 1.5,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Gap(width: 10,),
+                            AppText(
+                              text: "Tax Fee: ${orderItem.product?.taxFee} %",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.green,
+                              height: 1.5,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
 
                         if (size != null || color != null) ...[
-                          const Gap(height: 6),
+                          const Gap(height: 5),
                           Row(
                             children: [
                               if (size != null) ...[
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    "Size: $size",
-                                    style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
-                                  ),
+                                  decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
+                                  child: Text("Size: $size", style: TextStyle(fontSize: 13, color: Colors.black)),
                                 ),
                                 const Gap(width: 8),
                               ],
                               if (color != null) ...[
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    "Color: $color",
-                                    style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
-                                  ),
+                                  decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(4)),
+                                  child: Text("Color: $color", style: TextStyle(fontSize: 13, color: Colors.black)),
                                 ),
                               ],
                             ],
                           ),
                         ],
 
-                        const Gap(height: 10),
+                        const Gap(height: 5),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            AppText(text: "\$${price ?? 0.0}", fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
+                            AppText(text: "¥${price ?? 0.0}", fontSize: 16, fontWeight: FontWeight.w600, height: 1.5),
                             //IconButtonWidget(icon: Icons.add),
                           ],
                         ),

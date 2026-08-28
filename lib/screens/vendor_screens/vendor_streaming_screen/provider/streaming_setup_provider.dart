@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 class StreamingSetupState {
@@ -8,20 +7,9 @@ class StreamingSetupState {
   final File? selectedImage;
   final bool isOfferEnabled;
 
-  StreamingSetupState({
-    this.title = '',
-    this.offer = '',
-    this.selectedImage,
-    this.isOfferEnabled = false,
-  });
+  StreamingSetupState({this.title = '', this.offer = '', this.selectedImage, this.isOfferEnabled = false});
 
-  StreamingSetupState copyWith({
-    String? title,
-    String? offer,
-    File? selectedImage,
-    bool? isOfferEnabled,
-    bool clearImage = false,
-  }) {
+  StreamingSetupState copyWith({String? title, String? offer, File? selectedImage, bool? isOfferEnabled, bool clearImage = false}) {
     return StreamingSetupState(
       title: title ?? this.title,
       offer: offer ?? this.offer,
@@ -55,7 +43,6 @@ class StreamingSetupNotifier extends StateNotifier<StreamingSetupState> {
   }
 }
 
-final streamingSetupProvider =
-    StateNotifierProvider<StreamingSetupNotifier, StreamingSetupState>((ref) {
+final streamingSetupProvider = StateNotifierProvider<StreamingSetupNotifier, StreamingSetupState>((ref) {
   return StreamingSetupNotifier();
 });

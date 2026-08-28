@@ -11,12 +11,7 @@ class LiveMessage {
   final bool isHost;
   final DateTime timestamp;
 
-  LiveMessage({
-    required this.senderName,
-    required this.text,
-    this.isHost = false,
-    required this.timestamp,
-  });
+  LiveMessage({required this.senderName, required this.text, this.isHost = false, required this.timestamp});
 }
 
 class VendorLiveState {
@@ -80,12 +75,9 @@ class VendorLiveState {
   }
 }
 
-final vendorLiveProvider =
-    StateNotifierProvider.autoDispose<VendorLiveNotifier, VendorLiveState>((
-      ref,
-    ) {
-      return VendorLiveNotifier(ref);
-    });
+final vendorLiveProvider = StateNotifierProvider.autoDispose<VendorLiveNotifier, VendorLiveState>((ref) {
+  return VendorLiveNotifier(ref);
+});
 
 class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
   final Ref _ref;
@@ -95,18 +87,12 @@ class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
 
   Future<void> initAndConnect(String token, {bool isHost = true}) async {
     try {
-      state = state.copyWith(
-        isConnecting: true,
-        clearError: true,
-        isHost: isHost,
-      );
+      state = state.copyWith(isConnecting: true, clearError: true, isHost: isHost);
 
       LocalVideoTrack? track;
       if (isHost) {
         // Only initialize camera if host
-        track = await LocalVideoTrack.createCameraTrack(
-          const CameraCaptureOptions(cameraPosition: CameraPosition.front),
-        );
+        track = await LocalVideoTrack.createCameraTrack(const CameraCaptureOptions(cameraPosition: CameraPosition.front));
         state = state.copyWith(localVideoTrack: track);
       }
 
@@ -117,9 +103,7 @@ class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
       // Setup listeners BEFORE connecting to catch all events
       listener.on<TrackSubscribedEvent>((event) {
         if (event.track is RemoteVideoTrack) {
-          state = state.copyWith(
-            remoteVideoTrack: event.track as RemoteVideoTrack,
-          );
+          state = state.copyWith(remoteVideoTrack: event.track as RemoteVideoTrack);
         }
       });
 
@@ -161,7 +145,8 @@ class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
       await room.connect(
         liveKitUrl,
         token,
-        roomOptions: const RoomOptions(adaptiveStream: true, dynacast: true),
+        // roomOptions: const RoomOptions(adaptiveStream: true, dynacast: true),
+        connectOptions: ConnectOptions(autoSubscribe: true),
       );
 
       state = state.copyWith(room: room);
@@ -184,19 +169,13 @@ class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
     final currentUser = state.room!.localParticipant;
     if (currentUser == null) return;
 
-    final messageData = {
-      'type': 'chat',
-      'senderName': state.isHost ? 'Host' : (currentUser.name ?? 'Guest'),
-      'text': text,
-      'isHost': state.isHost,
-    };
+    final messageData = {'type': 'chat', 'senderName': state.isHost ? 'Host' : (currentUser.name), 'text': text, 'isHost': state.isHost};
 
     try {
       await currentUser.publishData(utf8.encode(jsonEncode(messageData)));
 
-      // Add own message to local state
       final newMessage = LiveMessage(
-        senderName: state.isHost ? 'Host' : (currentUser.name ?? 'Guest'),
+        senderName: state.isHost ? 'Host' : (currentUser.name),
         text: text,
         isHost: state.isHost,
         timestamp: DateTime.now(),
@@ -238,10 +217,7 @@ class VendorLiveNotifier extends StateNotifier<VendorLiveState> {
     await state.room?.localParticipant?.setMicrophoneEnabled(newState);
   }
 
-  Future<void> stopStream(
-    int streamId, {
-    required VoidCallback onStopped,
-  }) async {
+  Future<void> stopStream(int streamId, {required VoidCallback onStopped}) async {
     try {
       // 1. Call backend to stop stream
       await _ref.read(stopStreamProvider.notifier).stopStreamData(streamId);

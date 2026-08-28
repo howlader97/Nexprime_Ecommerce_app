@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_common_widget/vendor_custom_text_title16.dart';
 import 'package:nexprime/models/vendor_order_model.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_order_screen/provider/vendor_order_provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
 import '../../../constant/app_colors.dart';
 import '../../../utils/gap.dart';
 import '../../../widgets/texts/app_text.dart';
@@ -14,18 +16,18 @@ class VendorCustomOrderOrdercard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Calculate total quantity
     int totalQuantity = order.orderItems.fold(0, (sum, item) => sum + (item.quantity ?? 0));
-    String time = DateFormat('hh:mm a').format(order.createdAt);
+    tz.initializeTimeZones();
+    final utcTime = DateTime.parse(order.createdAt.toString()).toUtc();
+    final japan = tz.getLocation('Asia/Tokyo');
+    final jstTime = tz.TZDateTime.from(utcTime, japan);
+    String time = DateFormat('dd MMM yyyy, hh:mm a').format(jstTime);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.only(left: 18,right: 18,bottom: 12,),
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.instance.dark50,
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: BoxDecoration(color: AppColors.instance.dark50, borderRadius: BorderRadius.circular(16)),
         child: Column(
           children: [
             Row(
@@ -38,11 +40,7 @@ class VendorCustomOrderOrdercard extends ConsumerWidget {
                     children: [
                       VendorCustomTextTitle16(title: "Order NO. #${order.orderId}"),
                       const Gap(height: 8),
-                      AppText(
-                        text: "$totalQuantity item${totalQuantity > 1 ? 's' : ''} • $time",
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      AppText(text: "$totalQuantity item${totalQuantity > 1 ? 's' : ''} • $time", fontSize: 14, color: Colors.black),
                     ],
                   ),
                 ),
@@ -55,22 +53,12 @@ class VendorCustomOrderOrdercard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    StatusChip(
-                      order.isFulfield ? "Fulfilled" : "Unfulfilled",
-                      color: order.isFulfield ? Colors.green : Colors.orange,
-                    ),
+                    StatusChip(order.isFulfield ? "Fulfilled" : "Unfulfilled", color: order.isFulfield ? Colors.green : Colors.orange),
                     const SizedBox(width: 8),
-                    StatusChip(
-                      order.order?.isPaid == true ? "Paid" : "Unpaid",
-                      color:order.order?.isPaid == true ? Colors.green : Colors.red,
-                    ),
+                    StatusChip(order.order?.isPaid == true ? "Paid" : "Unpaid", color: order.order?.isPaid == true ? Colors.green : Colors.red),
                   ],
                 ),
-                AppText(
-                  text: "\$${order.subTotal}",
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                AppText(text: "¥${order.subTotal}", fontSize: 20, fontWeight: FontWeight.bold),
               ],
             ),
           ],
@@ -119,17 +107,10 @@ class StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: AppText( text:
-      text,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
-        ),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+      child: AppText(
+        text: text,
+        style: TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 12),
       ),
     );
   }

@@ -17,20 +17,23 @@ class StreamNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>?>> {
   final StreamingRepository _repository = StreamingRepository.instance;
 
   Future<void> startStream({
-    required String thumbnail,
+    String? thumbnail,
     required String title,
     required String offer,
   }) async {
     state = const AsyncValue.loading();
 
     try {
-      final imageUrl = await _repository.uploadImage(
-        imageFile: File(thumbnail),
-      );
+      String? imageUrl;
+      if (thumbnail != null) {
+        imageUrl = await _repository.uploadImage(
+          imageFile: File(thumbnail),
+        );
 
-      if (imageUrl == null) {
-        state = const AsyncValue.error("Image upload failed", StackTrace.empty);
-        return;
+        if (imageUrl == null) {
+          state = const AsyncValue.error("Image upload failed", StackTrace.empty);
+          return;
+        }
       }
 
       final response = await _repository.startStreaming(

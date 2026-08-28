@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nexprime/constant/app_api_url.dart';
 import 'package:nexprime/routes/app_routes.dart';
-import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/services/api/non_auth_api.dart';
 import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
@@ -57,17 +56,16 @@ Error message: ${error.message}
               String token = await storageServices.getRefreshToken();
               if (token.isEmpty) {
                 await storageServices.logout();
-                appRoutes.pushReplacement(AppRoutesKey.instance.splash);
+                // appRoutes.goNamed(AppRoutesKey.instance.signInScreen);
                 return handler.next(error);
               }
               final newAccessToken = await reFreshNewAccessToken(token);
               if (newAccessToken.isNotEmpty) {
-                _dio.options.headers["Authorization"] =
-                    "Bearer $newAccessToken";
+                _dio.options.headers["Authorization"] = "Bearer $newAccessToken";
                 return handler.resolve(await _dio.fetch(error.requestOptions));
               } else {
                 await storageServices.logout();
-                appRoutes.pushReplacement(AppRoutesKey.instance.splash);
+                // appRoutes.goNamed(AppRoutesKey.instance.signInScreen);
                 return handler.next(error);
               }
             }
@@ -80,15 +78,7 @@ Error message: ${error.message}
         },
       ),
       if (kDebugMode)
-        PrettyDioLogger(
-          requestHeader: true,
-          request: true,
-          compact: true,
-          error: true,
-          requestBody: true,
-          responseHeader: true,
-          responseBody: true,
-        ),
+        PrettyDioLogger(requestHeader: true, request: true, compact: true, error: true, requestBody: true, responseHeader: true, responseBody: true),
     });
   }
 
@@ -98,10 +88,7 @@ Error message: ${error.message}
 // Token refresh logic
 Future<String> reFreshNewAccessToken(String refreshToken) async {
   try {
-    final response = await NonAuthApi().sendRequest.post(
-      AppApiUrl.instance.refreshToken,
-      data: {"token": refreshToken},
-    );
+    final response = await NonAuthApi().sendRequest.post(AppApiUrl.instance.refreshToken, data: {"token": refreshToken});
     if (response.statusCode == 200) {
       if (response.data["data"] != null && response.data["data"] is Map) {
         var data = response.data["data"];

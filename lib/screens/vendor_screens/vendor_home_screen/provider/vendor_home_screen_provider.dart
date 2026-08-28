@@ -6,16 +6,11 @@ final vendorHomeDropdownProvider = StateProvider<String?>((ref) => null);
 final vendorHomeStartDateProvider = StateProvider<String?>((ref) => null);
 final vendorHomeEndDateProvider = StateProvider<String?>((ref) => null);
 
-final vendorDashboard =
-StateNotifierProvider<DashboardScreen, AsyncValue<dynamic>>((ref) {
+final vendorDashboard = StateNotifierProvider<DashboardScreen, AsyncValue<dynamic>>((ref) {
   final selectedFilter = ref.watch(vendorHomeDropdownProvider);
   final startDate = ref.watch(vendorHomeStartDateProvider);
   final endDate = ref.watch(vendorHomeEndDateProvider);
-  return DashboardScreen(
-    filterType: selectedFilter,
-    startDate: startDate,
-    endDate: endDate,
-  );
+  return DashboardScreen(filterType: selectedFilter, startDate: startDate, endDate: endDate);
 });
 
 class DashboardScreen extends StateNotifier<AsyncValue<dynamic>> {
@@ -23,26 +18,18 @@ class DashboardScreen extends StateNotifier<AsyncValue<dynamic>> {
   final String? startDate;
   final String? endDate;
 
-  DashboardScreen({
-    this.filterType,
-    this.startDate,
-    this.endDate,
-  }) : super(const AsyncLoading()) {
+  DashboardScreen({this.filterType, this.startDate, this.endDate}) : super(const AsyncLoading()) {
     getDashboardData();
   }
 
   Future<void> getDashboardData() async {
-    if (filterType == 'custom' && (startDate == null || endDate == null)) {
-      state = const AsyncLoading();
-      return;
-    }
     try {
+      if (filterType == 'custom' && (startDate == null || endDate == null)) {
+        state = const AsyncLoading();
+        return;
+      }
       state = const AsyncLoading();
-      final response = await VendorDashboardRepository.instance.dashboardData(
-        filterType: filterType,
-        startDate: startDate,
-        endDate: endDate,
-      );
+      final response = await VendorDashboardRepository.instance.dashboardData(filterType: filterType, startDate: startDate, endDate: endDate);
       state = AsyncData(response!);
     } catch (e, st) {
       state = AsyncError(e, st);

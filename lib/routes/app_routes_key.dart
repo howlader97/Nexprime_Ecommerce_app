@@ -4,7 +4,7 @@ class AppRoutesKey {
   static final AppRoutesKey _instance = AppRoutesKey._privateConstructor();
   static AppRoutesKey get instance => _instance;
   final String initial = "/";
-  final String splash = "splash";
+  // final String splash = "splash";
   final String onBoardScreen = "onboardScreen";
   final String notFoundScreen = "notFoundScreen";
   final String errorScreen = "errorScreen";
@@ -19,8 +19,7 @@ class AppRoutesKey {
   final String privacyPolicyScreen = "privacyPolicyScreen";
   final String termsAndConditionScreen = "terms-and-condition-screen";
   final String faqScreen = "f-a-q-screen";
-  final String customerGroceriesHomeCategories =
-      "customerGroceriesHomeCategories";
+  final String customerGroceriesHomeCategories = "customerGroceriesHomeCategories";
   final String customerClothScreen = "customerClothScreen";
   final String customerCartScreen = "customerCartScreen";
   final String customerClothDetailsScreen = "customerClothDetailsScreen";
@@ -55,4 +54,5 @@ class AppRoutesKey {
   final String vendorEditProfileScreen = "vendorEditProfileScreen";
   final String customerMarketplaceProductDetails = "customerMarketplaceProductDetails";
   final String changeLanguageScreen = "changeLanguageScreen";
+  final String customerAboutUsScreen = "customerAboutUsScreen";
 }

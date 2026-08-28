@@ -95,7 +95,7 @@ class CustomDropDownButton extends StatelessWidget {
                         ? AppColors.instance.redF7
                         : AppColors.instance.black900,
                   ),
-                  color: isEnabled ? Colors.white : Colors.grey.shade200,
+                  color: isEnabled ? Colors.transparent : Colors.grey.shade200,
                 ),
               ),
 
