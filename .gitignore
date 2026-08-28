@@ -52,3 +52,5 @@ temp_interactive_push.bat
 android/key.properties
 android/app/*.jks
 android/app/*.keystore
+config.bat
+node_modules
