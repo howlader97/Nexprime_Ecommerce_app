@@ -13,8 +13,10 @@ import 'package:nexprime/widgets/buttons/icon_button_widget.dart';
 import 'package:nexprime/widgets/texts/app_text.dart';
 import '../../../constant/app_colors.dart';
 import '../../../routes/app_routes.dart';
+import '../../../services/storage/storage_services.dart';
 import '../../../utils/app_snack_bar.dart';
 import '../../../widgets/app_image/app_image_circular.dart';
+import '../../../widgets/dialogs/login_pop_up.dart';
 import '../customer_cart_screen/provider/cart_provider.dart';
 import '../customer_food_details_screen/provider/add_to_cart_provider.dart';
 import '../customer_groceries_home_categories/widgets/product_cart_widgets.dart';
@@ -340,6 +342,11 @@ class CustomerShopScreen extends ConsumerWidget {
                                       ? null
                                       : () async {
                                           try {
+                                            var role = await StorageServices.instance.getAppRoll();
+                                            if (role.toLowerCase() == "guest") {
+                                              callLoginDialog();
+                                              return;
+                                            }
                                             await ref
                                                 .read(
                                                   addToCartProvider.notifier,
@@ -504,7 +511,12 @@ class CustomerShopScreen extends ConsumerWidget {
                                       : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKlRaR5caTW_XylgFXGqmBaytwGPyWYnMFYK3Osuk4Pw&s',
                                   itemTitle: shopProduct.name,
                                   price: '¥${shopProduct.salePrice}',
-                                  onPressed: (){
+                                  onPressed: () async {
+                                    var role = await StorageServices.instance.getAppRoll();
+                                    if (role.toLowerCase() == "guest") {
+                                      callLoginDialog();
+                                      return;
+                                    }
                                     AppRoutes.instance.pushReplacement(
                                       AppRoutesKey
                                           .instance

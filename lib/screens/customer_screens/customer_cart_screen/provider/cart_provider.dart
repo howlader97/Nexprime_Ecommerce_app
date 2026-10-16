@@ -18,10 +18,12 @@ class CartProvider extends StateNotifier<AsyncValue<CartModel?>> {
     try {
       final token = await StorageServices.instance.getToken();
       if (token.isEmpty) {
+        if (mounted) state = const AsyncValue.data(null);
         return;
       }
       var role = await StorageServices.instance.getAppRoll();
       if (role.toLowerCase() == "GUEST".toLowerCase()) {
+        if (mounted) state = const AsyncValue.data(null);
         return;
       }
       if (!mounted) return;

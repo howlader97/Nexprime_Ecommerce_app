@@ -12,15 +12,22 @@ import '../customer_groceries_home_categories/widgets/product_cart_widgets.dart'
 import '../customer_groceries_home_categories/widgets/shop_section_widget.dart';
 import 'package:nexprime/screens/customer_screens/customer_home_screen/provider/groceries_country_provider.dart';
 import 'package:nexprime/screens/customer_screens/customer_groceries_home_categories/provider/product_provider.dart';
+import 'package:nexprime/services/storage/storage_services.dart';
+import 'package:nexprime/widgets/dialogs/login_pop_up.dart';
 
 class CustomerClothScreen extends ConsumerStatefulWidget {
   final int countryId;
   final String categoryName;
 
-  const CustomerClothScreen({super.key, required this.countryId, required this.categoryName});
+  const CustomerClothScreen({
+    super.key,
+    required this.countryId,
+    required this.categoryName,
+  });
 
   @override
-  ConsumerState<CustomerClothScreen> createState() => _CustomerClothScreenState();
+  ConsumerState<CustomerClothScreen> createState() =>
+      _CustomerClothScreenState();
 }
 
 class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
@@ -55,31 +62,49 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
             //     child: CustomSearchBar(),
             //   ),
             // ),
-            SliverToBoxAdapter(child: ShopsSectionWidget(countryId: widget.countryId)),
             SliverToBoxAdapter(
-              child: CustomerGroceriesHomeCategoriesWidgets(headerTitle: "Types of cloths", categories: subcategories, countryId: widget.countryId),
+              child: ShopsSectionWidget(countryId: widget.countryId),
+            ),
+            SliverToBoxAdapter(
+              child: CustomerGroceriesHomeCategoriesWidgets(
+                headerTitle: "Types of cloths",
+                categories: subcategories,
+                countryId: widget.countryId,
+              ),
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ).copyWith(bottom: 5),
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: AppColors.instance.grayEE, borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(
+                    color: AppColors.instance.grayEE,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: SizedBox(
-                    height: AppSize.size.width * 0.2,
+                    height: AppSize.size.width * 0.22,
                     child: Align(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText(
                               text: "Size",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.instance.black06),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.instance.black06,
+                              ),
                             ),
                             SizedBox(height: AppSize.size.width * 0.015),
                             SizedBox(
-                              height: AppSize.size.width * 0.08,
+                              height: AppSize.size.width * 0.078,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: sizes.length,
@@ -88,25 +113,51 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                                   return GestureDetector(
                                     onTap: () {
                                       if (selectedSizeIndex == index) {
-                                        ref.read(selectedSizeProvider.notifier).state = -1; // Deselect
-                                        ref.read(productProvider(widget.countryId).notifier).getProduct(clearSize: true);
+                                        ref
+                                                .read(
+                                                  selectedSizeProvider.notifier,
+                                                )
+                                                .state =
+                                            -1; // Deselect
+                                        ref
+                                            .read(
+                                              productProvider(
+                                                widget.countryId,
+                                              ).notifier,
+                                            )
+                                            .getProduct(clearSize: true);
                                       } else {
-                                        ref.read(selectedSizeProvider.notifier).state = index;
-                                        ref.read(productProvider(widget.countryId).notifier).getProduct(size: sizes[index]);
+                                        ref
+                                                .read(
+                                                  selectedSizeProvider.notifier,
+                                                )
+                                                .state =
+                                            index;
+                                        ref
+                                            .read(
+                                              productProvider(
+                                                widget.countryId,
+                                              ).notifier,
+                                            )
+                                            .getProduct(size: sizes[index]);
                                       }
                                     },
                                     child: Container(
                                       width: AppSize.size.width * 0.16,
                                       margin: const EdgeInsets.only(right: 12),
                                       decoration: BoxDecoration(
-                                        color: isSelected ? Colors.black.withAlpha(50) : Colors.white,
+                                        color: isSelected
+                                            ? Colors.black.withAlpha(50)
+                                            : Colors.white,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Center(
                                         child: AppText(
                                           text: sizes[index],
                                           fontSize: 15,
-                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                          fontWeight: isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.w500,
                                           color: AppColors.instance.black06,
                                         ),
                                       ),
@@ -129,7 +180,11 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                 padding: const EdgeInsets.only(left: 16, bottom: 0),
                 child: AppText(
                   text: "Clothing",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.instance.black06),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.instance.black06,
+                  ),
                 ),
               ),
             ),
@@ -142,7 +197,11 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 50),
                         child: AppText(
                           text: "No products available",
-                          style: TextStyle(fontSize: 18, color: AppColors.instance.black06, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppColors.instance.black06,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -150,7 +209,10 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                 }
                 return SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16).copyWith(top: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ).copyWith(top: 5),
                     child: SizedBox(
                       height: AppSize.size.height * 0.188,
                       child: ListView.builder(
@@ -161,15 +223,33 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                           final product = products[index];
                           return GestureDetector(
                             onTap: () {
-                              AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerClothDetailsScreen, extra: product);
+                              AppRoutes.instance.pushNamed(
+                                AppRoutesKey
+                                    .instance
+                                    .customerClothDetailsScreen,
+                                extra: product,
+                              );
                             },
                             child: ProductCartWidget(
                               isFeatures: true,
-                              image: product.images.isNotEmpty ? product.images.first : "",
+                              image: product.images.isNotEmpty
+                                  ? product.images.first
+                                  : "",
                               itemTitle: product.name,
                               price: "${product.salePrice}",
-                              onPressed: () {
-                                AppRoutes.instance.pushNamed(AppRoutesKey.instance.customerClothDetailsScreen, extra: product);
+                              onPressed: () async {
+                                var role = await StorageServices.instance
+                                    .getAppRoll();
+                                if (role.toLowerCase() == "guest") {
+                                  callLoginDialog();
+                                  return;
+                                }
+                                AppRoutes.instance.pushNamed(
+                                  AppRoutesKey
+                                      .instance
+                                      .customerClothDetailsScreen,
+                                  extra: product,
+                                );
                               },
                             ),
                           );
@@ -179,8 +259,11 @@ class _CustomerClothScreenState extends ConsumerState<CustomerClothScreen> {
                   ),
                 );
               },
-              loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
-              error: (e, _) => SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
+              loading: () => const SliverToBoxAdapter(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (e, _) =>
+                  SliverToBoxAdapter(child: Center(child: Text(e.toString()))),
             ),
           ],
         ),

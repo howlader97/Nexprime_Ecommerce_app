@@ -22,6 +22,8 @@ import 'package:nexprime/screens/customer_screens/customer_cart_screen/provider/
 import 'package:nexprime/utils/app_snack_bar.dart';
 
 import '../customer_food_details_screen/provider/review_provider.dart';
+import 'package:nexprime/services/storage/storage_services.dart';
+import 'package:nexprime/widgets/dialogs/login_pop_up.dart';
 
 class CustomerClothDetailsScreen extends ConsumerStatefulWidget {
   final ProductModel product;
@@ -272,6 +274,11 @@ class _CustomerClothDetailsScreenState
                           ? null
                           : () async {
                               try {
+                                var role = await StorageServices.instance.getAppRoll();
+                                if (role.toLowerCase() == "guest") {
+                                  callLoginDialog();
+                                  return;
+                                }
                                 final selectedSize =
                                     sizes.isNotEmpty &&
                                         sizeIndex >= 0 &&

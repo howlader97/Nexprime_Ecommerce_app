@@ -4,6 +4,7 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -49,23 +50,16 @@ android {
         }
     }
 
-    println("===================================")
-    println("ROOT DIR: ${rootDir}")
-    println("STORE FILE: ${keystoreProperties["storeFile"]}")
-    println("ABSOLUTE: ${file(keystoreProperties["storeFile"] as String).absolutePath}")
-    println("EXISTS: ${file(keystoreProperties["storeFile"] as String).exists()}")
-    println("===================================")
+
      signingConfigs {
     getByName("debug") {
-      //  storeFile = file(keystoreProperties["storeFile"] as String)
-        storeFile = rootProject.file("app/${keystoreProperties["storeFile"]}")
+        storeFile = keystoreProperties["storeFile"]?.let { file(it) }
         storePassword = keystoreProperties["storePassword"] as String
         keyAlias = keystoreProperties["keyAlias"] as String
         keyPassword = keystoreProperties["keyPassword"] as String
     }
     create("release") {
-      //  storeFile = file(keystoreProperties["storeFile"] as String)
-        storeFile = rootProject.file("app/${keystoreProperties["storeFile"]}")
+        storeFile = keystoreProperties["storeFile"]?.let { file(it) }
         storePassword = keystoreProperties["storePassword"] as String
         keyAlias = keystoreProperties["keyAlias"] as String
         keyPassword = keystoreProperties["keyPassword"] as String

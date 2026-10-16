@@ -7,6 +7,8 @@ import 'package:nexprime/provider/nav_provider.dart';
 import 'package:nexprime/routes/app_routes.dart';
 import 'package:nexprime/routes/app_routes_key.dart';
 import 'package:nexprime/screens/auth_screen/sign_in_screen/provider/sign_in_provider.dart';
+import 'package:nexprime/screens/customer_screens/customer_cart_screen/provider/cart_provider.dart';
+import 'package:nexprime/screens/customer_screens/customer_order_screen/provider/customer_order_screen_provider.dart';
 import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:nexprime/utils/app_size.dart';
@@ -40,6 +42,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
          passwordTextEditingController.text.trim());
       if(response["success"] == true){
         ref.invalidate(navIndexProvider);
+        ref.invalidate(cartProvider);
+        ref.invalidate(myOrderProvider);
         AppRoutes.instance.go( AppRoutesKey.instance.appNavigationScreen);
       }else{
         AppSnackBar.instance.error(response["data"]?["detail"]?.toString() ??  "Something went wrong");

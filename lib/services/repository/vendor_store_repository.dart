@@ -44,5 +44,4 @@ class VendorStoreRepository {
       return null;
     }
   }
-  
 }

@@ -28,6 +28,7 @@ class AppApiUrl {
   String myBalanceTopUp = "/wallet/top-up";
   String updateProfile = "/customers/me";
   String authDeleteAccount = "/authDeleteAccount";
+  String deleteAccount = "/auth/delete-account";
   String customerSignUp = "/auth/signup";
   String vendorSignUp = "/auth/vendor/signup";
   String changePassword = "/changePassword";

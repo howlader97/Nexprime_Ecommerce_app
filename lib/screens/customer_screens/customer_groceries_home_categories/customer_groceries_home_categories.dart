@@ -14,6 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nexprime/screens/customer_screens/customer_home_screen/provider/groceries_country_provider.dart';
 import '../customer_cart_screen/provider/cart_provider.dart';
 import '../customer_food_details_screen/provider/add_to_cart_provider.dart';
+import 'package:nexprime/services/storage/storage_services.dart';
+import 'package:nexprime/widgets/dialogs/login_pop_up.dart';
 
 class CustomerGroceriesHomeCategories extends ConsumerWidget {
   final int countryId;
@@ -95,6 +97,11 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                                   ? null
                                   : () async {
                                       try {
+                                        var role = await StorageServices.instance.getAppRoll();
+                                        if (role.toLowerCase() == "guest") {
+                                          callLoginDialog();
+                                          return;
+                                        }
                                         await ref.read(addToCartProvider.notifier).addCartData(productId: product.id, quantity: 1);
 
                                         if (context.mounted) {
@@ -166,6 +173,11 @@ class CustomerGroceriesHomeCategories extends ConsumerWidget {
                                   ? null
                                   : () async {
                                       try {
+                                        var role = await StorageServices.instance.getAppRoll();
+                                        if (role.toLowerCase() == "guest") {
+                                          callLoginDialog();
+                                          return;
+                                        }
                                         await ref.read(addToCartProvider.notifier).addCartData(productId: product.id, quantity: 1);
 
                                         if (context.mounted) {

@@ -12,6 +12,8 @@ import 'package:nexprime/screens/customer_screens/customer_search_screen/custome
 import 'package:nexprime/screens/vendor_screens/vendor_home_screen/vendor_home_screen.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_order_screen/vendor_order_screen.dart';
 import 'package:nexprime/screens/vendor_screens/vendor_product_screen/vendor_product_screen.dart';
+import 'package:nexprime/screens/customer_screens/customer_cart_screen/provider/cart_provider.dart';
+import 'package:nexprime/screens/customer_screens/customer_order_screen/provider/customer_order_screen_provider.dart';
 import 'package:nexprime/services/storage/storage_services.dart';
 import 'package:nexprime/utils/app_log.dart';
 import 'package:nexprime/utils/app_size.dart';
@@ -42,6 +44,14 @@ class _AppNavigationScreenState extends ConsumerState<AppNavigationScreen> {
         return;
       }
       ref.read(navIndexProvider.notifier).state = index;
+
+      if (role.toLowerCase() == "customer".toLowerCase()) {
+        if (index == 2) {
+          ref.read(cartProvider.notifier).getCartData();
+        } else if (index == 3) {
+          ref.read(myOrderProvider.notifier).fetchOrders();
+        }
+      }
     } catch (e) {
       errorLog("changeNavigation", e);
     }

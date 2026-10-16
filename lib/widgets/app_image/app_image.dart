@@ -377,7 +377,6 @@ class CustomCacheManager extends CacheManager {
           key,
           stalePeriod: const Duration(days: 7),
           maxNrOfCacheObjects: 300,
-          repo: JsonCacheInfoRepository(databaseName: key),
           fileService: HttpFileService(),
         ),
       );
