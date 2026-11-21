@@ -51,3 +51,5 @@ android/app/*.jks
 android/app/*.keystore
 
 
+config.bat
+node_modules
